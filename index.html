@@ -1739,6 +1739,41 @@
                 }
             });
 
+            // --- SWIPE LOGIC FOR MOBILE ---
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            container.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            container.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const swipeThreshold = 50; // Minimum distance to trigger swipe
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swiped Left -> Next Slide
+                    resetAutoPlay();
+                    if (currentSlide < totalSlides - 1) {
+                        changeSlide(currentSlide + 1, "next");
+                    } else {
+                        changeSlide(0, "next");
+                    }
+                }
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swiped Right -> Prev Slide
+                    resetAutoPlay();
+                    if (currentSlide > 0) {
+                        changeSlide(currentSlide - 1, "prev");
+                    } else {
+                        changeSlide(totalSlides - 1, "prev");
+                    }
+                }
+            }
+
             initOceanSlider();
 
         })();
