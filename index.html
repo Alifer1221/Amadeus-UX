@@ -1462,11 +1462,22 @@
                 justify-content: center;
                 gap: 30px;
                 padding-bottom: 120px;
-                /* PUSH CONTENT UP TO CLEAR ARROWS */
+                padding-top: 80px;
+                /* NEW: Push content down to clear title */
             }
 
             #ocean-component .visual-box {
                 width: 90%;
+            }
+
+            #ocean-component .section-title {
+                top: 20px;
+                /* Reduce top space */
+                font-size: clamp(2rem, 8vw, 2.5rem);
+                /* Smaller title on mobile */
+                width: 100%;
+                z-index: 10;
+                /* Ensure it stays above/below correctly */
             }
 
             #ocean-component .text-box {
