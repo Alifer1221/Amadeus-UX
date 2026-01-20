@@ -333,6 +333,7 @@
             position: relative;
             width: 100%;
             height: 100vh;
+            /* AQUÍ ES DONDE SE DEFINE EL COLOR DE FONDO REAL */
             background-color: #151515;
             overflow: hidden;
             font-family: 'Manrope', sans-serif;
@@ -347,6 +348,7 @@
             width: 100%;
             height: 100%;
             z-index: 1;
+            /* El canvas en sí es transparente */
         }
 
         #amadeus-text-overlay {
@@ -645,22 +647,20 @@
 
     <script>
         (function () {
-            // ================= CONFIGURACIÓN AJUSTADA =================
+            // ================= CONFIGURACIÓN =================
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-                bgHex: '#151515',
+                // bgHex: '#151515', // YA NO SE USA EN JS, EL FONDO LO PONE CSS
 
-                // Visual (OPTIMIZADO PARA RENDIMIENTO)
-                particleSize: 2.2,    // Más grandes para compensar
-                gap: 7,               // Menos partículas (gap mayor = menos CPU)
+                particleSize: 1.6,
+                gap: 4,
                 positionJitter: 3.5,
 
-                // --- TIEMPOS (ACELERADOS) ---
+                // Tiempos (Rapidez de 2s)
                 duration: 2500,
                 textFinishOffset: 800,
                 typingSpeed: 100,
 
-                // Interacción
                 mouseRadius: 50,
                 mouseForce: 20
             };
@@ -672,7 +672,8 @@
             const descEl = document.getElementById('amadeusPara');
 
             if (!canvas || !section) return;
-            const ctx = canvas.getContext('2d');
+            // Alpha: true permite que el canvas sea transparente
+            const ctx = canvas.getContext('2d', { alpha: true });
 
             let particlesArray = [];
             let mouse = { x: null, y: null };
@@ -704,7 +705,6 @@
                     this.targetY = targetY;
                     this.color = color;
 
-                    // Origen aleatorio
                     this.originX = (Math.random() * canvas.width * 2) - (canvas.width / 2);
                     this.originY = (Math.random() * canvas.height * 2) - (canvas.height / 2);
 
@@ -723,22 +723,21 @@
                     this.floatRange = Math.random() * 2 + 1;
                 }
 
+                // === CORRECCIÓN AQUÍ: Centrado del cuadrado ===
                 draw() {
-                    ctx.beginPath();
                     ctx.fillStyle = this.color;
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
+                    // Restamos la mitad del tamaño a X e Y para que el cuadrado
+                    // quede perfectamente centrado en la coordenada de la partícula.
+                    ctx.fillRect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
                 }
 
                 update(progress, timestamp) {
                     if (!animationComplete) {
-                        // FASE 1: Animación de entrada
                         const ease = easeOutCubic(progress);
                         this.x = this.originX + (this.targetX - this.originX) * ease;
                         this.y = this.originY + (this.targetY - this.originY) * ease;
                     }
                     else {
-                        // FASE 2: Interacción y Vida
                         const floatingTargetX = this.targetX + Math.sin(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
                         const floatingTargetY = this.targetY + Math.cos(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
 
@@ -800,7 +799,6 @@
                             const b = data[i + 2];
                             const color = `rgb(${r},${g},${b})`;
 
-                            // Orgánico: Jitter aleatorio
                             const randomX = x + (Math.random() - 0.5) * CONFIG.positionJitter;
                             const randomY = y + (Math.random() - 0.5) * CONFIG.positionJitter;
 
@@ -819,8 +817,10 @@
                     animationComplete = true;
                 }
 
-                ctx.fillStyle = CONFIG.bgHex;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // === CORRECCIÓN AQUÍ: Fondo Transparente ===
+                // En lugar de pintar un rectangulo negro, limpiamos el canvas
+                // para que sea transparente y se vea el CSS de fondo.
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 for (let i = 0; i < particlesArray.length; i++) {
                     particlesArray[i].update(progress, timestamp);
@@ -834,7 +834,6 @@
                 const textLength = text.length;
                 const typingDuration = textLength * CONFIG.typingSpeed;
 
-                // Cálculo de tiempos ajustado a la nueva duración
                 const targetFinishTime = CONFIG.duration - CONFIG.textFinishOffset;
                 const startDelay = targetFinishTime - typingDuration;
 
