@@ -2169,13 +2169,7 @@
                             const alpha = 1 - (index / config.lineCount);
                             const saturation = 50 + index;
 
-                            ctx.strokeStyle = `hsla(260, $ {
-                            saturation
-                        }
-
-                        %, 70%, $ {
-                            alpha
-                        })`;
+                            ctx.strokeStyle = `hsla(260, ${saturation}%, 70%, ${alpha})`;
                             ctx.lineWidth = 1.5;
 
                             for (let x = 0; x <= width; x += 2) {
