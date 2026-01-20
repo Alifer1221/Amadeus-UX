@@ -116,7 +116,9 @@
             /* Hide text links on mobile for cleaner look, rely on CTA or Logo/Home */
         }
 
-        /* --- ESTILOS GLOBAL HERO --- */
+        /* =========================================
+       HERO SECTION
+       ========================================= */
         #hero-section {
             position: relative;
             width: 100%;
@@ -206,7 +208,7 @@
             z-index: 0;
         }
 
-        canvas.hero-canvas {
+        canvas {
             width: 100%;
             height: 100%;
         }
@@ -1202,16 +1204,19 @@
     <!-- HERO SECTION -->
     <section id="hero-section">
         <div class="hero-content-overlay">
-            <h1 class="hero-title">Tu Web,
-                nuestra obra <br /><span>maestra</span></h1>
+            <h1 class="hero-title">Tu Web, nuestra obra <br /><span>maestra</span></h1>
             <p class="hero-subtitle">Interpretamos la esencia única de cada negocio</p>
         </div>
+
         <div class="desktop-wrapper">
-            <div class="spline-scale-wrapper"><spline-viewer
-                    url="https://prod.spline.design/FyzGSSutvpQE5E9W/scene.splinecode?v=3"></spline-viewer>
+            <div class="spline-scale-wrapper">
+                <spline-viewer url="https://prod.spline.design/FyzGSSutvpQE5E9W/scene.splinecode?v=3"></spline-viewer>
             </div>
         </div>
-        <div class="mobile-wrapper"><canvas id="mobileCanvas" class="hero-canvas"></canvas></div>
+
+        <div class="mobile-wrapper">
+            <canvas id="mobileCanvas"></canvas>
+        </div>
     </section>
 
 
@@ -2142,8 +2147,20 @@
                             return;
                         }
 
-                        ctx.fillStyle = '#000000';
+                        // --- CAMBIO AQUÍ: FONDO CON DEGRADADO PARA MÓVIL ---
+                        // Creamos un gradiente lineal vertical (de arriba hacia abajo)
+                        // Coordenadas: (x0, y0) -> (0, 0) a (x1, y1) -> (0, height)
+                        const gradientBg = ctx.createLinearGradient(0, 0, 0, height);
+
+                        // Definimos los colores del gradiente
+                        gradientBg.addColorStop(0, '#000000'); // Inicio (Arriba): Negro puro
+                        gradientBg.addColorStop(1, '#151515'); // Final (Abajo): El gris oscuro solicitado
+
+                        // Aplicamos el gradiente como estilo de relleno
+                        ctx.fillStyle = gradientBg;
+                        // Rellenamos todo el canvas con el gradiente en cada frame
                         ctx.fillRect(0, 0, width, height);
+                        // ----------------------------------------------------
 
                         const time = Date.now() * config.speed;
 

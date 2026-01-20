@@ -650,15 +650,15 @@
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
                 bgHex: '#151515',
 
-                // Visual (Mantenemos el efecto orgánico)
-                particleSize: 1.6,
-                gap: 4,
+                // Visual (OPTIMIZADO PARA RENDIMIENTO)
+                particleSize: 2.2,    // Más grandes para compensar
+                gap: 7,               // Menos partículas (gap mayor = menos CPU)
                 positionJitter: 3.5,
 
                 // --- TIEMPOS (ACELERADOS) ---
-                duration: 2500,       // Antes 4500 (Ahora 2.5 segundos total)
-                textFinishOffset: 800, // Ajustado para que el texto termine casi junto con la animación
-                typingSpeed: 100,      // Texto un poco más rápido también
+                duration: 2500,
+                textFinishOffset: 800,
+                typingSpeed: 100,
 
                 // Interacción
                 mouseRadius: 50,
