@@ -45,35 +45,41 @@
         }
 
         /* --- NAVIGATION STYLES (Floating Pill) --- */
+        /* --- NAVIGATION STYLES (Floating Pill - ANTI-LAG) --- */
         nav {
+            /* 1. POSICIONAMIENTO ABSOLUTO/FIJO */
             position: fixed;
-            top: 20px;
+            top: 30px;
             left: 50%;
-            transform: translateX(-50%);
-            width: fit-content;
-            max-width: 95vw;
-            background: rgba(255, 255, 255, 0.05);
-            /* 5% White Glass */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
 
-            border-radius: 100px;
-            padding: 10px 30px;
-
-            /* OPTIMIZACIÓN GPU + CENTRADO */
+            /* 2. CENTRADO POR GPU (Truco Anti-Lag) */
             transform: translateX(-50%) translateZ(0);
-            /* AISLAMIENTO DE CAPA (User Request) */
-            z-index: 1000;
+
+            /* 3. AISLAMIENTO */
+            z-index: 9999;
             will-change: transform;
-            isolation: isolate;
-            -webkit-font-smoothing: antialiased;
+            backface-visibility: hidden;
+
+            /* 4. ESTILOS VISUALES */
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 40px;
+            padding: 10px 30px;
+
+            width: fit-content;
+            max-width: 95vw;
+
+            background: rgba(255, 255, 255, 0.08);
+            /* Fondo semi-transparente ligero */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
 
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+            /* IMPORTANTE: Si te da lag, BORRA la siguiente línea (backdrop-filter) */
+            /* backdrop-filter: blur(20px); */
+            /* -webkit-backdrop-filter: blur(20px); */
         }
 
         .nav-logo {
