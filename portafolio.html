@@ -809,6 +809,111 @@
 
 
 
+
+    <!-- BLUEBERRY PARTICLES (Global) -->
+    <canvas id="blueberry-particles"></canvas>
+    <style>
+        #blueberry-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9998;
+            /* Just below menu (9999) but above content */
+            pointer-events: none;
+            mix-blend-mode: screen;
+            /* Nice blending */
+        }
+    </style>
+    <script>
+        (function () {
+            const canvas = document.getElementById('blueberry-particles');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+
+            // CONFIG
+            const PARTICLE_COUNT = 35; // "No tienen que ser muchas"
+            const COLOR_HUE_BASE = 260; // Purple/Blue range (260 is deep violet/blue)
+            const SPEED_FACTOR = 0.4; // "Andando por ahí" (Slow)
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                    // Start at random positions initially
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                }
+
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = height + 10; // Start slightly below
+                    this.size = Math.random() * 3 + 1; // 1px to 4px
+                    this.speedY = (Math.random() * 0.5 + 0.2) * SPEED_FACTOR;
+                    this.speedX = (Math.random() - 0.5) * 0.5 * SPEED_FACTOR;
+
+                    // Color Mora Azul Variado (Blue/Purple/Violet)
+                    // HSL: 240=Blue, 270=Purple. Let's vary between 240 and 280.
+                    const hue = 240 + Math.random() * 40;
+                    const lightness = 50 + Math.random() * 20; // 50-70% lightness
+                    this.color = `hsla(${hue}, 80%, ${lightness}%, ${Math.random() * 0.5 + 0.3})`;
+                }
+
+                update() {
+                    this.y -= this.speedY; // Move Up
+                    this.x += this.speedX; // Drift
+
+                    // Wrap around or reset
+                    if (this.y < -10 || this.x < -10 || this.x > width + 10) {
+                        if (Math.random() > 0.1) {
+                            // Re-appear at bottom
+                            this.y = height + 10;
+                            this.x = Math.random() * width;
+                        } else {
+                            // Re-appear at random side
+                            this.reset();
+                        }
+                    }
+                }
+
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function init() {
+                particles = [];
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            init();
+            animate();
+        })();
+    </script>
+
     <footer class="next-section">
         <div class="footer-content">
             <h2>¿Trabajamos juntos?</h2>
