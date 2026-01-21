@@ -339,26 +339,28 @@
             }
         }
 
-        /* --- AMADEUS HERO STYLES --- */
+        /* IMPORTANTE: El background color lo manejará WebGL ahora para rendimiento */
+        /* body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #151515; } */
+
         #amadeus-hero-section {
             position: relative;
             width: 100%;
             height: 100vh;
-            background-color: #151515;
             overflow: hidden;
             font-family: 'Manrope', sans-serif;
             cursor: default;
-            z-index: 20;
+            z-index: 1;
         }
 
-        /* Canvas Three.js */
         canvas {
             display: block;
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 1;
+            z-index: 0;
         }
+
+        /* Tu menú debería estar por encima (z-index > 0) */
 
         #amadeus-text-overlay {
             position: absolute;
@@ -410,11 +412,6 @@
         }
 
         @media (max-width: 900px) {
-            #amadeus-hero-section {
-                height: auto;
-                min-height: 700px;
-            }
-
             #amadeus-text-overlay {
                 position: relative;
                 top: 0;
@@ -428,10 +425,6 @@
 
             .amadeus-title {
                 font-size: 3rem;
-                opacity: 1;
-            }
-
-            .amadeus-desc {
                 opacity: 1;
             }
         }
