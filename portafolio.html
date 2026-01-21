@@ -637,7 +637,7 @@
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
                 particleSize: 1.8,
-                gap: 3,
+                gap: 4, // Aumentado a 4 para mejor rendimiento con el menú
 
                 // === AJUSTE DE TAMAÑO DEL CIRCULO ===
                 mouseRadius: 35, // Antes 70. Ahora es pequeño y preciso.
@@ -669,9 +669,10 @@
                 camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
                 camera.position.z = 10;
 
-                renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                // Optimización: antialias false y pixelRatio 1 para máximo rendimiento
+                renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
                 renderer.setSize(width, height);
-                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setPixelRatio(1); // Forzar 1:1 para evitar lag en pantallas 4K/Retina
                 container.appendChild(renderer.domElement);
 
                 const loader = new THREE.TextureLoader();
