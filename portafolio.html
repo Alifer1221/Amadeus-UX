@@ -858,72 +858,104 @@
                 renderer.setSize(width, height);
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-                // PARTICLE SYSTEM
-                const count = 150; // "No tienen que ser muchas", but enough for space
-                const geometry = new THREE.BufferGeometry();
-                const positions = [];
-                const colors = [];
-                const sizes = [];
+                // GALAXY COMPONENT (High End Spiral)
 
-                // Mora Azul Palette (Deep Blue -> Purple -> Violet)
-                const colorPalette = [
-                    new THREE.Color('#4c1d95'),
-                    new THREE.Color('#6d28d9'),
-                    new THREE.Color('#2563eb'),
-                    new THREE.Color('#3b82f6'),
-                    new THREE.Color('#8b5cf6')
-                ];
+                const parameters = {
+                    count: 2000,
+                    size: 2,
+                    radius: 30, // Large radius to cover screen
+                    branches: 3,
+                    spin: 1,
+                    randomness: 0.5,
+                    randomnessPower: 3,
+                    insideColor: '#ff90a0', // Bright core (Pinkish/White)
+                    outsideColor: '#4c1d95' // Deep Purple/Blue outer
+                };
 
-                const spread = 100; // Spread in 3D space
+                let geometry = null;
+                let material = null;
+                let points = null;
 
-                for (let i = 0; i < count; i++) {
-                    // Position
-                    const x = (Math.random() - 0.5) * spread * 2; // Wide spread X
-                    const y = (Math.random() - 0.5) * spread * 4; // Tall spread Y (for scroll)
-                    const z = (Math.random() - 0.5) * spread;     // Depth Z
+                const generateGalaxy = () => {
+                    if (points !== null) {
+                        geometry.dispose();
+                        material.dispose();
+                        scene.remove(points);
+                    }
 
-                    positions.push(x, y, z);
+                    geometry = new THREE.BufferGeometry();
+                    const positions = new Float32Array(parameters.count * 3);
+                    const colors = new Float32Array(parameters.count * 3);
+                    const scales = new Float32Array(parameters.count * 1); // Size variation
 
-                    // Color
-                    const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-                    colors.push(color.r, color.g, color.b);
+                    const colorInside = new THREE.Color(parameters.insideColor);
+                    const colorOutside = new THREE.Color(parameters.outsideColor);
 
-                    // Size Variation ("ligeras variaciones")
-                    sizes.push(Math.random() * 1.5 + 0.5);
-                }
+                    for (let i = 0; i < parameters.count; i++) {
+                        const i3 = i * 3;
 
-                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-                geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-                geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+                        // Position
+                        const radius = Math.random() * parameters.radius;
+                        const spinAngle = radius * parameters.spin;
+                        const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2;
 
-                // HELPER: Generate Circle Texture on the fly
-                function getCircleTexture() {
-                    const size = 32;
+                        // Randomness
+                        const randomX = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
+                        const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
+                        const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
+
+                        positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+                        positions[i3 + 1] = randomY * 2; // Spread vertically a bit more for coverage
+                        positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+
+                        // Color
+                        const mixedColor = colorInside.clone();
+                        mixedColor.lerp(colorOutside, radius / parameters.radius);
+
+                        colors[i3] = mixedColor.r;
+                        colors[i3 + 1] = mixedColor.g;
+                        colors[i3 + 2] = mixedColor.b;
+
+                        // Scale
+                        scales[i] = Math.random();
+                    }
+
+                    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                    // Using Scale in shader is optimal, but for standard PointsMaterial we can't easily variate point size per vertex without custom shader.
+                    // We stick to standard PointsMaterial for reliability, but we'll use a nice blended texture.
+                };
+
+                generateGalaxy();
+
+                // HELPER: Generate Soft Glow Texture
+                function getGlowTexture() {
                     const canvas = document.createElement('canvas');
-                    canvas.width = size;
-                    canvas.height = size;
+                    canvas.width = 32; canvas.height = 32;
                     const ctx = canvas.getContext('2d');
-                    ctx.beginPath();
-                    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fill();
+                    const g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+                    g.addColorStop(0, 'rgba(255,255,255,1)');
+                    g.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = g;
+                    ctx.fillRect(0, 0, 32, 32);
                     return new THREE.CanvasTexture(canvas);
                 }
 
-                // Shader Material to match "First Object" language exactly (Points)
-                // We use standard PointsMaterial but with size usage
-                const material = new THREE.PointsMaterial({
-                    size: 4, // Slightly larger base size for circles
-                    map: getCircleTexture(), // CIRCLE TEXTURE
-                    alphaTest: 0.5, // Crisp edges
+                material = new THREE.PointsMaterial({
+                    size: parameters.size,
+                    sizeAttenuation: true,
+                    depthWrite: false,
+                    blending: THREE.AdditiveBlending, // Key for galaxy glow
                     vertexColors: true,
-                    transparent: true,
-                    opacity: 0.8,
-                    sizeAttenuation: true // Sizes shrink with distance (Real 3D feel)
+                    map: getGlowTexture(),
+                    transparent: true
                 });
 
-                const particleSystem = new THREE.Points(geometry, material);
-                scene.add(particleSystem);
+                points = new THREE.Points(geometry, material);
+                // Rotate to face user slightly angled
+                points.rotation.x = 0.5;
+                scene.add(points);
+
 
                 // ANIMATION LOOP
                 let scrollY = 0;
@@ -938,16 +970,17 @@
                 function animate() {
                     const time = clock.getElapsedTime();
 
-                    // Smooth Scroll Follow
+                    // Smooth Scroll
                     scrollY += (targetScrollY - scrollY) * 0.1;
 
-                    // 1. "Flotando por el espacio" (Idle movement)
-                    particleSystem.rotation.y = time * 0.05; // Gentle rotation
-                    particleSystem.rotation.z = time * 0.02;
+                    // Rotate Galaxy
+                    points.rotation.y = time * 0.05;
 
-                    // 2. Scroll Interaction ("Que no queden suspendidas")
-                    // Move camera Y based on scroll to traverse the field
-                    camera.position.y = -scrollY * 0.05;
+                    // Parallax: Move Camera through galaxy
+                    // We move Z to fly through it, or Y to pan over it.
+                    // Let's pan 'Y' so it feels like scrolling down the universe
+                    camera.position.y = -scrollY * 0.02;
+                    camera.position.z = 40 + Math.sin(time * 0.1) * 5; // Breathing zoom
 
                     renderer.render(scene, camera);
                     requestAnimationFrame(animate);
