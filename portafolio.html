@@ -645,20 +645,21 @@
 
     <script>
         (function () {
-            // ================= CONFIGURACIÓN =================
+            // ================= CONFIGURACIÓN "CHÉVERE" =================
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-                // bgHex: '#151515', // YA NO SE USA EN JS, EL FONDO LO PONE CSS
 
-                particleSize: 1.6,
+                // Visual
+                particleSize: 1.5,
                 gap: 4,
-                positionJitter: 3.5,
+                positionJitter: 3.0,
 
-                // Tiempos (Rapidez de 2s)
+                // Tiempos
                 duration: 2500,
                 textFinishOffset: 800,
                 typingSpeed: 100,
 
+                // Interacción
                 mouseRadius: 50,
                 mouseForce: 20
             };
@@ -670,7 +671,8 @@
             const descEl = document.getElementById('amadeusPara');
 
             if (!canvas || !section) return;
-            // Alpha: true permite que el canvas sea transparente
+
+            // Contexto optimizado
             const ctx = canvas.getContext('2d', { alpha: true });
 
             let particlesArray = [];
@@ -721,24 +723,16 @@
                     this.floatRange = Math.random() * 2 + 1;
                 }
 
-                // === CORRECCIÓN AQUÍ: Centrado del cuadrado ===
-                draw() {
-                    ctx.fillStyle = this.color;
-                    // Restamos la mitad del tamaño a X e Y para que el cuadrado
-                    // quede perfectamente centrado en la coordenada de la partícula.
-                    ctx.fillRect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-                }
-
                 update(progress, timestamp) {
+                    const floatingTargetX = this.targetX + Math.sin(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
+                    const floatingTargetY = this.targetY + Math.cos(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
+
                     if (!animationComplete) {
                         const ease = easeOutCubic(progress);
-                        this.x = this.originX + (this.targetX - this.originX) * ease;
-                        this.y = this.originY + (this.targetY - this.originY) * ease;
+                        this.x = this.originX + (floatingTargetX - this.originX) * ease;
+                        this.y = this.originY + (floatingTargetY - this.originY) * ease;
                     }
                     else {
-                        const floatingTargetX = this.targetX + Math.sin(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
-                        const floatingTargetY = this.targetY + Math.cos(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
-
                         const dx = floatingTargetX - this.x;
                         const dy = floatingTargetY - this.y;
 
@@ -748,12 +742,17 @@
                         if (mouse.x != null) {
                             const mouseDx = mouse.x - this.x;
                             const mouseDy = mouse.y - this.y;
-                            const distance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
 
-                            if (distance < CONFIG.mouseRadius) {
+                            // OPTIMIZACIÓN: Comparar distancias al cuadrado evita Math.sqrt innecesarios
+                            const distSq = mouseDx * mouseDx + mouseDy * mouseDy;
+                            const radiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
+
+                            if (distSq < radiusSq) {
+                                const distance = Math.sqrt(distSq);
                                 const forceDirectionX = mouseDx / distance;
                                 const forceDirectionY = mouseDy / distance;
                                 const force = (CONFIG.mouseRadius - distance) / CONFIG.mouseRadius;
+
                                 const directionX = forceDirectionX * force * CONFIG.mouseForce;
                                 const directionY = forceDirectionY * force * CONFIG.mouseForce;
 
@@ -781,10 +780,12 @@
                     logoHeight = logoWidth / aspectRatio;
                 }
 
-                const startX = (canvas.width * 0.75) - (logoWidth / 2);
-                const startY = (canvas.height - logoHeight) / 2;
+                const startX = ((canvas.width * 0.75) - (logoWidth / 2)) | 0;
+                const startY = ((canvas.height - logoHeight) / 2) | 0;
+                const iWidth = logoWidth | 0;
+                const iHeight = logoHeight | 0;
 
-                ctx.drawImage(image, startX, startY, logoWidth, logoHeight);
+                ctx.drawImage(image, startX, startY, iWidth, iHeight);
                 const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -804,6 +805,9 @@
                         }
                     }
                 }
+
+                // OPTIMIZACIÓN CLAVE: Ordenar por color para renderizado por lotes
+                particlesArray.sort((a, b) => (a.color > b.color) ? 1 : -1);
             }
 
             function animate(timestamp) {
@@ -815,15 +819,24 @@
                     animationComplete = true;
                 }
 
-                // === CORRECCIÓN AQUÍ: Fondo Transparente ===
-                // En lugar de pintar un rectangulo negro, limpiamos el canvas
-                // para que sea transparente y se vea el CSS de fondo.
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+                let lastColor = null;
+
                 for (let i = 0; i < particlesArray.length; i++) {
-                    particlesArray[i].update(progress, timestamp);
-                    particlesArray[i].draw();
+                    const p = particlesArray[i];
+                    p.update(progress, timestamp);
+
+                    // Solo cambiamos el contexto si el color cambia (mejora masiva de FPS)
+                    if (p.color !== lastColor) {
+                        ctx.fillStyle = p.color;
+                        lastColor = p.color;
+                    }
+
+                    // Usamos bitwise OR (| 0) para forzar enteros y acelerar GPU
+                    ctx.fillRect(p.x | 0, p.y | 0, p.size, p.size);
                 }
+
                 requestAnimationFrame(animate);
             }
 
@@ -860,8 +873,11 @@
 
             img.onload = () => {
                 init(img);
-                requestAnimationFrame(animate);
                 setupText();
+                // Pequeño delay para asegurar que el cálculo inicial no congele el primer frame
+                setTimeout(() => {
+                    requestAnimationFrame(animate);
+                }, 100);
             };
 
             let resizeTimer;
