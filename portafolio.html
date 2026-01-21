@@ -57,12 +57,12 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
             border-radius: 100px;
             padding: 10px 30px;
 
-            /* OPTIMIZACIÓN GPU (User Request) */
-            transform: translateZ(0);
+            /* OPTIMIZACIÓN GPU + CENTRADO */
+            transform: translateX(-50%) translateZ(0);
             will-change: transform, opacity;
             backface-visibility: hidden;
             display: flex;
