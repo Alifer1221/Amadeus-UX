@@ -4,331 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio - ItsIzzy</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap"
+    <title>Amadeus Hero - Final WebGL (Fluido)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Montserrat:wght@400&display=swap"
         rel="stylesheet">
 
-    <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
-        /* CORE STYLES from services.html */
-        :root {
-            --bg-color: #151515;
-            --text-color: #ffffff;
-            --card-width: 600px;
-            --card-height: 400px;
-        }
-
-        * {
+        body,
+        html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            font-family: 'Space Grotesk', sans-serif;
-            color: var(--text-color);
-            overflow-x: hidden;
-            margin: 0;
-        }
-
-        /* --- NAVIGATION STYLES (Floating Pill) --- */
-        nav {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: fit-content;
-            max-width: 95vw;
-            background: rgba(255, 255, 255, 0.05);
-            /* 5% White Glass */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 100px;
-            padding: 10px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-            z-index: 9999;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-logo {
-            font-family: 'Manrope', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-decoration: none;
-            color: #fff;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .nav-menu a {
-            font-family: 'Manrope', sans-serif;
-            text-decoration: none;
-            color: #ccc;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            text-transform: capitalize;
-            letter-spacing: 0.3px;
-        }
-
-        .nav-menu a:hover {
-            color: #fff;
-        }
-
-        .nav-cta {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #fff;
-            padding: 10px 24px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-family: 'Manrope', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            transition: transform 0.2s, box-shadow 0.2s;
-            white-space: nowrap;
-        }
-
-        .nav-cta:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(37, 117, 252, 0.4);
-        }
-
-        @media (max-width: 768px) {
-            nav {
-                top: auto;
-                bottom: 20px;
-                width: 90%;
-                justify-content: space-between;
-                padding: 10px 20px;
-                gap: 10px;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-
-            .nav-menu a {
-                font-size: 0.75rem;
-            }
-
-            .nav-logo {
-                font-size: 1rem;
-            }
-
-            .nav-cta {
-                padding: 8px 16px;
-                font-size: 0.75rem;
-            }
-        }
-
-        /* PORTFOLIO SECTIONS */
-        .scroll-container {
-            height: 350vh;
-            position: relative;
-            z-index: 15;
-            background-color: var(--bg-color);
-        }
-
-        .sticky-wrapper {
-            position: sticky;
-            top: 0;
             width: 100%;
-            height: 100vh;
-            display: flex;
+            height: 100%;
             overflow: hidden;
-        }
-
-        .left-col {
-            width: 50%;
-            height: 100vh;
-            padding: 80px 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: #151515;
-            z-index: 10;
-        }
-
-        .meta-tag {
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            color: #888;
-            display: block;
-        }
-
-        .dynamic-title {
-            font-size: 3.5rem;
-            line-height: 1;
-            margin-bottom: 30px;
-            font-weight: 500;
-            min-height: 2em;
-            color: #fff;
-        }
-
-        .dynamic-desc {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #ccc;
-            max-width: 85%;
-            min-height: 4.8em;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 1em;
-            background-color: #fff;
-            margin-left: 5px;
-            animation: blink 1s infinite;
-            vertical-align: middle;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        .right-col {
-            width: 50%;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             background-color: #151515;
-            perspective: 1000px;
         }
 
-        .stack-wrapper {
-            position: relative;
-            width: var(--card-width);
-            height: var(--card-height);
-        }
-
-        .card {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #111;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transform-origin: center bottom;
-            will-change: transform, opacity;
-        }
-
-        .card img,
-        .card video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card .card-ui {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            display: flex;
-            gap: 5px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .tag {
-            background: #fff;
-            padding: 4px 8px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            border: 1px solid #000;
-            text-transform: uppercase;
-            color: #000;
-        }
-
-        .next-section {
-            position: relative;
-            z-index: 16;
-            background-color: #000;
-            color: #fff;
-            padding: 100px 60px;
-            min-height: 50vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-top: 1px solid #222;
-        }
-
-        .next-section h2 {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-
-        .next-section a {
-            color: #fff;
-            font-size: 1.5rem;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .sticky-wrapper {
-                flex-direction: column-reverse;
-            }
-
-            .left-col {
-                width: 100%;
-                height: 40vh;
-                padding: 30px;
-            }
-
-            .right-col {
-                width: 100%;
-                height: 60vh;
-            }
-
-            .dynamic-title {
-                font-size: 2rem;
-            }
-
-            :root {
-                --card-width: 280px;
-                --card-height: 480px;
-            }
-        }
-
-        /* --- AMADEUS HERO STYLES --- */
         #amadeus-hero-section {
             position: relative;
             width: 100%;
@@ -340,15 +34,13 @@
             z-index: 20;
         }
 
-        #amadeusCanvas {
+        /* Canvas generado por Three.js */
+        canvas {
+            display: block;
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
             z-index: 1;
-            /* Renderizado pixelado para nitidez máxima */
-            image-rendering: pixelated;
         }
 
         #amadeus-text-overlay {
@@ -401,11 +93,6 @@
         }
 
         @media (max-width: 900px) {
-            #amadeus-hero-section {
-                height: auto;
-                min-height: 700px;
-            }
-
             #amadeus-text-overlay {
                 position: relative;
                 top: 0;
@@ -421,187 +108,13 @@
                 font-size: 3rem;
                 opacity: 1;
             }
-
-            .amadeus-desc {
-                opacity: 1;
-            }
-        }
-    </style>
-    <style>
-        /* --- ESTILOS GALAXY & STACK (User Request) --- */
-        #galaxy-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .galaxy-stage-container {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            perspective: 2000px;
-            overflow: visible;
-            /* Asegurar visibilidad */
-        }
-
-        .galaxy-stack-wrapper {
-            position: relative;
-            width: 80vw;
-            max-width: 900px;
-            aspect-ratio: 16/9;
-            z-index: 10;
-            transform: rotateX(5deg);
-            transform-style: preserve-3d;
-        }
-
-        /* Conflict resolution: .card is already defined. Using .galaxy-card to distinguish if needed, 
-           but user used .card. Let's inspect existing .card. 
-           Existing .card: absolute, top 0, left 0, w/h 100%, background #111.
-           New .card: absolute, top 0, left 0, w/h 100%. 
-           They are compatible enough, but I will validly rename the new ones to .stack-card to be safe */
-
-        .stack-card {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
-        }
-
-        /* MÁSCARA DEL VIDEO */
-        .video-mask {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 24px;
-            overflow: hidden;
-            background: #1a1a22;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-            z-index: 1;
-        }
-
-        .video-mask video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .dimmer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            opacity: 1;
-            pointer-events: none;
-            z-index: 2;
-            transition: opacity 0.5s ease;
-        }
-
-        /* --- TÍTULO --- */
-        .title-container {
-            position: absolute;
-            top: -55px;
-            left: -90px;
-            z-index: 10;
-            font-size: 4rem;
-            font-weight: 800;
-            /* Matching Home Page Hero Span */
-            font-family: 'Manrope', sans-serif;
-            color: #ffffff;
-            /* text-shadow: 4px 4px 0px #000000; Removed to match Home Page clean style */
-            display: flex;
-            align-items: baseline;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-
-        .typed-text {
-            white-space: pre;
-        }
-
-        .cursor-blink {
-            display: inline-block;
-            margin-left: 10px;
-            font-size: 0.5em;
-            color: #6366f1;
-            animation: blink 1s step-end infinite;
-            vertical-align: baseline;
-        }
-
-        /* --- BOTÓN PREMIUM GLASS --- */
-        .visit-btn {
-            position: absolute;
-            bottom: -25px;
-            right: -25px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 12px 30px;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50px;
-            z-index: 20;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .visit-btn:hover {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-        }
-
-        .btn-arrow {
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .visit-btn:hover .btn-arrow {
-            transform: translateX(5px) rotate(-45deg);
         }
     </style>
 </head>
 
 <body>
-    <nav>
-        <a href="index.html" class="nav-logo">
-            <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
-        </a>
-        <div class="nav-menu">
-            <a href="portafolio.html">Portafolio</a>
-            <a href="servicios.html">Servicios</a>
-            <a href="nosotros.html">Nosotros</a>
-        </div>
-        <a href="https://wa.me/573246649104" target="_blank" class="nav-cta">Hablemos</a>
-    </nav>
 
     <section id="amadeus-hero-section">
-        <canvas id="amadeusCanvas"></canvas>
-
         <div id="amadeus-text-overlay">
             <h2 class="amadeus-title" id="amadeusTitle"></h2>
             <p class="amadeus-desc" id="amadeusPara">
@@ -611,275 +124,237 @@
         </div>
     </section>
 
-
-
-    <!-- GALAXY CANVAS -->
-    <canvas id="galaxy-canvas"></canvas>
-
-    <!-- STACK PROJECT SECTION -->
-    <div class="galaxy-stage-container" id="trigger-area">
-        <div class="galaxy-stack-wrapper" id="stack"></div>
-    </div>
-
-    <footer class="next-section">
-        <div class="footer-content">
-            <h2>¿Trabajamos juntos?</h2>
-            <a href="mailto:hola@itsizzy.com">hola@itsizzy.com</a>
-            <br><br>
-            <p style="opacity: 0.5;">© 2026 IZZY PORTFOLIO</p>
-        </div>
-    </footer>
-
-    <!-- GSAP LOGIC -->
-
-
     <script>
         (function () {
-            // === CONFIGURACIÓN DE RENDIMIENTO ===
+            // === CONFIGURACIÓN AJUSTADA ===
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-                gap: 2,                 // Densidad EXTREMA (2px). Se verá sólido y nítido.
-                duration: 2000,         // Duración entrada
-                mouseRadiusSq: 60 * 60, // Radio interacción
-                mouseForce: 20
+                particleSize: 1.8,     // Tamaño fino y elegante
+                gap: 3,                // Densidad Alta (Calidad original)
+                mouseRadius: 60,       // Radio de interacción ajustado
+                mouseForce: 40         // Fuerza suave (no explosiva)
             };
 
-            const canvas = document.getElementById('amadeusCanvas');
-            const section = document.getElementById('amadeus-hero-section');
-            const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-
+            const container = document.getElementById('amadeus-hero-section');
             const titleEl = document.getElementById('amadeusTitle');
             const descEl = document.getElementById('amadeusPara');
 
-            let width, height;
+            let scene, camera, renderer;
+            let geometry, particles;
+            let count = 0;
+
+            // Datos físicos
+            let initialPositions;
+            let speeds, offsets;
+
+            // Mouse fuera de pantalla por defecto
             let mouse = { x: -9999, y: -9999 };
-            let startTime = null;
+            let width, height;
 
-            // === ARRAYS TIPADOS (MEMORIA PLANA) ===
-            let particleCount = 0;
-            // Coordenadas flotantes para física suave
-            let x, y, ox, oy, tx, ty, vx, vy;
-            // Parámetros de flotación
-            let fSpeed, fOffset, fRange;
-            // Colores pre-calculados en formato 32-bit entero (ABGR)
-            let colorsUint32;
+            init();
 
-            // === BUFFER DE PANTALLA ===
-            let imageData;
-            let buf32; // Vista de 32 bits del buffer de píxeles
+            function init() {
+                width = container.offsetWidth;
+                height = container.offsetHeight;
 
-            function resize() {
-                width = section.offsetWidth;
-                height = section.offsetHeight;
+                // 1. ESCENA
+                scene = new THREE.Scene();
+
+                // Cámara Ortográfica (2D real)
+                camera = new THREE.OrthographicCamera(
+                    width / -2, width / 2,
+                    height / 2, height / -2,
+                    1, 1000
+                );
+                camera.position.z = 10;
+
+                // 2. RENDERER
+                renderer = new THREE.WebGLRenderer({
+                    alpha: true,
+                    antialias: true
+                });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(renderer.domElement);
+
+                // 3. CARGAR IMAGEN
+                const loader = new THREE.TextureLoader();
+                loader.crossOrigin = "Anonymous";
+                loader.load(CONFIG.imageUrl, function (texture) {
+                    createParticles(texture.image);
+                    setupText();
+                    animate();
+                });
+
+                // Eventos
+                window.addEventListener('resize', onWindowResize, false);
+                document.addEventListener('mousemove', onMouseMove, false);
+            }
+
+            function createParticles(image) {
+                // Canvas temporal para leer pixeles
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
                 canvas.width = width;
                 canvas.height = height;
 
-                // Creamos el buffer de imagen una sola vez
-                imageData = ctx.createImageData(width, height);
-                // buf32 nos permite escribir píxeles completos (RGBA) en una sola operación
-                buf32 = new Uint32Array(imageData.data.buffer);
-            }
-            resize();
-
-            section.addEventListener('mousemove', e => {
-                const rect = canvas.getBoundingClientRect();
-                mouse.x = e.clientX - rect.left;
-                mouse.y = e.clientY - rect.top;
-            });
-            section.addEventListener('mouseleave', () => {
-                mouse.x = -9999;
-                mouse.y = -9999;
-            });
-
-            function init(image) {
-                // 1. DIBUJAR IMAGEN OCULTA PARA LEER DATOS
-                const tempCanvas = document.createElement('canvas');
-                const tCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = width;
-                tempCanvas.height = height;
-
+                // Lógica de posición (Derecha Centrada)
                 const aspectRatio = image.width / image.height;
-                let logoH = height * 0.75; // Altura base
+                let logoH = height * 0.75;
                 let logoW = logoH * aspectRatio;
+                if (logoW > width * 0.6) { logoW = width * 0.6; logoH = logoW / aspectRatio; }
 
-                // Límite de ancho para móviles
-                if (logoW > width * 0.6) {
-                    logoW = width * 0.6;
-                    logoH = logoW / aspectRatio;
-                }
+                const startX = (width * 0.75 - logoW / 2);
+                const startY = (height - logoH) / 2;
 
-                // === POSICIÓN: DERECHA CENTRADO ===
-                const startX = (width * 0.75 - logoW / 2) | 0;
-                const startY = ((height - logoH) / 2) | 0;
+                ctx.drawImage(image, startX, startY, logoW, logoH);
 
-                tCtx.drawImage(image, startX, startY, logoW, logoH);
+                const imgData = ctx.getImageData(0, 0, width, height);
+                const data = imgData.data;
 
-                // Obtenemos los datos crudos
-                const imgData = tCtx.getImageData(0, 0, width, height);
-                const data = imgData.data; // Uint8ClampedArray
+                const positions = [];
+                const colors = [];
+                const inits = [];
+                const spds = [];
+                const offs = [];
 
-                // 2. CONTEO PRELIMINAR
-                let pIndex = 0;
-                // Usamos un array dinámico temporal para índices válidos
-                const indices = [];
-                for (let r = 0; r < height; r += CONFIG.gap) {
-                    for (let c = 0; c < width; c += CONFIG.gap) {
-                        // Verificamos alpha > 50
-                        if (data[(r * width + c) * 4 + 3] > 50) {
-                            indices.push((r * width + c) * 4); // Guardamos índice de pixel
-                            pIndex++;
+                for (let y = 0; y < height; y += CONFIG.gap) {
+                    for (let x = 0; x < width; x += CONFIG.gap) {
+                        const i = (y * width + x) * 4;
+                        if (data[i + 3] > 100) { // Umbral alfa
+                            // Convertir a coordenadas Three.js (0,0 en el centro)
+                            const pX = x - width / 2;
+                            const pY = -(y - height / 2); // Invertir Y
+
+                            // Origen explosivo
+                            const ox = (Math.random() - 0.5) * width * 2;
+                            const oy = (Math.random() - 0.5) * height * 2;
+
+                            positions.push(ox, oy, 0);
+                            inits.push(pX, pY, 0); // Guardar posición final
+                            colors.push(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255);
+
+                            spds.push(Math.random() * 0.02 + 0.01);
+                            offs.push(Math.random() * Math.PI * 2);
                         }
                     }
                 }
 
-                particleCount = pIndex;
+                count = positions.length / 3;
 
-                // 3. INICIALIZACIÓN DE MEMORIA (High Performance)
-                x = new Float32Array(particleCount);
-                y = new Float32Array(particleCount);
-                ox = new Float32Array(particleCount); // Origen X
-                oy = new Float32Array(particleCount); // Origen Y
-                tx = new Float32Array(particleCount); // Target X
-                ty = new Float32Array(particleCount); // Target Y
-                vx = new Float32Array(particleCount);
-                vy = new Float32Array(particleCount);
+                geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-                fSpeed = new Float32Array(particleCount);
-                fOffset = new Float32Array(particleCount);
-                fRange = new Float32Array(particleCount);
+                initialPositions = new Float32Array(inits);
+                speeds = new Float32Array(spds);
+                offsets = new Float32Array(offs);
 
-                colorsUint32 = new Uint32Array(particleCount);
+                const material = new THREE.PointsMaterial({
+                    size: CONFIG.particleSize,
+                    vertexColors: true,
+                    sizeAttenuation: false,
+                    transparent: true,
+                    opacity: 1
+                });
 
-                let i = 0;
-                // Recorremos los índices guardados
-                for (let k = 0; k < indices.length; k++) {
-                    const pos = indices[k]; // índice en el array de data
-
-                    // Recuperar coordenadas X, Y desde el índice lineal
-                    const pixelIdx = pos / 4;
-                    const c = pixelIdx % width;
-                    const r = (pixelIdx / width) | 0;
-
-                    // Destino
-                    tx[i] = c;
-                    ty[i] = r;
-
-                    // Origen (Explosión Caótica desde fuera)
-                    ox[i] = (Math.random() * width * 2.5) - (width * 0.75);
-                    oy[i] = (Math.random() * height * 2.5) - (height * 0.75);
-
-                    x[i] = ox[i];
-                    y[i] = oy[i];
-
-                    // PRE-CALCULAR COLOR 32-BIT (Little Endian: A B G R)
-                    // Esto permite escribir el pixel en una sola operación de CPU
-                    const red = data[pos];
-                    const green = data[pos + 1];
-                    const blue = data[pos + 2];
-                    const alpha = 255;
-
-                    // Bit-shifting mágico para color rápido
-                    colorsUint32[i] = (alpha << 24) | (blue << 16) | (green << 8) | red;
-
-                    // Parámetros de "respiración"
-                    fSpeed[i] = Math.random() * 0.002 + 0.001;
-                    fOffset[i] = Math.random() * 6.28;
-                    fRange[i] = Math.random() * 2 + 1;
-
-                    i++;
-                }
+                particles = new THREE.Points(geometry, material);
+                scene.add(particles);
             }
 
-            // Easing súper rápido
-            function easeOutCubic(t) { return (--t) * t * t + 1; }
+            function onMouseMove(event) {
+                // Mapear mouse a coordenadas del centro (Three.js)
+                mouse.x = event.clientX - width / 2;
+                mouse.y = -(event.clientY - height / 2);
+            }
 
-            function animate(t) {
-                if (!startTime) startTime = t;
-                const elapsed = t - startTime;
-                let progress = elapsed / CONFIG.duration;
-                if (progress > 1) progress = 1;
+            function onWindowResize() {
+                width = container.offsetWidth;
+                height = container.offsetHeight;
 
-                const isIntro = progress < 1;
-                const ease = isIntro ? easeOutCubic(progress) : 1;
+                camera.left = width / -2;
+                camera.right = width / 2;
+                camera.top = height / 2;
+                camera.bottom = height / -2;
+                camera.updateProjectionMatrix();
 
-                // 1. BORRADO DE BUFFER (Ultra rápido usando fill)
-                // Llenamos de 0 (transparente negro) todo el array
-                buf32.fill(0);
+                renderer.setSize(width, height);
+            }
 
-                // Variables en scope local para optimización JIT
-                const _w = width;
-                const _h = height;
-                const _count = particleCount;
-                const _buf32 = buf32;
+            let time = 0;
+            const easeOut = t => 1 - Math.pow(1 - t, 3);
+            let introFinished = false;
 
-                // Loop principal
-                for (let i = 0; i < _count; i++) {
-                    // --- FÍSICA ---
-                    const floatX = tx[i] + Math.sin(t * fSpeed[i] + fOffset[i]) * fRange[i];
-                    const floatY = ty[i] + Math.cos(t * fSpeed[i] + fOffset[i]) * fRange[i];
+            function animate() {
+                requestAnimationFrame(animate);
 
-                    if (isIntro) {
-                        x[i] = ox[i] + (floatX - ox[i]) * ease;
-                        y[i] = oy[i] + (floatY - oy[i]) * ease;
-                    } else {
-                        const dx = floatX - x[i];
-                        const dy = floatY - y[i];
+                time += 0.015;
+                let progress = Math.min(time / 2.0, 1.0);
 
-                        vx[i] += dx * 0.05;
-                        vy[i] += dy * 0.05;
+                if (progress >= 1) introFinished = true;
 
-                        // Mouse
-                        if (mouse.x > -500) {
-                            const mdx = mouse.x - x[i];
-                            const mdy = mouse.y - y[i];
-                            const distSq = mdx * mdx + mdy * mdy;
-                            if (distSq < CONFIG.mouseRadiusSq) {
-                                const dist = Math.sqrt(distSq); // Raíz solo si estamos cerca
-                                const force = (60 - dist) / 60;
-                                const push = force * CONFIG.mouseForce;
-                                vx[i] -= (mdx / dist) * push;
-                                vy[i] -= (mdy / dist) * push;
-                            }
+                if (!particles) return;
+
+                const posAttribute = geometry.attributes.position;
+                const posArray = posAttribute.array;
+
+                const ease = easeOut(progress);
+
+                for (let i = 0; i < count; i++) {
+                    const i3 = i * 3;
+
+                    // Posición base flotante
+                    const homeX = initialPositions[i3];
+                    const homeY = initialPositions[i3 + 1];
+
+                    const floatX = homeX + Math.cos(time + offsets[i]) * 2.5;
+                    const floatY = homeY + Math.sin(time + offsets[i]) * 2.5;
+
+                    let targetX = floatX;
+                    let targetY = floatY;
+
+                    // --- REGLA DE REPULSIÓN CORREGIDA (Suave) ---
+                    if (introFinished) {
+                        // Distancia al mouse
+                        const dx = mouse.x - targetX;
+                        const dy = mouse.y - targetY;
+                        const distSq = dx * dx + dy * dy;
+                        const radiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
+
+                        if (distSq < radiusSq) {
+                            const dist = Math.sqrt(distSq);
+                            // Fuerza no lineal (más fuerte en el centro, suave en bordes)
+                            let force = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius;
+
+                            // Ángulo de empuje
+                            const angle = Math.atan2(dy, dx);
+
+                            // Empujar el "Objetivo" (Target) hacia afuera, no la posición actual
+                            // Esto crea el efecto elástico
+                            const push = force * CONFIG.mouseForce;
+
+                            targetX -= Math.cos(angle) * push;
+                            targetY -= Math.sin(angle) * push;
                         }
-
-                        vx[i] *= 0.90;
-                        vy[i] *= 0.90;
-                        x[i] += vx[i];
-                        y[i] += vy[i];
                     }
 
-                    // --- RENDERIZADO (PIXEL BUFFER) ---
-                    // Convertimos coordenadas flotantes a enteros para el índice del array
-                    const px = x[i] | 0;
-                    const py = y[i] | 0;
+                    // --- MOVIMIENTO (LERP) ---
+                    // Movemos la partícula desde donde esté hacia su objetivo calculado
+                    // Esto suaviza todo movimiento, tanto la intro como el mouse
 
-                    // Protección de bordes (clipping)
-                    if (px >= 0 && px < _w && py >= 0 && py < _h) {
-                        // Escribir el pixel directamente en memoria
-                        // Para hacer que las partículas sean "gorditas" (tamaño > 1),
-                        // escribimos en el pixel y sus vecinos. 
-
-                        const idx = py * _w + px;
-                        const col = colorsUint32[i];
-
-                        // Dibuja un punto (1px)
-                        _buf32[idx] = col;
-
-                        // Si quieres que se vea un poco más grueso (simular 1.5px),
-                        // descomenta la siguiente línea para pintar el pixel de la derecha:
-                        // if (px < _w - 1) _buf32[idx + 1] = col;
-                        // Y la de abajo:
-                        // if (py < _h - 1) _buf32[idx + _w] = col;
-
-                        // NOTA: Dejo solo 1 pixel porque con GAP 2 la densidad es tan alta
-                        // que se ve increíblemente nítido sin necesidad de engrosar artificialmente.
+                    if (!introFinished) {
+                        // Intro desde explosión
+                        posArray[i3] = posArray[i3] + (targetX - posArray[i3]) * 0.05 * ease;
+                        posArray[i3 + 1] = posArray[i3 + 1] + (targetY - posArray[i3 + 1]) * 0.05 * ease;
+                    } else {
+                        // Física normal (rápida respuesta elástica)
+                        posArray[i3] += (targetX - posArray[i3]) * 0.1;
+                        posArray[i3 + 1] += (targetY - posArray[i3 + 1]) * 0.1;
                     }
                 }
 
-                // 2. ENVIAR BUFFER A GPU
-                ctx.putImageData(imageData, 0, 0);
-
-                requestAnimationFrame(animate);
+                posAttribute.needsUpdate = true;
+                renderer.render(scene, camera);
             }
 
             function setupText() {
@@ -902,204 +377,7 @@
                 }, 1500);
             }
 
-            const img = new Image();
-            img.crossOrigin = "Anonymous";
-            img.src = CONFIG.imageUrl;
-
-            img.onload = () => {
-                init(img);
-                setupText();
-                // Delay mínimo para permitir garbage collection
-                setTimeout(() => requestAnimationFrame(animate), 50);
-            };
-
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    resize();
-                    if (img.complete) init(img);
-                }, 200);
-            });
-
         })();
-    </script>
-
-    <!-- GALAXY & STACK SCRIPT -->
-    <script>
-        (function () { // Wrap in IIFE to avoid conflict
-            // ==========================================
-            // 1. GALAXIA
-            // ==========================================
-            const canvas = document.getElementById('galaxy-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let w, h; let particles = [];
-            const colors = ['#6366f1', '#8b5cf6', '#3b82f6', '#c084fc', '#ffffff'];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-                initParticles();
-            }
-            window.addEventListener('resize', resize);
-
-            class GalaxyParticle { // Renamed from Particle
-                constructor() {
-                    this.x = Math.random() * w; this.y = Math.random() * h;
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.isFast = Math.random() < 0.10;
-                    if (this.isFast) {
-                        this.speedX = (Math.random() - 0.5) * 4; this.speedY = (Math.random() - 0.5) * 4; this.size = Math.random() * 2 + 1.5; this.opacity = Math.random() * 0.5 + 0.5;
-                    } else { this.speedX = (Math.random() - 0.5) * 0.2; this.speedY = (Math.random() - 0.5) * 0.2; this.size = Math.random() * 1.5 + 0.5; this.opacity = Math.random() * 0.4 + 0.1; }
-                }
-                update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0) this.x = w; if (this.x > w) this.x = 0; if (this.y < 0) this.y = h; if (this.y > h) this.y = 0; }
-                draw() { ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); }
-            }
-
-            function initParticles() { particles = []; const count = Math.floor((w * h) / 4000); for (let i = 0; i < count; i++) particles.push(new GalaxyParticle()); }
-            function animateGalaxy() { ctx.clearRect(0, 0, w, h); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateGalaxy); }
-
-            resize();
-            animateGalaxy();
-
-            // ==========================================
-            // 2. DATOS
-            // ==========================================
-            // Ensure ScrollTrigger is registered (calling it again is safe)
-            if (typeof ScrollTrigger !== 'undefined') {
-                gsap.registerPlugin(ScrollTrigger);
-            }
-
-            const repoBase = "https://raw.githack.com/Amadeusguitarte/Videos-paginas/main/";
-
-            const projects = [
-                { title: "Izzy", video: "68da0cd76298e94cc41f994e_Recording 2025-09-29 001607_1.mp4", link: "https://itsizzy.com" },
-                { title: "Staffna", video: "68da124ff15a31572805bd5c_Recording 2025-09-29 001607_4.mp4", link: "https://staffnasales.webflow.io" },
-                { title: "Portafolio Arq", video: "68da1a7145c6f790ceee27b3_Recording 2025-09-29 001607_5.mp4", link: "https://amadeusarteaga.webflow.io" },
-                { title: "DeskShare", video: "68da1d9d47b54d5e99ab69c9_Recording 2025-09-29 001607_6.mp4", link: "https://deskshare.webflow.io" },
-                { title: "MedicTravel", video: "Sequence 07_9.mp4", link: "https://pp-seven-tau.vercel.app" }
-            ];
-
-            const fullList = [...projects, ...projects];
-            const stack = document.getElementById('stack');
-            if (!stack) return; // Guard clause
-
-            // ==========================================
-            // 3. LÓGICA DE ESCRITURA (ACELERADA)
-            // ==========================================
-            function startTypewriter(cardElement) {
-                const titleContainer = cardElement.querySelector('.title-container');
-                if (!titleContainer) return;
-                const textSpan = titleContainer.querySelector('.typed-text');
-                const fullText = titleContainer.dataset.fullTitle;
-                textSpan.textContent = '';
-                let charIndex = 0;
-                if (cardElement.typeInterval) clearInterval(cardElement.typeInterval);
-
-                cardElement.typeInterval = setInterval(() => {
-                    if (charIndex < fullText.length) {
-                        textSpan.textContent += fullText.charAt(charIndex);
-                        charIndex++;
-                    } else { clearInterval(cardElement.typeInterval); }
-                }, 30);
-            }
-
-            function resetTypewriter(cardElement) {
-                if (!cardElement) return;
-                const titleContainer = cardElement.querySelector('.title-container');
-                if (!titleContainer) return;
-                if (cardElement.typeInterval) clearInterval(cardElement.typeInterval);
-                titleContainer.querySelector('.typed-text').textContent = '';
-            }
-
-            // ==========================================
-            // 4. GENERACIÓN HTML
-            // ==========================================
-            fullList.forEach((project, i) => {
-                const card = document.createElement('div');
-                card.className = 'stack-card'; // Changed from .card to .stack-card to match CSS change above
-                card.style.zIndex = fullList.length - i;
-                const cleanUrl = repoBase + encodeURIComponent(project.video);
-
-                card.innerHTML = `
-                    <div class="title-container" data-full-title="${project.title}">
-                        <span class="typed-text"></span><span class="cursor-blink">_</span>
-                    </div>
-                    
-                    <div class="video-mask">
-                        <div class="dimmer"></div>
-                        <video src="${cleanUrl}" muted loop playsinline preload="auto"></video>
-                    </div>
-
-                    <a href="${project.link}" target="_blank" class="visit-btn">
-                        VISITAR SITIO WEB <span class="btn-arrow">→</span>
-                    </a>
-                `;
-                stack.appendChild(card);
-            });
-
-            // ==========================================
-            // 5. ANIMACIÓN GSAP
-            // ==========================================
-            const cards = gsap.utils.toArray(".stack-card"); // Select .stack-card
-
-            cards.forEach((card, i) => {
-                if (i === 0) {
-                    gsap.set(card, { yPercent: 0, opacity: 1, z: 0 });
-                    gsap.set(card.querySelector('.dimmer'), { opacity: 0 });
-                    startTypewriter(card);
-                } else {
-                    gsap.set(card, { yPercent: 110, opacity: 0, z: -100, scale: 0.95 });
-                    gsap.set(card.querySelector('.dimmer'), { opacity: 1 });
-                }
-            });
-
-            const firstVideo = cards[0].querySelector('video');
-            if (firstVideo) firstVideo.play().catch(() => { });
-
-            let tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: "#trigger-area",
-                    start: "top top",
-                    end: "+=" + (window.innerHeight * 20),
-                    pin: true,
-                    scrub: 1.2,
-                }
-            });
-
-            cards.forEach((card, i) => {
-                if (i === cards.length - 1) return;
-
-                const nextCard = cards[i + 1];
-                const dimmer = nextCard ? nextCard.querySelector('.dimmer') : null;
-                const currentVideo = card.querySelector('video');
-                const nextVideo = nextCard ? nextCard.querySelector('video') : null;
-
-                // SALIDA
-                tl.to(card, {
-                    yPercent: -110, opacity: 0, z: -200, rotationX: 10, duration: 1.5, ease: "power2.inOut",
-                    onStart: () => { if (currentVideo) currentVideo.pause(); resetTypewriter(card); },
-                    onReverseComplete: () => { if (currentVideo) currentVideo.play().catch(() => { }); startTypewriter(card); }
-                }, "slide" + i);
-
-                // ENTRADA
-                if (nextCard) {
-                    tl.to(nextCard, {
-                        yPercent: 0, opacity: 1, z: 0, scale: 1, duration: 1.5, ease: "power2.inOut",
-                        onStart: () => {
-                            if (nextVideo) { nextVideo.currentTime = 0; nextVideo.play().catch(() => { }); }
-                            startTypewriter(nextCard);
-                        },
-                        onReverseComplete: () => {
-                            if (nextVideo) nextVideo.pause();
-                            resetTypewriter(nextCard);
-                        }
-                    }, "slide" + i);
-                    if (dimmer) tl.to(dimmer, { opacity: 0, duration: 1.5 }, "slide" + i);
-                }
-            });
-        })(); // End IIFE
     </script>
 </body>
 
