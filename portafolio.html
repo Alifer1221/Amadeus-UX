@@ -37,7 +37,8 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: transparent;
+            /* Changed to transparrent to show galaxy background */
             font-family: 'Space Grotesk', sans-serif;
             color: var(--text-color);
             overflow-x: hidden;
@@ -1147,75 +1148,7 @@
             const easeOut = t => 1 - Math.pow(1 - t, 3);
             let introFinished = false;
 
-            function animate() {
-                requestAnimationFrame(animate);
 
-                const delta = clock.getDelta();
-                elapsedTime += delta;
-
-                let progress = Math.min(elapsedTime / CONFIG.duration, 1.0);
-
-                if (progress >= 1) introFinished = true;
-                if (!particles) return;
-
-                const posArray = geometry.attributes.position.array;
-                const ease = easeOut(progress);
-
-                for (let i = 0; i < count; i++) {
-                    const i3 = i * 3;
-
-                    let currentX = posArray[i3];
-                    let currentY = posArray[i3 + 1];
-
-                    const homeX = initialPositions[i3] + Math.cos(elapsedTime + offsets[i]) * 2.5;
-                    const homeY = initialPositions[i3 + 1] + Math.sin(elapsedTime + offsets[i]) * 2.5;
-
-                    if (!introFinished) {
-                        currentX += (homeX - currentX) * 0.02 * ease;
-                        currentY += (homeY - currentY) * 0.02 * ease;
-                        velocitiesX[i] = 0;
-                        velocitiesY[i] = 0;
-                    }
-                    else {
-                        // 1. Resorte
-                        const springForceX = (homeX - currentX) * 0.015;
-                        const springForceY = (homeY - currentY) * 0.015;
-
-                        velocitiesX[i] += springForceX;
-                        velocitiesY[i] += springForceY;
-
-                        // 2. Repulsión Mouse
-                        const dx = mouse.x - currentX;
-                        const dy = mouse.y - currentY;
-                        const distSq = dx * dx + dy * dy;
-                        const radiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
-
-                        if (distSq < radiusSq) {
-                            const dist = Math.sqrt(distSq);
-                            let force = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius;
-                            const angle = Math.atan2(dy, dx);
-
-                            velocitiesX[i] -= Math.cos(angle) * force * CONFIG.mouseForce;
-                            velocitiesY[i] -= Math.sin(angle) * force * CONFIG.mouseForce;
-                        }
-
-                        // 3. Fricción (Viscosidad)
-                        velocitiesX[i] *= 0.94;
-                        velocitiesY[i] *= 0.94;
-
-                        currentX += velocitiesX[i];
-                        currentY += velocitiesY[i];
-                    }
-
-                    posArray[i3] = currentX;
-                    posArray[i3 + 1] = currentY;
-                }
-
-                geometry.attributes.position.needsUpdate = true;
-                renderer.render(scene, camera);
-            }
-        })();
-    </script>
 
 
 
