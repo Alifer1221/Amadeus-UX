@@ -858,104 +858,80 @@
                 renderer.setSize(width, height);
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-                // GALAXY COMPONENT (High End Spiral)
+                // "PUNTICOS REDONDOS FLOTANDO" (Clean & Simple) using Logo Palette
 
-                const parameters = {
-                    count: 2000,
-                    size: 2,
-                    radius: 30, // Large radius to cover screen
-                    branches: 3,
-                    spin: 1,
-                    randomness: 0.5,
-                    randomnessPower: 3,
-                    insideColor: '#ff90a0', // Bright core (Pinkish/White)
-                    outsideColor: '#4c1d95' // Deep Purple/Blue outer
-                };
-
-                let geometry = null;
-                let material = null;
-                let points = null;
-
-                const generateGalaxy = () => {
-                    if (points !== null) {
-                        geometry.dispose();
-                        material.dispose();
-                        scene.remove(points);
-                    }
-
-                    geometry = new THREE.BufferGeometry();
-                    const positions = new Float32Array(parameters.count * 3);
-                    const colors = new Float32Array(parameters.count * 3);
-                    const scales = new Float32Array(parameters.count * 1); // Size variation
-
-                    const colorInside = new THREE.Color(parameters.insideColor);
-                    const colorOutside = new THREE.Color(parameters.outsideColor);
-
-                    for (let i = 0; i < parameters.count; i++) {
-                        const i3 = i * 3;
-
-                        // Position
-                        const radius = Math.random() * parameters.radius;
-                        const spinAngle = radius * parameters.spin;
-                        const branchAngle = (i % parameters.branches) / parameters.branches * Math.PI * 2;
-
-                        // Randomness
-                        const randomX = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
-                        const randomY = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
-                        const randomZ = Math.pow(Math.random(), parameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
-
-                        positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-                        positions[i3 + 1] = randomY * 2; // Spread vertically a bit more for coverage
-                        positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
-
-                        // Color
-                        const mixedColor = colorInside.clone();
-                        mixedColor.lerp(colorOutside, radius / parameters.radius);
-
-                        colors[i3] = mixedColor.r;
-                        colors[i3 + 1] = mixedColor.g;
-                        colors[i3 + 2] = mixedColor.b;
-
-                        // Scale
-                        scales[i] = Math.random();
-                    }
-
-                    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                    // Using Scale in shader is optimal, but for standard PointsMaterial we can't easily variate point size per vertex without custom shader.
-                    // We stick to standard PointsMaterial for reliability, but we'll use a nice blended texture.
-                };
-
-                generateGalaxy();
-
-                // HELPER: Generate Soft Glow Texture
-                function getGlowTexture() {
+                // Helper: Round Texture
+                function getCircleTexture() {
+                    const size = 64; // Higher res for sharpness
                     const canvas = document.createElement('canvas');
-                    canvas.width = 32; canvas.height = 32;
+                    canvas.width = size;
+                    canvas.height = size;
                     const ctx = canvas.getContext('2d');
-                    const g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-                    g.addColorStop(0, 'rgba(255,255,255,1)');
-                    g.addColorStop(1, 'rgba(0,0,0,0)');
-                    ctx.fillStyle = g;
-                    ctx.fillRect(0, 0, 32, 32);
+                    ctx.beginPath();
+                    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
                     return new THREE.CanvasTexture(canvas);
                 }
 
-                material = new THREE.PointsMaterial({
-                    size: parameters.size,
+                const count = 300; // Enough to see them, not too crowded
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(count * 3);
+                const colors = new Float32Array(count * 3);
+                const sizes = new Float32Array(count);
+                const speeds = new Float32Array(count); // For independent movement
+                const offsets = new Float32Array(count); // Random starting offsets
+
+                // Palette based on "Isotipo" / Hero Logo (Clean Whites, Blues, Purples)
+                const palette = [
+                    new THREE.Color('#ffffff'), // White (Logo accent)
+                    new THREE.Color('#3b82f6'), // Blue
+                    new THREE.Color('#8b5cf6'), // Violet
+                    new THREE.Color('#6366f1')  // Indigo
+                ];
+
+                const spreadX = 200; // Wide X
+                const spreadY = 200; // Tall Y (scrolling space)
+                const spreadZ = 80;  // Deep Z
+
+                for (let i = 0; i < count; i++) {
+                    const i3 = i * 3;
+
+                    // Random Position in Space
+                    positions[i3] = (Math.random() - 0.5) * spreadX;
+                    positions[i3 + 1] = (Math.random() - 0.5) * spreadY;
+                    positions[i3 + 2] = (Math.random() - 0.5) * spreadZ;
+
+                    // Color
+                    const color = palette[Math.floor(Math.random() * palette.length)];
+                    colors[i3] = color.r;
+                    colors[i3 + 1] = color.g;
+                    colors[i3 + 2] = color.b;
+
+                    // Size (Small dots "punticos")
+                    sizes[i] = Math.random() * 2 + 1; // 1 to 3 size
+
+                    // Movement properties
+                    speeds[i] = Math.random() * 0.2 + 0.1;
+                    offsets[i] = Math.random() * 100;
+                }
+
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+                const material = new THREE.PointsMaterial({
+                    size: 1, // Base global size
                     sizeAttenuation: true,
-                    depthWrite: false,
-                    blending: THREE.AdditiveBlending, // Key for galaxy glow
+                    map: getCircleTexture(), // ROUND
+                    alphaTest: 0.5,          // Clean edges (no blurred square)
+                    transparent: true,
                     vertexColors: true,
-                    map: getGlowTexture(),
-                    transparent: true
+                    opacity: 0.9
                 });
 
-                points = new THREE.Points(geometry, material);
-                // Rotate to face user slightly angled
-                points.rotation.x = 0.5;
+                const points = new THREE.Points(geometry, material);
                 scene.add(points);
-
 
                 // ANIMATION LOOP
                 let scrollY = 0;
@@ -973,14 +949,30 @@
                     // Smooth Scroll
                     scrollY += (targetScrollY - scrollY) * 0.1;
 
-                    // Rotate Galaxy
-                    points.rotation.y = time * 0.05;
+                    // INDEPENDENT FLOATING ("Flotando por ahí")
+                    const posAttribute = geometry.attributes.position;
 
-                    // Parallax: Move Camera through galaxy
-                    // We move Z to fly through it, or Y to pan over it.
-                    // Let's pan 'Y' so it feels like scrolling down the universe
-                    camera.position.y = -scrollY * 0.02;
-                    camera.position.z = 40 + Math.sin(time * 0.1) * 5; // Breathing zoom
+                    for (let i = 0; i < count; i++) {
+                        const i3 = i * 3;
+                        const speed = speeds[i];
+                        const offset = offsets[i];
+
+                        // Gentle animated float
+                        // Y moves up slowly + Sin wave for natural flow
+                        posAttribute.array[i3 + 1] += Math.sin(time * 0.5 + offset) * 0.05;
+                        posAttribute.array[i3] += Math.cos(time * 0.3 + offset) * 0.02;
+
+                        // Minimal continuous rise (optional, kept subtle)
+                        // posAttribute.array[i3 + 1] += 0.02;
+                    }
+                    posAttribute.needsUpdate = true;
+
+                    // PARALLAX: Camera moves with scroll
+                    // Moves DOWN as you scroll DOWN (Y goes negative)
+                    camera.position.y = -scrollY * 0.05;
+
+                    // Slow global rotation for dynamism
+                    points.rotation.y = time * 0.02;
 
                     renderer.render(scene, camera);
                     requestAnimationFrame(animate);
