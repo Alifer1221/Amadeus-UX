@@ -347,6 +347,8 @@
             width: 100%;
             height: 100%;
             z-index: 1;
+            /* Renderizado pixelado para nitidez máxima */
+            image-rendering: pixelated;
         }
 
         #amadeus-text-overlay {
@@ -396,18 +398,6 @@
             margin-left: 5px;
             color: #2575fc;
             animation: blink 0.8s infinite;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
         }
 
         @media (max-width: 900px) {
@@ -645,222 +635,271 @@
 
     <script>
         (function () {
+            // === CONFIGURACIÓN DE RENDIMIENTO ===
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-
-                // === CALIDAD Y DENSIDAD ===
-                gap: 3,
-                particleSize: 1.5,
-                positionJitter: 0.5,
-
-                // Tiempos
-                duration: 2000,
-                textFinishOffset: 500,
-                typingSpeed: 100,
-
-                // Interacción
-                mouseRadius: 60,
+                gap: 2,                 // Densidad EXTREMA (2px). Se verá sólido y nítido.
+                duration: 2000,         // Duración entrada
+                mouseRadiusSq: 60 * 60, // Radio interacción
                 mouseForce: 20
             };
 
-            const section = document.getElementById('amadeus-hero-section');
             const canvas = document.getElementById('amadeusCanvas');
+            const section = document.getElementById('amadeus-hero-section');
+            const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+
             const titleEl = document.getElementById('amadeusTitle');
             const descEl = document.getElementById('amadeusPara');
 
-            if (!canvas || !section) return;
-
-            const ctx = canvas.getContext('2d', { alpha: true });
-
-            let particlesArray = [];
-            let mouse = { x: null, y: null };
+            let width, height;
+            let mouse = { x: -9999, y: -9999 };
             let startTime = null;
-            let animationComplete = false;
 
-            function resizeCanvas() {
-                canvas.width = section.offsetWidth;
-                canvas.height = section.offsetHeight;
+            // === ARRAYS TIPADOS (MEMORIA PLANA) ===
+            let particleCount = 0;
+            // Coordenadas flotantes para física suave
+            let x, y, ox, oy, tx, ty, vx, vy;
+            // Parámetros de flotación
+            let fSpeed, fOffset, fRange;
+            // Colores pre-calculados en formato 32-bit entero (ABGR)
+            let colorsUint32;
+
+            // === BUFFER DE PANTALLA ===
+            let imageData;
+            let buf32; // Vista de 32 bits del buffer de píxeles
+
+            function resize() {
+                width = section.offsetWidth;
+                height = section.offsetHeight;
+                canvas.width = width;
+                canvas.height = height;
+
+                // Creamos el buffer de imagen una sola vez
+                imageData = ctx.createImageData(width, height);
+                // buf32 nos permite escribir píxeles completos (RGBA) en una sola operación
+                buf32 = new Uint32Array(imageData.data.buffer);
             }
-            resizeCanvas();
+            resize();
 
-            section.addEventListener('mousemove', function (e) {
+            section.addEventListener('mousemove', e => {
                 const rect = canvas.getBoundingClientRect();
                 mouse.x = e.clientX - rect.left;
                 mouse.y = e.clientY - rect.top;
             });
-            section.addEventListener('mouseleave', function () {
-                mouse.x = null; mouse.y = null;
+            section.addEventListener('mouseleave', () => {
+                mouse.x = -9999;
+                mouse.y = -9999;
             });
 
-            function easeOutCubic(t) { return 1 - (--t) * t * t; }
-
-            class Particle {
-                constructor(targetX, targetY, color) {
-                    this.targetX = targetX;
-                    this.targetY = targetY;
-                    this.color = color;
-
-                    // Origen aleatorio
-                    this.originX = (Math.random() * canvas.width * 2) - (canvas.width / 2);
-                    this.originY = (Math.random() * canvas.height * 2) - (canvas.height / 2);
-
-                    this.x = this.originX;
-                    this.y = this.originY;
-
-                    this.size = Math.random() * (CONFIG.particleSize - 0.5) + 0.5;
-
-                    this.vx = 0;
-                    this.vy = 0;
-                    this.friction = 0.90;
-                    this.springFactor = 0.05;
-
-                    this.floatOffset = Math.random() * 6.28;
-                    this.floatSpeed = Math.random() * 0.002 + 0.001;
-                    this.floatRange = Math.random() * 2 + 1;
-                }
-
-                update(progress, timestamp, isIntro) {
-                    const floatingTargetX = this.targetX + Math.sin(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
-                    const floatingTargetY = this.targetY + Math.cos(timestamp * this.floatSpeed + this.floatOffset) * this.floatRange;
-
-                    if (isIntro) {
-                        const ease = easeOutCubic(progress);
-                        this.x = this.originX + (floatingTargetX - this.originX) * ease;
-                        this.y = this.originY + (floatingTargetY - this.originY) * ease;
-                    }
-                    else {
-                        const dx = floatingTargetX - this.x;
-                        const dy = floatingTargetY - this.y;
-
-                        this.vx += dx * this.springFactor;
-                        this.vy += dy * this.springFactor;
-
-                        if (mouse.x != null) {
-                            const mouseDx = mouse.x - this.x;
-                            const mouseDy = mouse.y - this.y;
-                            const distSq = mouseDx * mouseDx + mouseDy * mouseDy;
-                            const radiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
-
-                            if (distSq < radiusSq) {
-                                const distance = Math.sqrt(distSq);
-                                const force = (CONFIG.mouseRadius - distance) / CONFIG.mouseRadius;
-                                const totalForce = force * CONFIG.mouseForce;
-
-                                this.vx -= (mouseDx / distance) * totalForce;
-                                this.vy -= (mouseDy / distance) * totalForce;
-                            }
-                        }
-
-                        this.vx *= this.friction;
-                        this.vy *= this.friction;
-                        this.x += this.vx;
-                        this.y += this.vy;
-                    }
-                }
-            }
-
             function init(image) {
-                particlesArray = [];
+                // 1. DIBUJAR IMAGEN OCULTA PARA LEER DATOS
+                const tempCanvas = document.createElement('canvas');
+                const tCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = width;
+                tempCanvas.height = height;
+
                 const aspectRatio = image.width / image.height;
+                let logoH = height * 0.75; // Altura base
+                let logoW = logoH * aspectRatio;
 
-                let logoHeight = canvas.height * 0.75;
-                let logoWidth = logoHeight * aspectRatio;
-
-                if (logoWidth > canvas.width * 0.6) {
-                    logoWidth = canvas.width * 0.6;
-                    logoHeight = logoWidth / aspectRatio;
+                // Límite de ancho para móviles
+                if (logoW > width * 0.6) {
+                    logoW = width * 0.6;
+                    logoH = logoW / aspectRatio;
                 }
 
-                // --- CORRECCIÓN DE POSICIÓN ---
-                // startX calculado al 75% del ancho (lado derecho)
-                // Se centra respecto a ese punto (width * 0.75)
-                const startX = ((canvas.width * 0.75) - (logoWidth / 2)) | 0;
+                // === POSICIÓN: DERECHA CENTRADO ===
+                const startX = (width * 0.75 - logoW / 2) | 0;
+                const startY = ((height - logoH) / 2) | 0;
 
-                // startY centrado verticalmente
-                const startY = ((canvas.height - logoHeight) / 2) | 0;
+                tCtx.drawImage(image, startX, startY, logoW, logoH);
 
-                const iWidth = logoWidth | 0;
-                const iHeight = logoHeight | 0;
+                // Obtenemos los datos crudos
+                const imgData = tCtx.getImageData(0, 0, width, height);
+                const data = imgData.data; // Uint8ClampedArray
 
-                ctx.drawImage(image, startX, startY, iWidth, iHeight);
-                const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                for (let y = 0; y < canvas.height; y += CONFIG.gap) {
-                    for (let x = 0; x < canvas.width; x += CONFIG.gap) {
-                        const i = (y * canvas.width + x) * 4;
-                        if (data[i + 3] > 128) {
-                            const r = data[i];
-                            const g = data[i + 1];
-                            const b = data[i + 2];
-                            const color = `rgb(${r},${g},${b})`;
-
-                            const randomX = x + (Math.random() - 0.5) * CONFIG.positionJitter;
-                            const randomY = y + (Math.random() - 0.5) * CONFIG.positionJitter;
-
-                            particlesArray.push(new Particle(randomX, randomY, color));
+                // 2. CONTEO PRELIMINAR
+                let pIndex = 0;
+                // Usamos un array dinámico temporal para índices válidos
+                const indices = [];
+                for (let r = 0; r < height; r += CONFIG.gap) {
+                    for (let c = 0; c < width; c += CONFIG.gap) {
+                        // Verificamos alpha > 50
+                        if (data[(r * width + c) * 4 + 3] > 50) {
+                            indices.push((r * width + c) * 4); // Guardamos índice de pixel
+                            pIndex++;
                         }
                     }
                 }
 
-                particlesArray.sort((a, b) => (a.color > b.color) ? 1 : -1);
+                particleCount = pIndex;
+
+                // 3. INICIALIZACIÓN DE MEMORIA (High Performance)
+                x = new Float32Array(particleCount);
+                y = new Float32Array(particleCount);
+                ox = new Float32Array(particleCount); // Origen X
+                oy = new Float32Array(particleCount); // Origen Y
+                tx = new Float32Array(particleCount); // Target X
+                ty = new Float32Array(particleCount); // Target Y
+                vx = new Float32Array(particleCount);
+                vy = new Float32Array(particleCount);
+
+                fSpeed = new Float32Array(particleCount);
+                fOffset = new Float32Array(particleCount);
+                fRange = new Float32Array(particleCount);
+
+                colorsUint32 = new Uint32Array(particleCount);
+
+                let i = 0;
+                // Recorremos los índices guardados
+                for (let k = 0; k < indices.length; k++) {
+                    const pos = indices[k]; // índice en el array de data
+
+                    // Recuperar coordenadas X, Y desde el índice lineal
+                    const pixelIdx = pos / 4;
+                    const c = pixelIdx % width;
+                    const r = (pixelIdx / width) | 0;
+
+                    // Destino
+                    tx[i] = c;
+                    ty[i] = r;
+
+                    // Origen (Explosión Caótica desde fuera)
+                    ox[i] = (Math.random() * width * 2.5) - (width * 0.75);
+                    oy[i] = (Math.random() * height * 2.5) - (height * 0.75);
+
+                    x[i] = ox[i];
+                    y[i] = oy[i];
+
+                    // PRE-CALCULAR COLOR 32-BIT (Little Endian: A B G R)
+                    // Esto permite escribir el pixel en una sola operación de CPU
+                    const red = data[pos];
+                    const green = data[pos + 1];
+                    const blue = data[pos + 2];
+                    const alpha = 255;
+
+                    // Bit-shifting mágico para color rápido
+                    colorsUint32[i] = (alpha << 24) | (blue << 16) | (green << 8) | red;
+
+                    // Parámetros de "respiración"
+                    fSpeed[i] = Math.random() * 0.002 + 0.001;
+                    fOffset[i] = Math.random() * 6.28;
+                    fRange[i] = Math.random() * 2 + 1;
+
+                    i++;
+                }
             }
 
-            function animate(timestamp) {
-                if (!startTime) startTime = timestamp;
-                const elapsed = timestamp - startTime;
+            // Easing súper rápido
+            function easeOutCubic(t) { return (--t) * t * t + 1; }
+
+            function animate(t) {
+                if (!startTime) startTime = t;
+                const elapsed = t - startTime;
                 let progress = elapsed / CONFIG.duration;
                 if (progress > 1) progress = 1;
 
-                if (progress >= 1 && !animationComplete) {
-                    animationComplete = true;
-                }
+                const isIntro = progress < 1;
+                const ease = isIntro ? easeOutCubic(progress) : 1;
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // 1. BORRADO DE BUFFER (Ultra rápido usando fill)
+                // Llenamos de 0 (transparente negro) todo el array
+                buf32.fill(0);
 
-                let lastColor = null;
-                const len = particlesArray.length;
-                const isIntro = !animationComplete;
+                // Variables en scope local para optimización JIT
+                const _w = width;
+                const _h = height;
+                const _count = particleCount;
+                const _buf32 = buf32;
 
-                for (let i = 0; i < len; i++) {
-                    const p = particlesArray[i];
-                    p.update(progress, timestamp, isIntro);
+                // Loop principal
+                for (let i = 0; i < _count; i++) {
+                    // --- FÍSICA ---
+                    const floatX = tx[i] + Math.sin(t * fSpeed[i] + fOffset[i]) * fRange[i];
+                    const floatY = ty[i] + Math.cos(t * fSpeed[i] + fOffset[i]) * fRange[i];
 
-                    if (p.color !== lastColor) {
-                        ctx.fillStyle = p.color;
-                        lastColor = p.color;
+                    if (isIntro) {
+                        x[i] = ox[i] + (floatX - ox[i]) * ease;
+                        y[i] = oy[i] + (floatY - oy[i]) * ease;
+                    } else {
+                        const dx = floatX - x[i];
+                        const dy = floatY - y[i];
+
+                        vx[i] += dx * 0.05;
+                        vy[i] += dy * 0.05;
+
+                        // Mouse
+                        if (mouse.x > -500) {
+                            const mdx = mouse.x - x[i];
+                            const mdy = mouse.y - y[i];
+                            const distSq = mdx * mdx + mdy * mdy;
+                            if (distSq < CONFIG.mouseRadiusSq) {
+                                const dist = Math.sqrt(distSq); // Raíz solo si estamos cerca
+                                const force = (60 - dist) / 60;
+                                const push = force * CONFIG.mouseForce;
+                                vx[i] -= (mdx / dist) * push;
+                                vy[i] -= (mdy / dist) * push;
+                            }
+                        }
+
+                        vx[i] *= 0.90;
+                        vy[i] *= 0.90;
+                        x[i] += vx[i];
+                        y[i] += vy[i];
                     }
 
-                    ctx.fillRect(p.x | 0, p.y | 0, p.size, p.size);
+                    // --- RENDERIZADO (PIXEL BUFFER) ---
+                    // Convertimos coordenadas flotantes a enteros para el índice del array
+                    const px = x[i] | 0;
+                    const py = y[i] | 0;
+
+                    // Protección de bordes (clipping)
+                    if (px >= 0 && px < _w && py >= 0 && py < _h) {
+                        // Escribir el pixel directamente en memoria
+                        // Para hacer que las partículas sean "gorditas" (tamaño > 1),
+                        // escribimos en el pixel y sus vecinos. 
+
+                        const idx = py * _w + px;
+                        const col = colorsUint32[i];
+
+                        // Dibuja un punto (1px)
+                        _buf32[idx] = col;
+
+                        // Si quieres que se vea un poco más grueso (simular 1.5px),
+                        // descomenta la siguiente línea para pintar el pixel de la derecha:
+                        // if (px < _w - 1) _buf32[idx + 1] = col;
+                        // Y la de abajo:
+                        // if (py < _h - 1) _buf32[idx + _w] = col;
+
+                        // NOTA: Dejo solo 1 pixel porque con GAP 2 la densidad es tan alta
+                        // que se ve increíblemente nítido sin necesidad de engrosar artificialmente.
+                    }
                 }
+
+                // 2. ENVIAR BUFFER A GPU
+                ctx.putImageData(imageData, 0, 0);
 
                 requestAnimationFrame(animate);
             }
 
             function setupText() {
                 const text = "Portafolio";
-                const textLength = text.length;
-                const targetFinishTime = CONFIG.duration - CONFIG.textFinishOffset;
-                const typingDuration = textLength * CONFIG.typingSpeed;
-                const startDelay = targetFinishTime - typingDuration;
-
-                titleEl.style.opacity = "1";
+                const typingSpeed = 100;
+                let i = 0;
+                titleEl.style.opacity = 1;
                 titleEl.classList.add('typing-cursor');
 
                 setTimeout(() => {
-                    let i = 0;
-                    function type() {
-                        if (i < textLength) {
-                            titleEl.textContent += text.charAt(i);
-                            i++;
-                            setTimeout(type, CONFIG.typingSpeed);
-                        } else {
+                    const interval = setInterval(() => {
+                        titleEl.textContent += text.charAt(i);
+                        i++;
+                        if (i >= text.length) {
+                            clearInterval(interval);
                             titleEl.classList.remove('typing-cursor');
                             descEl.classList.add('visible');
                         }
-                    }
-                    type();
-                }, Math.max(0, startDelay));
+                    }, typingSpeed);
+                }, 1500);
             }
 
             const img = new Image();
@@ -870,16 +909,15 @@
             img.onload = () => {
                 init(img);
                 setupText();
-                setTimeout(() => {
-                    requestAnimationFrame(animate);
-                }, 200);
+                // Delay mínimo para permitir garbage collection
+                setTimeout(() => requestAnimationFrame(animate), 50);
             };
 
-            let resizeTimer;
+            let resizeTimeout;
             window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    resizeCanvas();
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resize();
                     if (img.complete) init(img);
                 }, 200);
             });
