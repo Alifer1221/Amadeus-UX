@@ -896,10 +896,26 @@
                 geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
                 geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
 
+                // HELPER: Generate Circle Texture on the fly
+                function getCircleTexture() {
+                    const size = 32;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+                    ctx.beginPath();
+                    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    return new THREE.CanvasTexture(canvas);
+                }
+
                 // Shader Material to match "First Object" language exactly (Points)
                 // We use standard PointsMaterial but with size usage
                 const material = new THREE.PointsMaterial({
-                    size: 2, // Base size
+                    size: 4, // Slightly larger base size for circles
+                    map: getCircleTexture(), // CIRCLE TEXTURE
+                    alphaTest: 0.5, // Crisp edges
                     vertexColors: true,
                     transparent: true,
                     opacity: 0.8,
