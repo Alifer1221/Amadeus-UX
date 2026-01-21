@@ -37,8 +37,7 @@
         }
 
         body {
-            background-color: transparent;
-            /* Changed to transparrent to show galaxy background */
+            background-color: var(--bg-color);
             font-family: 'Space Grotesk', sans-serif;
             color: var(--text-color);
             overflow-x: hidden;
@@ -810,189 +809,6 @@
 
 
 
-
-    <!-- GLOBAL 3D PARTICLES (Unified "Mora Azul" Field) -->
-    <canvas id="global-particles-canvas"></canvas>
-    <style>
-        #global-particles-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            /* On top of opaque hero background, below content */
-            pointer-events: none;
-            mix-blend-mode: screen;
-            /* Blends nicely with the dark backgrounds */
-        }
-    </style>
-    <script>
-        (function () {
-            // Wait for Three.js to be ready
-            const initGlobalParticles = () => {
-                if (typeof THREE === 'undefined') {
-                    setTimeout(initGlobalParticles, 100);
-                    return;
-                }
-
-                const canvas = document.getElementById('global-particles-canvas');
-                if (!canvas) return;
-
-                // SCENE SETUP
-                const scene = new THREE.Scene();
-                // Transparent background to overlay on existing sections
-
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-
-                // Perspective Camera for 3D depth feeling (unlike Orthographic Hero)
-                const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-                camera.position.z = 50;
-
-                const renderer = new THREE.WebGLRenderer({
-                    canvas: canvas,
-                    alpha: true,
-                    antialias: true,
-                    powerPreference: "high-performance"
-                });
-                renderer.setSize(width, height);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-                // "PUNTICOS REDONDOS FLOTANDO" (Clean & Simple) using Logo Palette
-
-                // Helper: Round Texture
-                function getCircleTexture() {
-                    const size = 64; // Higher res for sharpness
-                    const canvas = document.createElement('canvas');
-                    canvas.width = size;
-                    canvas.height = size;
-                    const ctx = canvas.getContext('2d');
-                    ctx.beginPath();
-                    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fill();
-                    return new THREE.CanvasTexture(canvas);
-                }
-
-                const count = 300; // Enough to see them, not too crowded
-                const geometry = new THREE.BufferGeometry();
-                const positions = new Float32Array(count * 3);
-                const colors = new Float32Array(count * 3);
-                const sizes = new Float32Array(count);
-                const speeds = new Float32Array(count); // For independent movement
-                const offsets = new Float32Array(count); // Random starting offsets
-
-                // Palette based on "Isotipo" / Hero Logo (Clean Whites, Blues, Purples)
-                const palette = [
-                    new THREE.Color('#ffffff'), // White (Logo accent)
-                    new THREE.Color('#3b82f6'), // Blue
-                    new THREE.Color('#8b5cf6'), // Violet
-                    new THREE.Color('#6366f1')  // Indigo
-                ];
-
-                const spreadX = 200; // Wide X
-                const spreadY = 200; // Tall Y (scrolling space)
-                const spreadZ = 80;  // Deep Z
-
-                for (let i = 0; i < count; i++) {
-                    const i3 = i * 3;
-
-                    // Random Position in Space
-                    positions[i3] = (Math.random() - 0.5) * spreadX;
-                    positions[i3 + 1] = (Math.random() - 0.5) * spreadY;
-                    positions[i3 + 2] = (Math.random() - 0.5) * spreadZ;
-
-                    // Color
-                    const color = palette[Math.floor(Math.random() * palette.length)];
-                    colors[i3] = color.r;
-                    colors[i3 + 1] = color.g;
-                    colors[i3 + 2] = color.b;
-
-                    // Size (Small dots "punticos")
-                    sizes[i] = Math.random() * 2 + 1; // 1 to 3 size
-
-                    // Movement properties
-                    speeds[i] = Math.random() * 0.2 + 0.1;
-                    offsets[i] = Math.random() * 100;
-                }
-
-                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-                const material = new THREE.PointsMaterial({
-                    size: 1, // Base global size
-                    sizeAttenuation: true,
-                    map: getCircleTexture(), // ROUND
-                    alphaTest: 0.5,          // Clean edges (no blurred square)
-                    transparent: true,
-                    vertexColors: true,
-                    opacity: 0.9
-                });
-
-                const points = new THREE.Points(geometry, material);
-                scene.add(points);
-
-                // ANIMATION LOOP
-                let scrollY = 0;
-                let targetScrollY = 0;
-
-                window.addEventListener('scroll', () => {
-                    targetScrollY = window.scrollY;
-                });
-
-                const clock = new THREE.Clock();
-
-                function animate() {
-                    const time = clock.getElapsedTime();
-
-                    // Smooth Scroll
-                    scrollY += (targetScrollY - scrollY) * 0.1;
-
-                    // INDEPENDENT FLOATING ("Flotando por ahí")
-                    const posAttribute = geometry.attributes.position;
-
-                    for (let i = 0; i < count; i++) {
-                        const i3 = i * 3;
-                        const speed = speeds[i];
-                        const offset = offsets[i];
-
-                        // Gentle animated float
-                        // Y moves up slowly + Sin wave for natural flow
-                        posAttribute.array[i3 + 1] += Math.sin(time * 0.5 + offset) * 0.05;
-                        posAttribute.array[i3] += Math.cos(time * 0.3 + offset) * 0.02;
-
-                        // Minimal continuous rise (optional, kept subtle)
-                        // posAttribute.array[i3 + 1] += 0.02;
-                    }
-                    posAttribute.needsUpdate = true;
-
-                    // PARALLAX: Camera moves with scroll
-                    // Moves DOWN as you scroll DOWN (Y goes negative)
-                    camera.position.y = -scrollY * 0.05;
-
-                    // Slow global rotation for dynamism
-                    points.rotation.y = time * 0.02;
-
-                    renderer.render(scene, camera);
-                    requestAnimationFrame(animate);
-                }
-
-                // RESIZE
-                window.addEventListener('resize', () => {
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                });
-
-                animate();
-            };
-
-            initGlobalParticles();
-        })();
-    </script>
-
     <footer class="next-section">
         <div class="footer-content">
             <h2>¿Trabajamos juntos?</h2>
@@ -1148,110 +964,77 @@
             const easeOut = t => 1 - Math.pow(1 - t, 3);
             let introFinished = false;
 
+            function animate() {
+                requestAnimationFrame(animate);
 
+                const delta = clock.getDelta();
+                elapsedTime += delta;
 
+                let progress = Math.min(elapsedTime / CONFIG.duration, 1.0);
 
+                if (progress >= 1) introFinished = true;
+                if (!particles) return;
 
-    <div id="galaxy-background-wrapper">
-        <canvas id="galaxy-canvas-bg"></canvas>
-    </div>
+                const posArray = geometry.attributes.position.array;
+                const ease = easeOut(progress);
 
-    <style>
-        /* Estilos encapsulados exclusivamente para el fondo */
-        #galaxy-background-wrapper {
-            position: fixed;
-            /* Se mantiene fijo aunque hagas scroll */
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -9999;
-            /* Se asegura de estar DETRÁS de todo */
-            background-color: #151515;
-            /* El color de fondo */
-            pointer-events: none;
-            /* IMPORTANTE: Permite dar clicks a lo que esté encima */
-            overflow: hidden;
-        }
+                for (let i = 0; i < count; i++) {
+                    const i3 = i * 3;
 
-        #galaxy-canvas-bg {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+                    let currentX = posArray[i3];
+                    let currentY = posArray[i3 + 1];
 
-    <script>
-        // Usamos una función autoejecutable (IIFE) para proteger tus otras variables
-        (function () {
-            const canvas = document.getElementById('galaxy-canvas-bg');
+                    const homeX = initialPositions[i3] + Math.cos(elapsedTime + offsets[i]) * 2.5;
+                    const homeY = initialPositions[i3 + 1] + Math.sin(elapsedTime + offsets[i]) * 2.5;
 
-            // Verificación de seguridad por si el canvas no carga
-            if (!canvas) return;
-
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            let particles = [];
-            const colors = ['#6366f1', '#8b5cf6', '#3b82f6', '#c084fc', '#ffffff'];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-                initParticles();
-            }
-
-            // Usamos addEventListener para no sobrescribir otros eventos onresize
-            window.addEventListener('resize', resize);
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h;
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.isFast = Math.random() < 0.10;
-                    if (this.isFast) {
-                        this.speedX = (Math.random() - 0.5) * 4;
-                        this.speedY = (Math.random() - 0.5) * 4;
-                        this.size = Math.random() * 2 + 1.5;
-                        this.opacity = Math.random() * 0.5 + 0.5;
-                    } else {
-                        this.speedX = (Math.random() - 0.5) * 0.2;
-                        this.speedY = (Math.random() - 0.5) * 0.2;
-                        this.size = Math.random() * 1.5 + 0.5;
-                        this.opacity = Math.random() * 0.4 + 0.1;
+                    if (!introFinished) {
+                        currentX += (homeX - currentX) * 0.02 * ease;
+                        currentY += (homeY - currentY) * 0.02 * ease;
+                        velocitiesX[i] = 0;
+                        velocitiesY[i] = 0;
                     }
-                }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.x < 0) this.x = w;
-                    if (this.x > w) this.x = 0;
-                    if (this.y < 0) this.y = h;
-                    if (this.y > h) this.y = 0;
-                }
-                draw() {
-                    ctx.globalAlpha = this.opacity;
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(this.x, this.y, this.size, this.size);
-                }
-            }
+                    else {
+                        // 1. Resorte
+                        const springForceX = (homeX - currentX) * 0.015;
+                        const springForceY = (homeY - currentY) * 0.015;
 
-            function initParticles() {
-                particles = [];
-                const count = Math.floor((w * h) / 4000);
-                for (let i = 0; i < count; i++) particles.push(new Particle());
-            }
+                        velocitiesX[i] += springForceX;
+                        velocitiesY[i] += springForceY;
 
-            function animateGalaxy() {
-                ctx.clearRect(0, 0, w, h);
-                particles.forEach(p => { p.update(); p.draw(); });
-                requestAnimationFrame(animateGalaxy);
-            }
+                        // 2. Repulsión Mouse
+                        const dx = mouse.x - currentX;
+                        const dy = mouse.y - currentY;
+                        const distSq = dx * dx + dy * dy;
+                        const radiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
 
-            resize();
-            animateGalaxy();
+                        if (distSq < radiusSq) {
+                            const dist = Math.sqrt(distSq);
+                            let force = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius;
+                            const angle = Math.atan2(dy, dx);
+
+                            velocitiesX[i] -= Math.cos(angle) * force * CONFIG.mouseForce;
+                            velocitiesY[i] -= Math.sin(angle) * force * CONFIG.mouseForce;
+                        }
+
+                        // 3. Fricción (Viscosidad)
+                        velocitiesX[i] *= 0.94;
+                        velocitiesY[i] *= 0.94;
+
+                        currentX += velocitiesX[i];
+                        currentY += velocitiesY[i];
+                    }
+
+                    posArray[i3] = currentX;
+                    posArray[i3 + 1] = currentY;
+                }
+
+                geometry.attributes.position.needsUpdate = true;
+                renderer.render(scene, camera);
+            }
         })();
     </script>
+
+
 </body>
 
 </html>
