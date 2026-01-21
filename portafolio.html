@@ -63,8 +63,11 @@
 
             /* OPTIMIZACIÓN GPU + CENTRADO */
             transform: translateX(-50%) translateZ(0);
-            will-change: transform, opacity;
-            backface-visibility: hidden;
+            /* AISLAMIENTO DE CAPA (User Request) */
+            z-index: 1000;
+            will-change: transform;
+            isolation: isolate;
+            -webkit-font-smoothing: antialiased;
             display: flex;
             align-items: center;
             justify-content: space-between;
