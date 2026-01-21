@@ -810,116 +810,112 @@
 
 
 
-    <!-- SOFT GLOW ORBS (Global - Premium Look) -->
-    <canvas id="glow-orbs-canvas"></canvas>
+    <!-- PARALLAX BLUEBERRY PARTICLES (Global & Independent) -->
+    <canvas id="blueberry-parallax-canvas"></canvas>
     <style>
-        #glow-orbs-canvas {
+        #blueberry-parallax-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
-            /* Low z-index to stay behind but visible if background is transparent */
+            z-index: -1;
+            /* Background */
             pointer-events: none;
-            /* mix-blend-mode: screen; Removed to ensure visibility on dark bg without washing out */
-        }
-
-        /* Ensure content sits above */
-        #imac-3d-wrapper,
-        .next-section,
-        nav {
-            position: relative;
-            z-index: 10;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #151515 100%);
+            /* Subtle gradient bg */
         }
     </style>
     <script>
         (function () {
-            const canvas = document.getElementById('glow-orbs-canvas');
+            const canvas = document.getElementById('blueberry-parallax-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             let w, h;
-            let orbs = [];
+            let particles = [];
+            let scrollY = 0;
 
             // CONFIG
-            const ORB_COUNT = 15; // Few but large and soft
+            const PARTICLE_COUNT = 60; // Enough to feel present but "independent"
             const COLORS = [
-                'rgba(106, 17, 203, ',  // Deep Purple
-                'rgba(37, 117, 252, ',  // Bright Blue
-                'rgba(139, 92, 246, ',  // Violet
-                'rgba(56, 189, 248, '   // Light Blue
+                '#4c1d95', // Deep Violet
+                '#5b21b6', // Purple
+                '#3b82f6', // Blue
+                '#1e40af'  // Dark Blue
             ];
 
             function resize() {
                 w = canvas.width = window.innerWidth;
                 h = canvas.height = window.innerHeight;
-                initOrbs();
+                initParticles();
             }
             window.addEventListener('resize', resize);
+            window.addEventListener('scroll', () => {
+                scrollY = window.scrollY;
+            });
 
-            class Orb {
+            class ParallaxParticle {
                 constructor() {
                     this.init(true);
                 }
 
                 init(randomY = false) {
-                    this.radius = Math.random() * 80 + 40; // Large soft orbs (40-120px)
                     this.x = Math.random() * w;
-                    this.y = randomY ? Math.random() * h : h + this.radius;
-                    this.colorPrefix = COLORS[Math.floor(Math.random() * COLORS.length)];
-                    this.speed = Math.random() * 0.3 + 0.1; // Slow floating
+                    // Distribute across a taller virtual space to allow parallax movement
+                    this.y = randomY ? Math.random() * h * 2 : (h * 2) + 10;
+                    this.size = Math.random() * 3 + 1; // Distinct distinct particles
+                    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+                    this.speed = Math.random() * 0.5 + 0.2; // Natural drift
+                    this.parallaxFactor = Math.random() * 0.5 + 0.1; // Depth percepcion
                     this.angle = Math.random() * Math.PI * 2;
-                    this.wobbleSpeed = Math.random() * 0.01 + 0.005;
-                    this.alpha = 0;
-                    this.targetAlpha = Math.random() * 0.15 + 0.05; // Very subtle transparency (0.05 - 0.20)
-                    this.fadingIn = true;
                 }
 
                 update() {
-                    // Floating Up
                     this.y -= this.speed;
+                    this.angle += 0.01;
+                    this.x += Math.sin(this.angle) * 0.2; // Subtle sway
 
-                    // Horizontal Wobble
-                    this.angle += this.wobbleSpeed;
-                    this.x += Math.sin(this.angle) * 0.5;
+                    // Wrap logic relative to scroll interactions
+                    // If way above screen (considering scroll), reset to bottom
+                    // Complex wrap: simpler to just wrap based on canvas space + scroll bias
 
-                    // Fade In / Out logic
-                    if (this.fadingIn) {
-                        this.alpha += 0.002;
-                        if (this.alpha >= this.targetAlpha) this.fadingIn = false;
-                    } else if (this.y < -this.radius) {
-                        this.init(false); // Reset at bottom
-                    }
-
-                    // Draw
-                    this.draw();
+                    // Simple infinite fall/rise simulation
+                    // Virtual Y position adjustment
                 }
 
                 draw() {
-                    const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-                    gradient.addColorStop(0, this.colorPrefix + this.alpha + ')');
-                    gradient.addColorStop(1, this.colorPrefix + '0)'); // Fade to transparent
+                    // Parallax Calculation
+                    // The particle 'y' is its world position. We shift it by scroll.
+                    // Factor < 1 means it moves slower than scroll (background depth)
 
-                    ctx.fillStyle = gradient;
+                    let drawY = this.y - (scrollY * this.parallaxFactor);
+
+                    // Wrap around visual screen space
+                    // This creates an infinite field without generating million particles
+                    const fullH = h + 100;
+                    drawY = ((drawY % fullH) + fullH) % fullH;
+
+                    ctx.globalAlpha = 0.8;
+                    ctx.fillStyle = this.color;
                     ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.arc(this.x, drawY, this.size, 0, Math.PI * 2);
                     ctx.fill();
                 }
             }
 
-            function initOrbs() {
-                orbs = [];
-                for (let i = 0; i < ORB_COUNT; i++) {
-                    orbs.push(new Orb());
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push(new ParallaxParticle());
                 }
             }
 
             function animate() {
                 ctx.clearRect(0, 0, w, h);
-                // Composite operation for "Glow" effect
-                ctx.globalCompositeOperation = 'lighter';
-                orbs.forEach(orb => orb.update());
-                ctx.globalCompositeOperation = 'source-over'; // Reset
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
                 requestAnimationFrame(animate);
             }
 
