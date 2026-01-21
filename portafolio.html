@@ -1219,158 +1219,104 @@
 
 
 
-    <!-- GLOBAL BACKGROUND PARTICLES (Round & Subtle) -->
-    <canvas id="global-particles-canvas"></canvas>
+    <div id="galaxy-background-wrapper">
+        <canvas id="galaxy-canvas-bg"></canvas>
+    </div>
+
     <style>
-        #global-particles-canvas {
+        /* Estilos encapsulados exclusivamente para el fondo */
+        #galaxy-background-wrapper {
             position: fixed;
+            /* Se mantiene fijo aunque hagas scroll */
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -9999;
+            /* Se asegura de estar DETRÁS de todo */
+            background-color: #151515;
+            /* El color de fondo */
+            pointer-events: none;
+            /* IMPORTANTE: Permite dar clicks a lo que esté encima */
+            overflow: hidden;
+        }
+
+        #galaxy-canvas-bg {
+            display: block;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            /* Background level */
-            pointer-events: none;
-            mix-blend-mode: screen;
-            opacity: 0.8;
-        }
-
-        /* Elevate content above background particles */
-        nav,
-        main,
-        section,
-        footer,
-        #amadeus-hero-section {
-            position: relative;
-            z-index: 2;
         }
     </style>
+
     <script>
+        // Usamos una función autoejecutable (IIFE) para proteger tus otras variables
         (function () {
-            // Helper: Round Texture
-            function getCircleTexture() {
-                const size = 64;
-                const canvas = document.createElement('canvas');
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext('2d');
-                ctx.beginPath();
-                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.fill();
-                return new THREE.CanvasTexture(canvas);
+            const canvas = document.getElementById('galaxy-canvas-bg');
+
+            // Verificación de seguridad por si el canvas no carga
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            let particles = [];
+            const colors = ['#6366f1', '#8b5cf6', '#3b82f6', '#c084fc', '#ffffff'];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                initParticles();
             }
 
-            const initGlobal = () => {
-                const canvas = document.getElementById('global-particles-canvas');
-                if (!canvas) return;
+            // Usamos addEventListener para no sobrescribir otros eventos onresize
+            window.addEventListener('resize', resize);
 
-                const renderer = new THREE.WebGLRenderer({
-                    canvas: canvas,
-                    alpha: true,
-                    antialias: true
-                });
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.z = 50; // Camera far back
-
-                // FEWER PARTICLES ("No sean tantas")
-                const count = 55;
-                const geometry = new THREE.BufferGeometry();
-                const positions = new Float32Array(count * 3);
-                const colors = new Float32Array(count * 3);
-                const sizes = new Float32Array(count);
-                const speeds = new Float32Array(count);
-                const offsets = new Float32Array(count);
-
-                // Palette (Hero Logo Colors)
-                const palette = [
-                    new THREE.Color('#ffffff'),
-                    new THREE.Color('#3b82f6'),
-                    new THREE.Color('#8b5cf6')
-                ];
-
-                for (let i = 0; i < count; i++) {
-                    const i3 = i * 3;
-
-                    // "FONDO FONDO": Position particles deep in Z space
-                    // X and Y spread wide to cover view
-                    positions[i3] = (Math.random() - 0.5) * 250;
-                    positions[i3 + 1] = (Math.random() - 0.5) * 250;
-                    // Z: -150 to -50. (Camera is at +50). So they are 100-200 units away.
-                    positions[i3 + 2] = Math.random() * -100 - 50;
-
-                    const color = palette[Math.floor(Math.random() * palette.length)];
-                    colors[i3] = color.r;
-                    colors[i3 + 1] = color.g;
-                    colors[i3 + 2] = color.b;
-
-                    sizes[i] = Math.random() * 2 + 1;
-
-                    // Independent floating params
-                    speeds[i] = Math.random() * 0.2 + 0.1;
-                    offsets[i] = Math.random() * 100;
-                }
-
-                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-                const material = new THREE.PointsMaterial({
-                    size: 1, // Scaler
-                    map: getCircleTexture(),
-                    transparent: true,
-                    opacity: 0.9,
-                    vertexColors: true,
-                    sizeAttenuation: true, // Key for depth pill
-                    alphaTest: 0.1
-                });
-
-                const particles = new THREE.Points(geometry, material);
-                scene.add(particles);
-
-                // Scroll Sync
-                let scrollY = 0;
-                window.addEventListener('scroll', () => { scrollY = window.scrollY; });
-
-                const clock = new THREE.Clock();
-
-                function animate() {
-                    const time = clock.getElapsedTime();
-
-                    // INDEPENDENT FLOATING
-                    const pos = geometry.attributes.position.array;
-                    for (let i = 0; i < count; i++) {
-                        const i3 = i * 3;
-                        // Y bob
-                        pos[i3 + 1] += Math.sin(time + offsets[i]) * 0.05;
-                        // X drift
-                        pos[i3] += Math.cos(time * 0.5 + offsets[i]) * 0.02;
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.isFast = Math.random() < 0.10;
+                    if (this.isFast) {
+                        this.speedX = (Math.random() - 0.5) * 4;
+                        this.speedY = (Math.random() - 0.5) * 4;
+                        this.size = Math.random() * 2 + 1.5;
+                        this.opacity = Math.random() * 0.5 + 0.5;
+                    } else {
+                        this.speedX = (Math.random() - 0.5) * 0.2;
+                        this.speedY = (Math.random() - 0.5) * 0.2;
+                        this.size = Math.random() * 1.5 + 0.5;
+                        this.opacity = Math.random() * 0.4 + 0.1;
                     }
-                    geometry.attributes.position.needsUpdate = true;
-
-                    // PARALLAX: Move camera Y according to scroll
-                    // Gives "window" effect over the background
-                    camera.position.y = -scrollY * 0.05;
-
-                    renderer.render(scene, camera);
-                    requestAnimationFrame(animate);
                 }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0) this.x = w;
+                    if (this.x > w) this.x = 0;
+                    if (this.y < 0) this.y = h;
+                    if (this.y > h) this.y = 0;
+                }
+                draw() {
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(this.x, this.y, this.size, this.size);
+                }
+            }
 
-                window.addEventListener('resize', () => {
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                });
+            function initParticles() {
+                particles = [];
+                const count = Math.floor((w * h) / 4000);
+                for (let i = 0; i < count; i++) particles.push(new Particle());
+            }
 
-                animate();
-            };
+            function animateGalaxy() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animateGalaxy);
+            }
 
-            // Init after slight delay to ensure DOM
-            setTimeout(initGlobal, 500);
+            resize();
+            animateGalaxy();
         })();
     </script>
 </body>
