@@ -14,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap"
         rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -55,8 +57,14 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 100px;
             padding: 10px 30px;
+
+            /* OPTIMIZACIÓN GPU (User Request) */
+            transform: translateZ(0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -340,15 +348,13 @@
             z-index: 20;
         }
 
-        #amadeusCanvas {
+        /* Canvas Three.js */
+        canvas {
+            display: block;
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
             z-index: 1;
-            /* Renderizado pixelado para nitidez máxima */
-            image-rendering: pixelated;
         }
 
         #amadeus-text-overlay {
@@ -600,8 +606,6 @@
     </nav>
 
     <section id="amadeus-hero-section">
-        <canvas id="amadeusCanvas"></canvas>
-
         <div id="amadeus-text-overlay">
             <h2 class="amadeus-title" id="amadeusTitle"></h2>
             <p class="amadeus-desc" id="amadeusPara">
@@ -635,293 +639,214 @@
 
     <script>
         (function () {
-            // === CONFIGURACIÓN DE RENDIMIENTO ===
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-                gap: 2,                 // Densidad EXTREMA (2px). Se verá sólido y nítido.
-                duration: 2000,         // Duración entrada
-                mouseRadiusSq: 60 * 60, // Radio interacción
-                mouseForce: 20
+                particleSize: 1.8,
+                gap: 3,
+
+                // === AJUSTE DE TAMAÑO DEL CIRCULO ===
+                mouseRadius: 35, // Antes 70. Ahora es pequeño y preciso.
+                mouseForce: 2.0, // Fuerza ajustada para el nuevo tamaño
+
+                duration: 3.5,
+                typingSpeed: 100
             };
 
-            const canvas = document.getElementById('amadeusCanvas');
-            const section = document.getElementById('amadeus-hero-section');
-            const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-
+            const container = document.getElementById('amadeus-hero-section');
             const titleEl = document.getElementById('amadeusTitle');
             const descEl = document.getElementById('amadeusPara');
 
-            let width, height;
+            let scene, camera, renderer, particles, geometry;
+            let count = 0;
+            let initialPositions, speeds, offsets, velocitiesX, velocitiesY;
             let mouse = { x: -9999, y: -9999 };
-            let startTime = null;
+            let width, height;
 
-            // === ARRAYS TIPADOS (MEMORIA PLANA) ===
-            let particleCount = 0;
-            // Coordenadas flotantes para física suave
-            let x, y, ox, oy, tx, ty, vx, vy;
-            // Parámetros de flotación
-            let fSpeed, fOffset, fRange;
-            // Colores pre-calculados en formato 32-bit entero (ABGR)
-            let colorsUint32;
+            const clock = new THREE.Clock();
+            let elapsedTime = 0;
 
-            // === BUFFER DE PANTALLA ===
-            let imageData;
-            let buf32; // Vista de 32 bits del buffer de píxeles
+            init();
 
-            function resize() {
-                width = section.offsetWidth;
-                height = section.offsetHeight;
+            function init() {
+                width = container.offsetWidth;
+                height = container.offsetHeight;
+                scene = new THREE.Scene();
+                camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
+                camera.position.z = 10;
+
+                renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(renderer.domElement);
+
+                const loader = new THREE.TextureLoader();
+                loader.crossOrigin = "Anonymous";
+                loader.load(CONFIG.imageUrl, function (texture) {
+                    createParticles(texture.image);
+                    startTextImmediate();
+                    animate();
+                });
+
+                window.addEventListener('resize', onWindowResize, false);
+                document.addEventListener('mousemove', onMouseMove, false);
+            }
+
+            function createParticles(image) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
                 canvas.width = width;
                 canvas.height = height;
 
-                // Creamos el buffer de imagen una sola vez
-                imageData = ctx.createImageData(width, height);
-                // buf32 nos permite escribir píxeles completos (RGBA) en una sola operación
-                buf32 = new Uint32Array(imageData.data.buffer);
-            }
-            resize();
-
-            section.addEventListener('mousemove', e => {
-                const rect = canvas.getBoundingClientRect();
-                mouse.x = e.clientX - rect.left;
-                mouse.y = e.clientY - rect.top;
-            });
-            section.addEventListener('mouseleave', () => {
-                mouse.x = -9999;
-                mouse.y = -9999;
-            });
-
-            function init(image) {
-                // 1. DIBUJAR IMAGEN OCULTA PARA LEER DATOS
-                const tempCanvas = document.createElement('canvas');
-                const tCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = width;
-                tempCanvas.height = height;
-
                 const aspectRatio = image.width / image.height;
-                let logoH = height * 0.75; // Altura base
+                let logoH = height * 0.75;
                 let logoW = logoH * aspectRatio;
+                if (logoW > width * 0.6) { logoW = width * 0.6; logoH = logoW / aspectRatio; }
 
-                // Límite de ancho para móviles
-                if (logoW > width * 0.6) {
-                    logoW = width * 0.6;
-                    logoH = logoW / aspectRatio;
-                }
+                const startX = (width * 0.75 - logoW / 2);
+                const startY = (height - logoH) / 2;
 
-                // === POSICIÓN: DERECHA CENTRADO ===
-                const startX = (width * 0.75 - logoW / 2) | 0;
-                const startY = ((height - logoH) / 2) | 0;
+                ctx.drawImage(image, startX, startY, logoW, logoH);
+                const data = ctx.getImageData(0, 0, width, height).data;
 
-                tCtx.drawImage(image, startX, startY, logoW, logoH);
+                const positions = [], colors = [], inits = [], spds = [], offs = [];
+                const velsX = [], velsY = [];
 
-                // Obtenemos los datos crudos
-                const imgData = tCtx.getImageData(0, 0, width, height);
-                const data = imgData.data; // Uint8ClampedArray
+                for (let y = 0; y < height; y += CONFIG.gap) {
+                    for (let x = 0; x < width; x += CONFIG.gap) {
+                        const i = (y * width + x) * 4;
+                        if (data[i + 3] > 100) {
+                            const pX = x - width / 2;
+                            const pY = -(y - height / 2);
+                            const ox = (Math.random() - 0.5) * width * 3;
+                            const oy = (Math.random() - 0.5) * height * 3;
 
-                // 2. CONTEO PRELIMINAR
-                let pIndex = 0;
-                // Usamos un array dinámico temporal para índices válidos
-                const indices = [];
-                for (let r = 0; r < height; r += CONFIG.gap) {
-                    for (let c = 0; c < width; c += CONFIG.gap) {
-                        // Verificamos alpha > 50
-                        if (data[(r * width + c) * 4 + 3] > 50) {
-                            indices.push((r * width + c) * 4); // Guardamos índice de pixel
-                            pIndex++;
+                            positions.push(ox, oy, 0);
+                            inits.push(pX, pY, 0);
+                            colors.push(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255);
+                            spds.push(Math.random() * 0.02 + 0.01);
+                            offs.push(Math.random() * Math.PI * 2);
+                            velsX.push(0);
+                            velsY.push(0);
                         }
                     }
                 }
 
-                particleCount = pIndex;
+                count = positions.length / 3;
+                geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-                // 3. INICIALIZACIÓN DE MEMORIA (High Performance)
-                x = new Float32Array(particleCount);
-                y = new Float32Array(particleCount);
-                ox = new Float32Array(particleCount); // Origen X
-                oy = new Float32Array(particleCount); // Origen Y
-                tx = new Float32Array(particleCount); // Target X
-                ty = new Float32Array(particleCount); // Target Y
-                vx = new Float32Array(particleCount);
-                vy = new Float32Array(particleCount);
+                initialPositions = new Float32Array(inits);
+                speeds = new Float32Array(spds);
+                offsets = new Float32Array(offs);
+                velocitiesX = new Float32Array(velsX);
+                velocitiesY = new Float32Array(velsY);
 
-                fSpeed = new Float32Array(particleCount);
-                fOffset = new Float32Array(particleCount);
-                fRange = new Float32Array(particleCount);
-
-                colorsUint32 = new Uint32Array(particleCount);
-
-                let i = 0;
-                // Recorremos los índices guardados
-                for (let k = 0; k < indices.length; k++) {
-                    const pos = indices[k]; // índice en el array de data
-
-                    // Recuperar coordenadas X, Y desde el índice lineal
-                    const pixelIdx = pos / 4;
-                    const c = pixelIdx % width;
-                    const r = (pixelIdx / width) | 0;
-
-                    // Destino
-                    tx[i] = c;
-                    ty[i] = r;
-
-                    // Origen (Explosión Caótica desde fuera)
-                    ox[i] = (Math.random() * width * 2.5) - (width * 0.75);
-                    oy[i] = (Math.random() * height * 2.5) - (height * 0.75);
-
-                    x[i] = ox[i];
-                    y[i] = oy[i];
-
-                    // PRE-CALCULAR COLOR 32-BIT (Little Endian: A B G R)
-                    // Esto permite escribir el pixel en una sola operación de CPU
-                    const red = data[pos];
-                    const green = data[pos + 1];
-                    const blue = data[pos + 2];
-                    const alpha = 255;
-
-                    // Bit-shifting mágico para color rápido
-                    colorsUint32[i] = (alpha << 24) | (blue << 16) | (green << 8) | red;
-
-                    // Parámetros de "respiración"
-                    fSpeed[i] = Math.random() * 0.002 + 0.001;
-                    fOffset[i] = Math.random() * 6.28;
-                    fRange[i] = Math.random() * 2 + 1;
-
-                    i++;
-                }
+                particles = new THREE.Points(geometry, new THREE.PointsMaterial({
+                    size: CONFIG.particleSize, vertexColors: true, sizeAttenuation: false, transparent: true, opacity: 1
+                }));
+                scene.add(particles);
             }
 
-            // Easing súper rápido
-            function easeOutCubic(t) { return (--t) * t * t + 1; }
-
-            function animate(t) {
-                if (!startTime) startTime = t;
-                const elapsed = t - startTime;
-                let progress = elapsed / CONFIG.duration;
-                if (progress > 1) progress = 1;
-
-                const isIntro = progress < 1;
-                const ease = isIntro ? easeOutCubic(progress) : 1;
-
-                // 1. BORRADO DE BUFFER (Ultra rápido usando fill)
-                // Llenamos de 0 (transparente negro) todo el array
-                buf32.fill(0);
-
-                // Variables en scope local para optimización JIT
-                const _w = width;
-                const _h = height;
-                const _count = particleCount;
-                const _buf32 = buf32;
-
-                // Loop principal
-                for (let i = 0; i < _count; i++) {
-                    // --- FÍSICA ---
-                    const floatX = tx[i] + Math.sin(t * fSpeed[i] + fOffset[i]) * fRange[i];
-                    const floatY = ty[i] + Math.cos(t * fSpeed[i] + fOffset[i]) * fRange[i];
-
-                    if (isIntro) {
-                        x[i] = ox[i] + (floatX - ox[i]) * ease;
-                        y[i] = oy[i] + (floatY - oy[i]) * ease;
-                    } else {
-                        const dx = floatX - x[i];
-                        const dy = floatY - y[i];
-
-                        vx[i] += dx * 0.05;
-                        vy[i] += dy * 0.05;
-
-                        // Mouse
-                        if (mouse.x > -500) {
-                            const mdx = mouse.x - x[i];
-                            const mdy = mouse.y - y[i];
-                            const distSq = mdx * mdx + mdy * mdy;
-                            if (distSq < CONFIG.mouseRadiusSq) {
-                                const dist = Math.sqrt(distSq); // Raíz solo si estamos cerca
-                                const force = (60 - dist) / 60;
-                                const push = force * CONFIG.mouseForce;
-                                vx[i] -= (mdx / dist) * push;
-                                vy[i] -= (mdy / dist) * push;
-                            }
-                        }
-
-                        vx[i] *= 0.90;
-                        vy[i] *= 0.90;
-                        x[i] += vx[i];
-                        y[i] += vy[i];
-                    }
-
-                    // --- RENDERIZADO (PIXEL BUFFER) ---
-                    // Convertimos coordenadas flotantes a enteros para el índice del array
-                    const px = x[i] | 0;
-                    const py = y[i] | 0;
-
-                    // Protección de bordes (clipping)
-                    if (px >= 0 && px < _w && py >= 0 && py < _h) {
-                        // Escribir el pixel directamente en memoria
-                        // Para hacer que las partículas sean "gorditas" (tamaño > 1),
-                        // escribimos en el pixel y sus vecinos. 
-
-                        const idx = py * _w + px;
-                        const col = colorsUint32[i];
-
-                        // Dibuja un punto (1px)
-                        _buf32[idx] = col;
-
-                        // Si quieres que se vea un poco más grueso (simular 1.5px),
-                        // descomenta la siguiente línea para pintar el pixel de la derecha:
-                        // if (px < _w - 1) _buf32[idx + 1] = col;
-                        // Y la de abajo:
-                        // if (py < _h - 1) _buf32[idx + _w] = col;
-
-                        // NOTA: Dejo solo 1 pixel porque con GAP 2 la densidad es tan alta
-                        // que se ve increíblemente nítido sin necesidad de engrosar artificialmente.
-                    }
-                }
-
-                // 2. ENVIAR BUFFER A GPU
-                ctx.putImageData(imageData, 0, 0);
-
-                requestAnimationFrame(animate);
+            function onMouseMove(event) {
+                mouse.x = event.clientX - width / 2;
+                mouse.y = -(event.clientY - height / 2);
             }
 
-            function setupText() {
+            function onWindowResize() {
+                width = container.offsetWidth;
+                height = container.offsetHeight;
+                camera.left = width / -2; camera.right = width / 2; camera.top = height / 2; camera.bottom = height / -2;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            }
+
+            function startTextImmediate() {
                 const text = "Portafolio";
-                const typingSpeed = 100;
-                let i = 0;
                 titleEl.style.opacity = 1;
                 titleEl.classList.add('typing-cursor');
-
-                setTimeout(() => {
-                    const interval = setInterval(() => {
-                        titleEl.textContent += text.charAt(i);
-                        i++;
-                        if (i >= text.length) {
-                            clearInterval(interval);
-                            titleEl.classList.remove('typing-cursor');
-                            descEl.classList.add('visible');
-                        }
-                    }, typingSpeed);
-                }, 1500);
+                let i = 0;
+                const interval = setInterval(() => {
+                    titleEl.textContent += text.charAt(i);
+                    i++;
+                    if (i >= text.length) {
+                        clearInterval(interval);
+                        titleEl.classList.remove('typing-cursor');
+                        descEl.classList.add('visible');
+                    }
+                }, CONFIG.typingSpeed);
             }
 
-            const img = new Image();
-            img.crossOrigin = "Anonymous";
-            img.src = CONFIG.imageUrl;
+            const easeOut = t => 1 - Math.pow(1 - t, 3);
+            let introFinished = false;
 
-            img.onload = () => {
-                init(img);
-                setupText();
-                // Delay mínimo para permitir garbage collection
-                setTimeout(() => requestAnimationFrame(animate), 50);
-            };
+            function animate() {
+                requestAnimationFrame(animate);
 
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    resize();
-                    if (img.complete) init(img);
-                }, 200);
-            });
+                const delta = clock.getDelta();
+                elapsedTime += delta;
 
+                let progress = Math.min(elapsedTime / CONFIG.duration, 1.0);
+
+                if (progress >= 1) introFinished = true;
+                if (!particles) return;
+
+                const posArray = geometry.attributes.position.array;
+                const ease = easeOut(progress);
+
+                for (let i = 0; i < count; i++) {
+                    const i3 = i * 3;
+
+                    let currentX = posArray[i3];
+                    let currentY = posArray[i3 + 1];
+
+                    const homeX = initialPositions[i3] + Math.cos(elapsedTime + offsets[i]) * 2.5;
+                    const homeY = initialPositions[i3 + 1] + Math.sin(elapsedTime + offsets[i]) * 2.5;
+
+                    if (!introFinished) {
+                        currentX += (homeX - currentX) * 0.02 * ease;
+                        currentY += (homeY - currentY) * 0.02 * ease;
+                        velocitiesX[i] = 0;
+                        velocitiesY[i] = 0;
+                    }
+                    else {
+                        // 1. Resorte
+                        const springForceX = (homeX - currentX) * 0.015;
+                        const springForceY = (homeY - currentY) * 0.015;
+
+                        velocitiesX[i] += springForceX;
+                        velocitiesY[i] += springForceY;
+
+                        // 2. Repulsión Mouse
+                        const dx = mouse.x - currentX;
+                        const dy = mouse.y - currentY;
+                        const distSq = dx * dx + dy * dy;
+                        const radiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
+
+                        if (distSq < radiusSq) {
+                            const dist = Math.sqrt(distSq);
+                            let force = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius;
+                            const angle = Math.atan2(dy, dx);
+
+                            velocitiesX[i] -= Math.cos(angle) * force * CONFIG.mouseForce;
+                            velocitiesY[i] -= Math.sin(angle) * force * CONFIG.mouseForce;
+                        }
+
+                        // 3. Fricción (Viscosidad)
+                        velocitiesX[i] *= 0.94;
+                        velocitiesY[i] *= 0.94;
+
+                        currentX += velocitiesX[i];
+                        currentY += velocitiesY[i];
+                    }
+
+                    posArray[i3] = currentX;
+                    posArray[i3 + 1] = currentY;
+                }
+
+                geometry.attributes.position.needsUpdate = true;
+                renderer.render(scene, camera);
+            }
         })();
     </script>
 
