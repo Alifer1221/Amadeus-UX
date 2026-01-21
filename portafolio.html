@@ -37,7 +37,8 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: transparent;
+            /* Transparent to show fixed galaxy background */
             font-family: 'Space Grotesk', sans-serif;
             color: var(--text-color);
             overflow-x: hidden;
@@ -166,7 +167,8 @@
             height: 350vh;
             position: relative;
             z-index: 15;
-            background-color: var(--bg-color);
+            background-color: transparent;
+            /* Transparent for global background */
         }
 
         .sticky-wrapper {
@@ -185,7 +187,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background: #151515;
+            background: transparent;
+            /* Transparent for global background */
             z-index: 10;
         }
 
@@ -243,7 +246,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #151515;
+            background-color: transparent;
+            /* Transparent for global background */
             perspective: 1000px;
         }
 
@@ -472,7 +476,7 @@
         rel="stylesheet">
 
     <div id="imac-3d-wrapper"
-        style="width: 100%; height: 100vh; position: relative; background-color: #151515; overflow: hidden; font-family: 'Manrope', sans-serif;">
+        style="width: 100%; height: 100vh; position: relative; background-color: transparent; overflow: hidden; font-family: 'Manrope', sans-serif;">
 
         <div style="position: absolute; top: 50px; width: 100%; text-align: center; z-index: 10;">
             <h2
@@ -631,7 +635,7 @@
         let hintTimeout;
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x151515);
+        // scene.background = new THREE.Color(0x151515); /* Disabled for transparency */
 
         const camera = new THREE.PerspectiveCamera(35, wrapper.clientWidth / wrapper.clientHeight, 0.1, 2000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -1035,6 +1039,107 @@
     </script>
 
 
+
+    <div id="galaxy-background-wrapper">
+        <canvas id="galaxy-canvas-bg"></canvas>
+    </div>
+
+    <style>
+        /* Estilos encapsulados exclusivamente para el fondo */
+        #galaxy-background-wrapper {
+            position: fixed;
+            /* Se mantiene fijo aunque hagas scroll */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -9999;
+            /* Se asegura de estar DETRÁS de todo */
+            background-color: #151515;
+            /* El color de fondo */
+            pointer-events: none;
+            /* IMPORTANTE: Permite dar clicks a lo que esté encima */
+            overflow: hidden;
+        }
+
+        #galaxy-canvas-bg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <script>
+        // Usamos una función autoejecutable (IIFE) para proteger tus otras variables
+        (function () {
+            const canvas = document.getElementById('galaxy-canvas-bg');
+
+            // Verificación de seguridad por si el canvas no carga
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            let particles = [];
+            const colors = ['#6366f1', '#8b5cf6', '#3b82f6', '#c084fc', '#ffffff'];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                initParticles();
+            }
+
+            // Usamos addEventListener para no sobrescribir otros eventos onresize
+            window.addEventListener('resize', resize);
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.isFast = Math.random() < 0.10;
+                    if (this.isFast) {
+                        this.speedX = (Math.random() - 0.5) * 4;
+                        this.speedY = (Math.random() - 0.5) * 4;
+                        this.size = Math.random() * 2 + 1.5;
+                        this.opacity = Math.random() * 0.5 + 0.5;
+                    } else {
+                        this.speedX = (Math.random() - 0.5) * 0.2;
+                        this.speedY = (Math.random() - 0.5) * 0.2;
+                        this.size = Math.random() * 1.5 + 0.5;
+                        this.opacity = Math.random() * 0.4 + 0.1;
+                    }
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0) this.x = w;
+                    if (this.x > w) this.x = 0;
+                    if (this.y < 0) this.y = h;
+                    if (this.y > h) this.y = 0;
+                }
+                draw() {
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(this.x, this.y, this.size, this.size);
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                const count = Math.floor((w * h) / 4000);
+                for (let i = 0; i < count; i++) particles.push(new Particle());
+            }
+
+            function animateGalaxy() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animateGalaxy);
+            }
+
+            resize();
+            animateGalaxy();
+        })();
+    </script>
 </body>
 
 </html>
