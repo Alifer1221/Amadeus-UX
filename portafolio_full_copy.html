@@ -357,7 +357,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow-x: hidden;
+            overflow: hidden;
             background-color: #151515;
         }
 
@@ -964,56 +964,6 @@
 
 
 
-    <div class="scroll-container">
-        <div class="sticky-wrapper">
-            <div class="left-col">
-                <div class="text-content">
-                    <span class="meta-tag" id="text-meta">01 — WEB DESIGN</span>
-                    <h1 class="dynamic-title"><span id="text-title">ItsIzzy.com</span><span class="cursor"></span></h1>
-                    <p class="dynamic-desc" id="text-desc">Sitio oficial. Hemos desarrollado una experiencia inmersiva
-                        para mostrar nuestros servicios de desarrollo web.</p>
-                </div>
-            </div>
-            <div class="right-col">
-                <div class="stack-wrapper">
-                    <!-- Cards (Optimized with lazy/autoplay) -->
-                    <div class="card card-5">
-                        <div class="card-ui"><span class="tag">Architecture</span></div>
-                        <video
-                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1a7145c6f790ceee27b3_Recording%202025-09-29%20001607_5.mp4"
-                            autoplay loop muted playsinline></video>
-                    </div>
-                    <div class="card card-4">
-                        <div class="card-ui"><span class="tag">Staffna</span></div>
-                        <video
-                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da124ff15a31572805bd5c_Recording%202025-09-29%20001607_4.mp4"
-                            autoplay loop muted playsinline></video>
-                    </div>
-                    <div class="card card-3">
-                        <div class="card-ui"><span class="tag">DeskShare</span></div>
-                        <video
-                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1d9d47b54d5e99ab69c9_Recording%202025-09-29%20001607_6.mp4"
-                            autoplay loop muted playsinline></video>
-                    </div>
-                    <div class="card card-2">
-                        <div class="card-ui"><span class="tag">MedicTravel</span></div>
-                        <video
-                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/Sequence%2007_9.mp4"
-                            autoplay loop muted playsinline></video>
-                    </div>
-                    <div class="card card-1">
-                        <a href="https://itsizzy.com" target="_blank" class="card-link-wrapper">
-                            <div class="card-ui"><span class="tag">Live Site</span></div>
-                            <video
-                                src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da0cd76298e94cc41f994e_Recording%202025-09-29%20001607_1.mp4"
-                                autoplay loop muted playsinline></video>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <footer class="next-section">
         <div class="footer-content">
             <h2>¿Trabajamos juntos?</h2>
@@ -1025,41 +975,6 @@
 
     <!-- GSAP LOGIC -->
 
-
-    <!-- GSAP LOGIC -->
-    <script>
-        gsap.registerPlugin(ScrollTrigger, TextPlugin);
-        const contents = [
-            { meta: "01 — PORTFOLIO", title: "Izzy", desc: "Influencer Marketing Agency." },
-            { meta: "02 — MEDICTRAVEL", title: "MedicTravel", desc: "Turismo Médico Premium." },
-            { meta: "03 — DESKSHARE", title: "DeskShare", desc: "Potencia de cómputo bajo demanda." },
-            { meta: "04 — STAFFNA", title: "Staffna", desc: "Aceleradora de Carreras en Ventas Tech." },
-            { meta: "05 — LOUIS AMADEUS", title: "Portafolio Louis Amadeus", desc: "Arquitectura Computacional y Diseño." }
-        ];
-        const initCards = () => {
-            gsap.set('.card-1', { zIndex: 5, rotation: -2, y: 0 });
-            gsap.set('.card-2', { zIndex: 4, rotation: 4, y: 0, scale: 0.95 });
-            gsap.set('.card-3', { zIndex: 3, rotation: -3, y: 0, scale: 0.90 });
-            gsap.set('.card-4', { zIndex: 2, rotation: 2, y: 0, scale: 0.85 });
-            gsap.set('.card-5', { zIndex: 1, rotation: 0, y: 0, scale: 0.80 });
-        };
-        initCards();
-        let tl = gsap.timeline({ scrollTrigger: { trigger: ".scroll-container", start: "top top", end: "bottom bottom", scrub: 1 } });
-        function changeText(index) {
-            const t = gsap.timeline();
-            t.to("#text-title", { text: { value: contents[index].title }, duration: 0.5 }, 0.3);
-            return t;
-        }
-        tl.to('.card-1', { y: -700, rotation: -15, opacity: 0, duration: 1 })
-            .to('.card-2', { rotation: 0, scale: 1, duration: 1 }, "<")
-            .add(changeText(1), "<0")
-            .to('.card-2', { y: -700, rotation: 15, opacity: 0, duration: 1 })
-            .to('.card-3', { rotation: 0, scale: 1, duration: 1 }, "<")
-            .to('.card-3', { y: -700, rotation: -10, opacity: 0, duration: 1 })
-            .to('.card-4', { rotation: 0, scale: 1, duration: 1 }, "<")
-            .to('.card-4', { y: -700, rotation: 10, opacity: 0, duration: 1 })
-            .to('.card-5', { rotation: 0, scale: 1, duration: 1 }, "<");
-    </script>
 
     <script>
         (function () {
