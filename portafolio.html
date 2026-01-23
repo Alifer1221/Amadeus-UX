@@ -600,14 +600,16 @@
 
             const easeOut = t => 1 - Math.pow(1 - t, 3);
 
+            let navRevealed = false;
+
             function animate() {
                 requestAnimationFrame(animate);
 
-                // REVELACIÓN GRADUAL TRAS CARGAR (Reemplaza el telón)
+                // REVELACIÓN GRADUAL (Sin el NAV inicialmente)
                 if (framesRendered < 20) {
                     framesRendered++;
                     if (framesRendered === 15) {
-                        gsap.to(["nav", "#amadeus-marquee-final", ".next-section", "footer", "#galaxy-background-wrapper"], {
+                        gsap.to(["#amadeus-marquee-final", ".next-section", "footer", "#galaxy-background-wrapper"], {
                             opacity: 1, visibility: "visible", duration: 1.2, stagger: 0.15
                         });
                     }
@@ -616,7 +618,14 @@
                 const delta = clock.getDelta();
                 elapsedTime += delta;
                 let progress = Math.min(elapsedTime / CONFIG.duration, 1.0);
-                if (progress >= 1) introFinished = true;
+
+                if (progress >= 1 && !navRevealed) {
+                    navRevealed = true;
+                    introFinished = true;
+                    // REVELAMOS EL HEADER SOLO AL FINALIZAR LA ANIMACIÓN
+                    gsap.to("nav", { opacity: 1, visibility: "visible", duration: 1.0 });
+                }
+
                 if (!particles) return;
 
                 const posArray = geometry.attributes.position.array;
