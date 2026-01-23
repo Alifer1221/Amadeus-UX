@@ -16,6 +16,87 @@
             overflow: hidden;
             /* Evita scroll mientras carga */
         }
+
+        /* ESTILOS DEL PRELOADER */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #151515;
+            /* El mismo color de tu fondo */
+            z-index: 99999;
+            /* Por encima de todo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-text {
+            font-family: 'Manrope', sans-serif;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+
+        .loader-bar {
+            width: 150px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .loader-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: #a855f7;
+            animation: loadLine 1.5s ease-in-out forwards;
+        }
+
+        @keyframes loadLine {
+            0% {
+                width: 0%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Clase para ocultar el loader */
+        .loaded {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -473,6 +554,12 @@
 </head>
 
 <body>
+    <div id="preloader">
+        <div class="loader-content">
+            <span class="loader-text">Amadeus</span>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
     <nav>
         <a href="index.html" class="nav-logo">
             <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
@@ -994,10 +1081,17 @@
             });
         })();
 
-        // Restaurar scroll una vez cargada la página
+        // Esperar a que toda la página (imágenes, scripts, modelos 3D) cargue
         window.addEventListener('load', () => {
-            document.body.style.overflow = 'auto';
-            document.documentElement.style.overflow = 'auto';
+            const preloader = document.getElementById('preloader');
+
+            // Pequeño delay para asegurar que Three.js ya pintó el canvas
+            setTimeout(() => {
+                preloader.classList.add('loaded');
+                // Reactivar el scroll
+                document.body.style.overflow = 'auto';
+                document.documentElement.style.overflow = 'auto';
+            }, 800);
         });
     </script>
 </body>
