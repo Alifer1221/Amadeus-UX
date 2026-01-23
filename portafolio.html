@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portafolio - ItsIzzy</title>
+    <style>
+        /* CRITICAL: Se aplica antes de cualquier otro recurso para evitar flasheo blanco */
+        html,
+        body {
+            background-color: #151515 !important;
+        }
+    </style>
     <meta name="theme-color" content="#151515">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,8 +46,8 @@
         }
 
         body {
-            background-color: transparent;
-            /* Transparent to show fixed galaxy background */
+            background-color: var(--bg-color);
+            /* Consistent with critical CSS base */
             font-family: 'Space Grotesk', sans-serif;
             color: var(--text-color);
             overflow-x: hidden;
