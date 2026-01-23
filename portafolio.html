@@ -83,6 +83,15 @@
             /* IMPORTANTE: Si te da lag, BORRA la siguiente línea (backdrop-filter) */
             /* backdrop-filter: blur(20px); */
             /* -webkit-backdrop-filter: blur(20px); */
+
+            /* Transición para hide/show al hacer scroll */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        nav.nav-hidden {
+            transform: translateX(-50%) translateY(-150%);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .nav-logo {
@@ -1365,6 +1374,28 @@
 
             resize();
             animateGalaxy();
+        })();
+    </script>
+
+    <!-- Nav hide on scroll -->
+    <script>
+        (function () {
+            let lastScrollY = window.scrollY;
+            const nav = document.querySelector('nav');
+
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.scrollY;
+
+                if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                    // Scrolling down and past 100px
+                    nav.classList.add('nav-hidden');
+                } else {
+                    // Scrolling up
+                    nav.classList.remove('nav-hidden');
+                }
+
+                lastScrollY = currentScrollY;
+            });
         })();
     </script>
 </body>
