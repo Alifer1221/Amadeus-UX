@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portafolio - ItsIzzy</title>
+    <meta name="theme-color" content="#151515">
+
     <style>
-        /* CRITICAL: Se aplica antes de cualquier otro recurso para evitar flasheo blanco */
         html,
         body {
             background-color: #151515 !important;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* Evita scroll mientras carga */
         }
     </style>
-    <meta name="theme-color" content="#151515">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -989,6 +993,12 @@
                 lastScrollY = currentScrollY;
             });
         })();
+
+        // Restaurar scroll una vez cargada la página
+        window.addEventListener('load', () => {
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        });
     </script>
 </body>
 
