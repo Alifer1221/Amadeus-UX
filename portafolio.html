@@ -8,97 +8,47 @@
     <meta name="theme-color" content="#151515">
 
     <style>
-        html,
+        html {
+            background-color: #151515 !important;
+            /* Fondo negro forzado */
+        }
+
         body {
             background-color: #151515 !important;
             margin: 0;
-            padding: 0;
             overflow: hidden;
-            /* Evita scroll mientras carga */
+            /* Evita scroll al cargar */
         }
 
-        /* ESTILOS DEL PRELOADER */
+        /* Ocultamos el contenido principal para que no haya flash de imágenes rotas */
+        #amadeus-hero-section,
+        #imac-3d-wrapper,
+        .next-section,
+        #galaxy-background-wrapper {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            /* Aparecerá suavemente después */
+            visibility: hidden;
+            /* Doble seguridad */
+        }
+
+        /* El Preloader debe ser lo único visible */
         #preloader {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background-color: #151515;
-            /* El mismo color de tu fondo */
             z-index: 99999;
-            /* Por encima de todo */
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.8s ease-out;
-        }
-
-        .loader-content {
-            text-align: center;
-        }
-
-        .loader-text {
-            font-family: 'Manrope', sans-serif;
-            color: #fff;
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 10px;
-            display: block;
-            animation: pulse 1.5s infinite;
-        }
-
-        .loader-bar {
-            width: 150px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-            margin: 0 auto;
-        }
-
-        .loader-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 0%;
-            background: #a855f7;
-            animation: loadLine 1.5s ease-in-out forwards;
-        }
-
-        @keyframes loadLine {
-            0% {
-                width: 0%;
-            }
-
-            100% {
-                width: 100%;
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 0.5;
-            }
-
-            50% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0.5;
-            }
-        }
-
-        /* Clase para ocultar el loader */
-        .loaded {
-            opacity: 0;
-            pointer-events: none;
+            color: white;
+            font-family: sans-serif;
         }
     </style>
-    <!-- Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -107,16 +57,152 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap"
         rel="stylesheet">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
 
-    <!-- GSAP -->
+<body>
+    <div id="preloader">
+        <div>
+            <h2 style="margin:0; font-weight:300; font-size: 2rem;">Cargando...</h2>
+            <div style="width: 200px; height: 2px; background: #333; margin-top: 10px;">
+                <div id="loader-bar" style="width: 0%; height: 100%; background: #a855f7; transition: width 0.3s;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
+        </a>
+        <div class="nav-menu">
+            <a href="portafolio.html">Portafolio</a>
+            <a href="servicios.html">Servicios</a>
+            <a href="nosotros.html">Nosotros</a>
+        </div>
+        <a href="https://wa.me/573246649104" target="_blank" class="nav-cta">Hablemos</a>
+    </nav>
+
+    <section id="amadeus-hero-section">
+        <div id="amadeus-text-overlay">
+            <h2 class="amadeus-title" id="amadeusTitle"></h2>
+            <p class="amadeus-desc" id="amadeusPara">
+                Más que páginas web: descubre nuestro ecosistema de productos digitales, tanto los lanzados como los que
+                están en proceso de creación.
+            </p>
+        </div>
+        <div id="amadeus-marquee-final">
+            <style>
+                #amadeus-marquee-final {
+                    width: 100%;
+                    overflow: hidden;
+                    background: transparent !important;
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    padding: 30px 0;
+                    z-index: 20;
+                }
+
+                #amadeus-marquee-final .amadeus-track {
+                    display: flex;
+                    align-items: center;
+                    width: max-content;
+                    animation: amadeus-scroll-infinite 45s linear infinite;
+                }
+
+                #amadeus-marquee-final .amadeus-track img {
+                    height: 45px;
+                    width: auto;
+                    margin: 0 80px;
+                    flex-shrink: 0;
+                    display: block;
+                    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+                    transition: filter 0.3s ease;
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+
+                #amadeus-marquee-final .amadeus-track img:hover {
+                    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+                }
+
+                @keyframes amadeus-scroll-infinite {
+                    0% {
+                        transform: translateX(0);
+                    }
+
+                    100% {
+                        transform: translateX(-25%);
+                    }
+                }
+            </style>
+
+            <div class="amadeus-track">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
+                    alt="3D Model">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
+                    alt="HTML5">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
+                    alt="Marketing">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
+                    alt="Motion">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
+                    alt="Program">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
+                    alt="Video">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
+                    alt="Webflow">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
+                    alt="Wordpress">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
+                    alt="Shopify">
+
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
+                    alt="3D Model">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
+                    alt="HTML5">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
+                    alt="Marketing">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
+                    alt="Motion">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
+                    alt="Program">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
+                    alt="Video">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
+                    alt="Webflow">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
+                    alt="Wordpress">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
+                    alt="Shopify">
+            </div>
+        </div>
+    </section>
+
+    <div id="galaxy-background-wrapper">
+        <canvas id="galaxy-canvas-bg"></canvas>
+    </div>
+
+    <footer class="next-section">
+        <div class="footer-content">
+            <h2>¿Trabajamos juntos?</h2>
+            <a href="mailto:hola@itsizzy.com">hola@itsizzy.com</a>
+            <br><br>
+            <p style="opacity: 0.5;">© 2026 IZZY PORTFOLIO</p>
+        </div>
+    </footer>
+
+    <!-- BIBLIOTECAS Y LÓGICA (AL FINAL) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
 
     <style>
-        /* CORE STYLES from services.html */
+        /* CORE STYLES */
         :root {
             --bg-color: #151515;
             --text-color: #ffffff;
@@ -132,51 +218,31 @@
 
         body {
             background-color: var(--bg-color);
-            /* Consistent with critical CSS base */
             font-family: 'Space Grotesk', sans-serif;
             color: var(--text-color);
             overflow-x: hidden;
             margin: 0;
         }
 
-        /* --- NAVIGATION STYLES (Floating Pill) --- */
-        /* --- NAVIGATION STYLES (Floating Pill - ANTI-LAG) --- */
         nav {
-            /* 1. POSICIONAMIENTO ABSOLUTO/FIJO */
             position: fixed;
             top: 30px;
             left: 50%;
-
-            /* 2. CENTRADO POR GPU (Truco Anti-Lag) */
             transform: translateX(-50%) translateZ(0);
-
-            /* 3. AISLAMIENTO */
             z-index: 9999;
             will-change: transform;
             backface-visibility: hidden;
-
-            /* 4. ESTILOS VISUALES */
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 40px;
             padding: 10px 30px;
-
             width: fit-content;
             max-width: 95vw;
-
             background: rgba(255, 255, 255, 0.08);
-            /* Fondo semi-transparente ligero */
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 100px;
-
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-
-            /* IMPORTANTE: Si te da lag, BORRA la siguiente línea (backdrop-filter) */
-            /* backdrop-filter: blur(20px); */
-            /* -webkit-backdrop-filter: blur(20px); */
-
-            /* Transición para hide/show al hacer scroll */
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
@@ -237,232 +303,6 @@
             box-shadow: 0 0 15px rgba(37, 117, 252, 0.4);
         }
 
-        @media (max-width: 768px) {
-            nav {
-                top: auto;
-                bottom: 20px;
-                width: 90%;
-                justify-content: space-between;
-                padding: 10px 20px;
-                gap: 10px;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-
-            .nav-menu a {
-                font-size: 0.75rem;
-            }
-
-            .nav-logo {
-                font-size: 1rem;
-            }
-
-            .nav-cta {
-                padding: 8px 16px;
-                font-size: 0.75rem;
-            }
-        }
-
-        /* PORTFOLIO SECTIONS */
-        .scroll-container {
-            height: 350vh;
-            position: relative;
-            z-index: 15;
-            background-color: transparent;
-            /* Transparent for global background */
-        }
-
-        .sticky-wrapper {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
-
-        .left-col {
-            width: 50%;
-            height: 100vh;
-            padding: 80px 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: transparent;
-            /* Transparent for global background */
-            z-index: 10;
-        }
-
-        .meta-tag {
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            color: #888;
-            display: block;
-        }
-
-        .dynamic-title {
-            font-size: 3.5rem;
-            line-height: 1;
-            margin-bottom: 30px;
-            font-weight: 500;
-            min-height: 2em;
-            color: #fff;
-        }
-
-        .dynamic-desc {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #ccc;
-            max-width: 85%;
-            min-height: 4.8em;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 1em;
-            background-color: #fff;
-            margin-left: 5px;
-            animation: blink 1s infinite;
-            vertical-align: middle;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        .right-col {
-            width: 50%;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: transparent;
-            /* Transparent for global background */
-            perspective: 1000px;
-        }
-
-        .stack-wrapper {
-            position: relative;
-            width: var(--card-width);
-            height: var(--card-height);
-        }
-
-        .card {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #111;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transform-origin: center bottom;
-            will-change: transform, opacity;
-        }
-
-        .card img,
-        .card video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card .card-ui {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            display: flex;
-            gap: 5px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .tag {
-            background: #fff;
-            padding: 4px 8px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            border: 1px solid #000;
-            text-transform: uppercase;
-            color: #000;
-        }
-
-        .next-section {
-            position: relative;
-            z-index: 16;
-            background-color: #000;
-            color: #fff;
-            padding: 100px 60px;
-            min-height: 50vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-top: 1px solid #222;
-        }
-
-        .next-section h2 {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-
-        .next-section a {
-            color: #fff;
-            font-size: 1.5rem;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .sticky-wrapper {
-                flex-direction: column-reverse;
-            }
-
-            .left-col {
-                width: 100%;
-                height: 40vh;
-                padding: 30px;
-            }
-
-            .right-col {
-                width: 100%;
-                height: 60vh;
-            }
-
-            .dynamic-title {
-                font-size: 2rem;
-            }
-
-            :root {
-                --card-width: 280px;
-                --card-height: 480px;
-            }
-        }
-
-        /* IMPORTANTE: El background color lo manejará WebGL ahora para rendimiento */
-        /* IMPORTANTE: El background color lo manejará WebGL ahora para rendimiento */
-        html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            background-color: #151515;
-        }
-
         #amadeus-hero-section {
             position: relative;
             width: 100%;
@@ -472,16 +312,6 @@
             cursor: default;
             z-index: 1;
         }
-
-        canvas {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0;
-        }
-
-        /* Tu menú debería estar por encima (z-index > 0) */
 
         #amadeus-text-overlay {
             position: absolute;
@@ -549,212 +379,138 @@
                 opacity: 1;
             }
         }
+
+        #galaxy-background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background-color: #151515;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #galaxy-canvas-bg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .next-section {
+            position: relative;
+            z-index: 16;
+            background-color: #000;
+            color: #fff;
+            padding: 100px 60px;
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-top: 1px solid #222;
+        }
+
+        .next-section h2 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .next-section a {
+            color: #fff;
+            font-size: 1.5rem;
+            text-decoration: underline;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
     </style>
 
-</head>
-
-<body>
-    <div id="preloader">
-        <div class="loader-content">
-            <span class="loader-text">Amadeus</span>
-            <div class="loader-bar"></div>
-        </div>
-    </div>
-    <nav>
-        <a href="index.html" class="nav-logo">
-            <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
-        </a>
-        <div class="nav-menu">
-            <a href="portafolio.html">Portafolio</a>
-            <a href="servicios.html">Servicios</a>
-            <a href="nosotros.html">Nosotros</a>
-        </div>
-        <a href="https://wa.me/573246649104" target="_blank" class="nav-cta">Hablemos</a>
-    </nav>
-
-    <section id="amadeus-hero-section">
-        <div id="amadeus-text-overlay">
-            <h2 class="amadeus-title" id="amadeusTitle"></h2>
-            <p class="amadeus-desc" id="amadeusPara">
-                Más que páginas web: descubre nuestro ecosistema de productos digitales, tanto los lanzados como los que
-                están en proceso de creación.
-            </p>
-        </div>
-        <div id="amadeus-marquee-final">
-            <style>
-                /* Contenedor principal: Transparente y limpio */
-                #amadeus-marquee-final {
-                    width: 100%;
-                    overflow: hidden;
-                    background: transparent !important;
-                    position: absolute;
-                    /* Changed to absolute */
-                    bottom: 0;
-                    /* Pin to bottom */
-                    left: 0;
-                    padding: 30px 0;
-                    z-index: 20;
-                }
-
-                #amadeus-marquee-final .amadeus-track {
-                    display: flex;
-                    align-items: center;
-                    width: max-content;
-                    /* Animación continua */
-                    animation: amadeus-scroll-infinite 45s linear infinite;
-                }
-
-                #amadeus-marquee-final .amadeus-track img {
-                    height: 45px;
-                    /* 25% smaller (60px * 0.75) */
-                    width: auto;
-                    margin: 0 80px;
-                    /* Espaciado amplio */
-                    flex-shrink: 0;
-                    display: block;
-
-                    /* Brillo sutil inicial */
-                    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
-                    transition: filter 0.3s ease;
-
-                    background: transparent !important;
-                    box-shadow: none !important;
-                    border: none !important;
-                }
-
-                #amadeus-marquee-final .amadeus-track img:hover {
-                    /* Brillo más intenso al pasar el mouse */
-                    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
-                }
-
-                /* Lógica matemática del bucle */
-                @keyframes amadeus-scroll-infinite {
-                    0% {
-                        transform: translateX(0);
-                    }
-
-                    100% {
-                        /* Se mueve exactamente un 25% (el ancho de 1 de los 4 grupos) */
-                        transform: translateX(-25%);
-                    }
-                }
-            </style>
-
-            <div class="amadeus-track">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
-                    alt="3D Model">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
-                    alt="HTML5">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
-                    alt="Marketing">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
-                    alt="Motion">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
-                    alt="Program">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
-                    alt="Video">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
-                    alt="Webflow">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
-                    alt="Wordpress">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
-                    alt="Shopify">
-
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
-                    alt="3D Model">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
-                    alt="HTML5">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
-                    alt="Marketing">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
-                    alt="Motion">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
-                    alt="Program">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
-                    alt="Video">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
-                    alt="Webflow">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
-                    alt="Wordpress">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
-                    alt="Shopify">
-
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
-                    alt="3D Model">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
-                    alt="HTML5">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
-                    alt="Marketing">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
-                    alt="Motion">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
-                    alt="Program">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
-                    alt="Video">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
-                    alt="Webflow">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
-                    alt="Wordpress">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
-                    alt="Shopify">
-
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
-                    alt="3D Model">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
-                    alt="HTML5">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
-                    alt="Marketing">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
-                    alt="Motion">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
-                    alt="Program">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
-                    alt="Video">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
-                    alt="Webflow">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
-                    alt="Wordpress">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
-                    alt="Shopify">
-            </div>
-        </div>
-    </section>
-
-
-
-
-
-
-
-
-
-
-    <footer class="next-section">
-        <div class="footer-content">
-            <h2>¿Trabajamos juntos?</h2>
-            <a href="mailto:hola@itsizzy.com">hola@itsizzy.com</a>
-            <br><br>
-            <p style="opacity: 0.5;">© 2026 IZZY PORTFOLIO</p>
-        </div>
-    </footer>
-
-
-
     <script>
+        // GALAXY BACKGROUND SCRIPT
+        (function () {
+            const canvas = document.getElementById('galaxy-canvas-bg');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            let particles = [];
+            const colors = ['#6366f1', '#8b5cf6', '#3b82f6', '#c084fc', '#ffffff'];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                initParticles();
+            }
+
+            window.addEventListener('resize', resize);
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.isFast = Math.random() < 0.10;
+                    if (this.isFast) {
+                        this.speedX = (Math.random() - 0.5) * 4;
+                        this.speedY = (Math.random() - 0.5) * 4;
+                        this.size = Math.random() * 2 + 1.5;
+                        this.opacity = Math.random() * 0.5 + 0.5;
+                    } else {
+                        this.speedX = (Math.random() - 0.5) * 0.2;
+                        this.speedY = (Math.random() - 0.5) * 0.2;
+                        this.size = Math.random() * 1.5 + 0.5;
+                        this.opacity = Math.random() * 0.4 + 0.1;
+                    }
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0) this.x = w;
+                    if (this.x > w) this.x = 0;
+                    if (this.y < 0) this.y = h;
+                    if (this.y > h) this.y = 0;
+                }
+                draw() {
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(this.x, this.y, this.size, this.size);
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                const count = Math.floor((w * h) / 4000);
+                for (let i = 0; i < count; i++) particles.push(new Particle());
+            }
+
+            function animateGalaxy() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animateGalaxy);
+            }
+
+            resize();
+            animateGalaxy();
+        })();
+
+        // HERO GALAXY SCRIPT
         (function () {
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
                 particleSize: 1.8,
                 gap: 3,
-
-                // === AJUSTE DE TAMAÑO DEL CIRCULO ===
-                mouseRadius: 35, // Antes 70. Ahora es pequeño y preciso.
-                mouseForce: 2.0, // Fuerza ajustada para el nuevo tamaño
-
+                mouseRadius: 35,
+                mouseForce: 2.0,
                 duration: 3.5,
                 typingSpeed: 100
             };
@@ -889,208 +645,96 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-
                 const delta = clock.getDelta();
                 elapsedTime += delta;
-
                 let progress = Math.min(elapsedTime / CONFIG.duration, 1.0);
-
                 if (progress >= 1) introFinished = true;
                 if (!particles) return;
-
                 const posArray = geometry.attributes.position.array;
                 const ease = easeOut(progress);
-
                 for (let i = 0; i < count; i++) {
                     const i3 = i * 3;
-
                     let currentX = posArray[i3];
                     let currentY = posArray[i3 + 1];
-
                     const homeX = initialPositions[i3] + Math.cos(elapsedTime + offsets[i]) * 2.5;
                     const homeY = initialPositions[i3 + 1] + Math.sin(elapsedTime + offsets[i]) * 2.5;
-
                     if (!introFinished) {
                         currentX += (homeX - currentX) * 0.02 * ease;
                         currentY += (homeY - currentY) * 0.02 * ease;
-                        velocitiesX[i] = 0;
-                        velocitiesY[i] = 0;
-                    }
-                    else {
-                        // 1. Resorte
+                    } else {
                         const springForceX = (homeX - currentX) * 0.015;
                         const springForceY = (homeY - currentY) * 0.015;
-
                         velocitiesX[i] += springForceX;
                         velocitiesY[i] += springForceY;
-
-                        // 2. Repulsión Mouse
                         const dx = mouse.x - currentX;
                         const dy = mouse.y - currentY;
                         const distSq = dx * dx + dy * dy;
                         const radiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
-
                         if (distSq < radiusSq) {
                             const dist = Math.sqrt(distSq);
                             let force = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius;
                             const angle = Math.atan2(dy, dx);
-
                             velocitiesX[i] -= Math.cos(angle) * force * CONFIG.mouseForce;
                             velocitiesY[i] -= Math.sin(angle) * force * CONFIG.mouseForce;
                         }
-
-                        // 3. Fricción (Viscosidad)
                         velocitiesX[i] *= 0.94;
                         velocitiesY[i] *= 0.94;
-
                         currentX += velocitiesX[i];
                         currentY += velocitiesY[i];
                     }
-
                     posArray[i3] = currentX;
                     posArray[i3 + 1] = currentY;
                 }
-
                 geometry.attributes.position.needsUpdate = true;
                 renderer.render(scene, camera);
             }
         })();
-    </script>
 
-
-
-    <div id="galaxy-background-wrapper">
-        <canvas id="galaxy-canvas-bg"></canvas>
-    </div>
-
-    <style>
-        /* Estilos encapsulados exclusivamente para el fondo */
-        #galaxy-background-wrapper {
-            position: fixed;
-            /* Se mantiene fijo aunque hagas scroll */
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            /* Se asegura de estar DETRÁS de todo */
-            background-color: #151515;
-            /* El color de fondo */
-            pointer-events: none;
-            /* IMPORTANTE: Permite dar clicks a lo que esté encima */
-            overflow: hidden;
-        }
-
-        #galaxy-canvas-bg {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-
-    <script>
-        // Usamos una función autoejecutable (IIFE) para proteger tus otras variables
-        (function () {
-            const canvas = document.getElementById('galaxy-canvas-bg');
-
-            // Verificación de seguridad por si el canvas no carga
-            if (!canvas) return;
-
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            let particles = [];
-            const colors = ['#6366f1', '#8b5cf6', '#3b82f6', '#c084fc', '#ffffff'];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-                initParticles();
-            }
-
-            // Usamos addEventListener para no sobrescribir otros eventos onresize
-            window.addEventListener('resize', resize);
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h;
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.isFast = Math.random() < 0.10;
-                    if (this.isFast) {
-                        this.speedX = (Math.random() - 0.5) * 4;
-                        this.speedY = (Math.random() - 0.5) * 4;
-                        this.size = Math.random() * 2 + 1.5;
-                        this.opacity = Math.random() * 0.5 + 0.5;
-                    } else {
-                        this.speedX = (Math.random() - 0.5) * 0.2;
-                        this.speedY = (Math.random() - 0.5) * 0.2;
-                        this.size = Math.random() * 1.5 + 0.5;
-                        this.opacity = Math.random() * 0.4 + 0.1;
-                    }
-                }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.x < 0) this.x = w;
-                    if (this.x > w) this.x = 0;
-                    if (this.y < 0) this.y = h;
-                    if (this.y > h) this.y = 0;
-                }
-                draw() {
-                    ctx.globalAlpha = this.opacity;
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(this.x, this.y, this.size, this.size);
-                }
-            }
-
-            function initParticles() {
-                particles = [];
-                const count = Math.floor((w * h) / 4000);
-                for (let i = 0; i < count; i++) particles.push(new Particle());
-            }
-
-            function animateGalaxy() {
-                ctx.clearRect(0, 0, w, h);
-                particles.forEach(p => { p.update(); p.draw(); });
-                requestAnimationFrame(animateGalaxy);
-            }
-
-            resize();
-            animateGalaxy();
-        })();
-    </script>
-
-    <!-- Nav hide on scroll -->
-    <script>
+        // NAV HIDE SCRIPT
         (function () {
             let lastScrollY = window.scrollY;
             const nav = document.querySelector('nav');
-
             window.addEventListener('scroll', () => {
                 const currentScrollY = window.scrollY;
-
                 if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                    // Scrolling down and past 100px
                     nav.classList.add('nav-hidden');
                 } else {
-                    // Scrolling up
                     nav.classList.remove('nav-hidden');
                 }
-
                 lastScrollY = currentScrollY;
             });
         })();
 
-        // Esperar a que toda la página (imágenes, scripts, modelos 3D) cargue
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
+        // SIMULADOR DE CARGA Y REVELACIÓN
+        const bar = document.getElementById('loader-bar');
+        const preloader = document.getElementById('preloader');
+        const sectionsToShow = [
+            document.getElementById('amadeus-hero-section'),
+            document.getElementById('galaxy-background-wrapper'),
+            document.querySelector('.next-section')
+        ];
 
-            // Pequeño delay para asegurar que Three.js ya pintó el canvas
+        let width = 0;
+        const interval = setInterval(() => {
+            if (width >= 90) clearInterval(interval);
+            width += Math.random() * 10;
+            if (bar) bar.style.width = Math.min(width, 90) + '%';
+        }, 100);
+
+        window.addEventListener('load', () => {
+            clearInterval(interval);
+            if (bar) bar.style.width = '100%';
+
             setTimeout(() => {
-                preloader.classList.add('loaded');
-                // Reactivar el scroll
+                preloader.style.opacity = '0';
+                preloader.style.pointerEvents = 'none';
+                sectionsToShow.forEach(section => {
+                    if (section) {
+                        section.style.visibility = 'visible';
+                        section.style.opacity = '1';
+                    }
+                });
                 document.body.style.overflow = 'auto';
-                document.documentElement.style.overflow = 'auto';
             }, 800);
         });
     </script>
