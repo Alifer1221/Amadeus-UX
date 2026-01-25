@@ -14,6 +14,9 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap"
         rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;800&family=Montserrat:wght@300;400&display=swap"
+        rel="stylesheet">
 
     <!-- Styles from Index.html -->
     <style>
@@ -225,7 +228,7 @@
 
             /* ENTRADA SUAVE (CSS PURO) */
             animation: amadeusEntry 3s ease-in-out forwards;
-            animation-delay: 1.2s;
+            animation-delay: 0.5s;
             will-change: opacity;
         }
 
@@ -312,6 +315,81 @@
         };
     </script>
 
+    <style>
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin3D {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .nav-btn:hover {
+            background: #a855f7 !important;
+            border-color: #a855f7 !important;
+            transform: scale(1.1);
+        }
+
+        #imac-3d-wrapper canvas {
+            cursor: grab;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #imac-3d-wrapper canvas:active {
+            cursor: grabbing;
+        }
+
+        #tw-title {
+            font-family: 'Montserrat', sans-serif !important;
+            font-weight: 400 !important;
+        }
+
+        /* Estilos del Botón */
+        #visit-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0;
+        }
+
+        #visit-btn:hover {
+            background-color: #a855f7;
+            border-color: #a855f7;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .active-spin svg {
+            animation: spin3D 3s linear infinite;
+        }
+    </style>
+
 <body>
     <!-- NAVIGATION -->
     <nav>
@@ -370,13 +448,65 @@
         </div>
     </section>
 
+    <!-- IMAC 3D SHOWCASE SECTION -->
+    <div id="imac-3d-wrapper"
+        style="width: 100%; height: 100vh; position: relative; background-color: #151515; overflow: hidden; font-family: 'Manrope', sans-serif;">
+
+        <div style="position: absolute; top: 50px; width: 100%; text-align: center; z-index: 10;">
+            <h2
+                style="color: white; font-family: 'Montserrat', sans-serif; font-size: 4rem; font-weight: 400; margin: 0; opacity: 0.9; letter-spacing: 2px;">
+                Desarrollo Web</h2>
+        </div>
+
+        <div id="info-side"
+            style="position: absolute; top: 32%; width: 40%; color: white; z-index: 5; padding: 0 5%; pointer-events: none;">
+            <h1
+                style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; margin: 0; display: inline-block; font-weight: 400;">
+                <span id="tw-title">Izzy</span><span id="cursor"
+                    style="color: #a855f7; animation: blink 0.8s infinite;">_</span>
+            </h1>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 25px 0;">
+            <p id="tw-desc"
+                style="font-family: 'Manrope', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #ccc; transition: opacity 0.3s; font-weight: 300; margin-bottom: 30px;">
+            </p>
+
+            <a id="visit-btn" href="#" target="_blank" style="pointer-events: auto;">
+                Visitar sitio web
+            </a>
+        </div>
+
+        <div id="rotation-indicator" class="active-spin"
+            style="position: absolute; bottom: 120px; left: 70%; transform: translateX(-50%) perspective(500px) rotateX(60deg); opacity: 1; pointer-events: none; z-index: 50; filter: drop-shadow(0px 15px 10px rgba(0,0,0,0.6)); transition: opacity 1.5s ease-in-out;">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3" />
+            </svg>
+        </div>
+
+        <div
+            style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 1000;">
+            <div id="btn-prev" class="nav-btn"
+                style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+            </div>
+            <div id="btn-next" class="nav-btn"
+                style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
         (function () {
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 3.5, typingSpeed: 100
+                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.5, typingSpeed: 50
             };
 
             const container = document.getElementById('amadeus-hero-section');
@@ -552,6 +682,219 @@
                 renderer.render(scene, camera);
             }
         })();
+    </script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        const wrapper = document.getElementById('imac-3d-wrapper');
+        const titleEl = document.getElementById('tw-title');
+        const descEl = document.getElementById('tw-desc');
+        const infoSide = document.getElementById('info-side');
+        const rotationIcon = document.getElementById('rotation-indicator');
+        const visitBtn = document.getElementById('visit-btn');
+
+        // DATOS DE LAS DIAPOSITIVAS CON LOS LINKS CORRECTOS
+        const slides = [
+            { title: "Izzy", desc: "Influencer Marketing Agency. Conecta marcas CPG con creadores verificados para impulsar ventas en retail y Amazon mediante campañas 'Buy & Try' con IA.", video: 'https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da0cd76298e94cc41f994e_Recording%202025-09-29%20001607_1.mp4', link: "https://itsizzy.com/" },
+            { title: "MedicTravel", desc: "Turismo Médico Premium en Colombia. Plataforma integral con modelo 'Todo Incluido' que garantiza seguridad y ahorro en cirugías y tratamientos.", video: 'https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/Sequence%2007_9.mp4', link: "https://pp-seven-tau.vercel.app/" },
+            { title: "Staffna", desc: "Aceleradora de Carreras en Ventas Tech. Bootcamp de 'Riesgo Cero' diseñado para que los estudiantes solo paguen una vez consigan empleo.", video: 'https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da124ff15a31572805bd5c_Recording%202025-09-29%20001607_4.mp4', link: "https://staffnasales.webflow.io/" },
+            { title: "DeskShare", desc: "Marketplace Peer-to-Peer de potencia de cómputo. Democratiza el acceso a hardware de alto rendimiento para renderizado y gaming vía acceso remoto.", video: 'https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1d9d47b54d5e99ab69c9_Recording%202025-09-29%20001607_6.mp4', link: "https://deskshare.webflow.io/" },
+            { title: "Portafolio Arq", desc: "Arquitectura Computacional e IA. Exploración del diseño paramétrico y flujos de trabajo avanzados como 'RE BIM' con visualización inmersiva.", video: 'https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1a7145c6f790ceee27b3_Recording%202025-09-29%20001607_5.mp4', link: "https://amadeusarteaga.webflow.io/" }
+        ];
+
+        let currentIdx = 0;
+        let imacOnLeft = false;
+        let eraseTimeout, writeTimeout;
+        let hintTimeout;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x151515);
+
+        const camera = new THREE.PerspectiveCamera(35, wrapper.clientWidth / wrapper.clientHeight, 0.1, 2000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        wrapper.appendChild(renderer.domElement);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 3));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 3);
+        dirLight.position.set(10, 20, 10);
+        scene.add(dirLight);
+
+        const videoEl = document.createElement('video');
+        videoEl.crossOrigin = "anonymous"; videoEl.loop = true; videoEl.muted = true; videoEl.playsInline = true;
+        const videoTexture = new THREE.VideoTexture(videoEl);
+        videoTexture.colorSpace = THREE.SRGBColorSpace;
+        videoTexture.repeat.set(1, -1); videoTexture.offset.set(0, 1);
+        const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, side: THREE.DoubleSide });
+
+        const scrollGroup = new THREE.Group();
+        const mouseRotationGroup = new THREE.Group();
+        scrollGroup.add(mouseRotationGroup);
+        scene.add(scrollGroup);
+
+        let lensShift = { x: -0.18 };
+
+        function applyLensShift() {
+            camera.setViewOffset(wrapper.clientWidth, wrapper.clientHeight, wrapper.clientWidth * lensShift.x, 0, wrapper.clientWidth, wrapper.clientHeight);
+            camera.updateProjectionMatrix();
+        }
+
+        const loader = new GLTFLoader();
+        loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/scene.gltf', (gltf) => {
+            const model = gltf.scene;
+            model.traverse(child => {
+                if (child.isMesh) {
+                    child.material.metalness = 0.5; child.material.roughness = 0.3;
+                    if (child.name.toLowerCase().includes('frame') || child.name.toLowerCase().includes('border')) {
+                        child.material.emissive = new THREE.Color(0xffffff); child.material.emissiveIntensity = 0.3;
+                    }
+                }
+            });
+
+            // ESCALA PUNTO MEDIO (0.072)
+            model.scale.set(0.072, 0.072, 0.072);
+
+            const box = new THREE.Box3().setFromObject(model);
+            const center = box.getCenter(new THREE.Vector3());
+
+            // POSICIÓN PUNTO MEDIO (-0.4)
+            model.position.set(-center.x, -box.min.y - 0.4, -center.z);
+
+            mouseRotationGroup.add(model);
+            mouseRotationGroup.rotation.y = -(Math.PI / 2) - 0.25;
+
+            loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/pantalla.gltf', pGltf => {
+                pGltf.scene.traverse(c => { if (c.isMesh) c.material = videoMaterial; });
+                model.add(pGltf.scene);
+            });
+
+            // ZOOM DE CÁMARA EQUILIBRADO (0.8)
+            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * 0.8);
+            camera.lookAt(0, box.getSize(new THREE.Vector3()).y / 2, 0);
+            applyLensShift();
+
+            videoEl.src = slides[0].video;
+            visitBtn.href = slides[0].link;
+            videoEl.play();
+            typeEffect(0);
+
+            clearTimeout(hintTimeout);
+            hintTimeout = setTimeout(() => { rotationIcon.style.opacity = 0; }, 3000);
+        });
+
+        function typeEffect(index) {
+            clearTimeout(eraseTimeout); clearTimeout(writeTimeout);
+            let data = slides[index];
+            let text = titleEl.textContent;
+
+            visitBtn.style.opacity = 0;
+            visitBtn.href = data.link;
+
+            const erase = () => {
+                if (text.length > 0) {
+                    text = text.slice(0, -1);
+                    titleEl.textContent = text;
+                    eraseTimeout = setTimeout(erase, 25);
+                } else {
+                    let i = 0;
+                    const write = () => {
+                        if (i < data.title.length) {
+                            titleEl.textContent += data.title[i];
+                            i++;
+                            writeTimeout = setTimeout(write, 60);
+                        } else {
+                            descEl.textContent = data.desc;
+                            descEl.style.opacity = 1;
+                            visitBtn.style.opacity = 1;
+                        }
+                    };
+                    write();
+                }
+            };
+            erase();
+        }
+
+        function hideHintImmediately() {
+            clearTimeout(hintTimeout);
+            rotationIcon.style.opacity = 0;
+        }
+
+        function move(direction) {
+            hideHintImmediately();
+
+            if (direction === 'next') currentIdx = (currentIdx + 1) % slides.length;
+            else currentIdx = (currentIdx - 1 + slides.length) % slides.length;
+
+            imacOnLeft = !imacOnLeft;
+            descEl.style.opacity = 0;
+            visitBtn.style.opacity = 0;
+
+            const targetX = imacOnLeft ? 0.18 : -0.18;
+            const targetRot = imacOnLeft ? -(Math.PI / 2) + 0.25 : -(Math.PI / 2) - 0.25;
+
+            gsap.to(rotationIcon, { left: imacOnLeft ? '30%' : '70%', duration: 1.5, ease: "power2.inOut" });
+
+            gsap.to(lensShift, { x: targetX, duration: 1.5, ease: "power2.inOut", onUpdate: applyLensShift, overwrite: true });
+            gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
+
+            if (imacOnLeft) {
+                gsap.set(infoSide, { left: 'auto', right: '5%', textAlign: 'right', top: '32%' });
+            } else {
+                gsap.set(infoSide, { right: 'auto', left: '5%', textAlign: 'left', top: '32%' });
+            }
+
+            videoEl.src = slides[currentIdx].video;
+            videoEl.play();
+            typeEffect(currentIdx);
+
+            setTimeout(() => {
+                if (currentIdx < 2) {
+                    rotationIcon.style.opacity = 1;
+                    clearTimeout(hintTimeout);
+                    hintTimeout = setTimeout(() => { rotationIcon.style.opacity = 0; }, 3000);
+                }
+            }, 600);
+        }
+
+        document.getElementById('btn-prev').addEventListener('click', () => move('prev'));
+        document.getElementById('btn-next').addEventListener('click', () => move('next'));
+
+        let isDragging = false, previousMouseX = 0;
+        renderer.domElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMouseX = e.clientX;
+            hideHintImmediately();
+        });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                mouseRotationGroup.rotation.y += (e.clientX - previousMouseX) * 0.007;
+                previousMouseX = e.clientX;
+            }
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const rect = wrapper.getBoundingClientRect();
+            scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * 0.0008;
+            renderer.render(scene, camera);
+        }
+        animate();
     </script>
 </body>
 
