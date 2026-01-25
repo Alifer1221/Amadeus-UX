@@ -173,6 +173,24 @@
             }
         }
 
+        @media (max-width: 768px) {
+            nav {
+                top: auto;
+                bottom: 20px;
+                padding: 10px 20px;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            /* Ajuste para que nav-hidden funcione en la parte inferior */
+            nav.nav-hidden {
+                transform: translateX(-50%) translateY(150%);
+            }
+        }
+
         /* RESPONSIVE */
         @media (max-width: 900px) {
             #amadeus-text-overlay {
@@ -203,24 +221,26 @@
         /* 5. OTROS ESTILOS PRESERVADOS (NAV, FOOTER, GALAXY) */
         nav {
             position: fixed;
-            top: 30px;
+            top: 20px;
             left: 50%;
-            transform: translateX(-50%) translateZ(0);
-            z-index: 9999;
-            will-change: transform;
-            backface-visibility: hidden;
+            transform: translateX(-50%);
+            width: fit-content;
+            max-width: 95vw;
+            background: rgba(255, 255, 255, 0.05);
+            /* 5% White Glass */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            padding: 10px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 40px;
-            padding: 10px 30px;
-            width: fit-content;
-            max-width: 95vw;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 100px;
+            z-index: 9999;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, opacity 0.3s ease;
+            will-change: transform;
         }
 
         nav.nav-hidden {
