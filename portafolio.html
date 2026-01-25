@@ -120,8 +120,8 @@
             opacity: 0;
 
             /* ENTRADA SUAVE (CSS PURO) */
-            animation: amadeusEntry 3s ease-in-out forwards;
-            animation-delay: 1.2s;
+            animation: amadeusEntry 1.5s ease-in-out forwards;
+            animation-delay: 0.5s;
             will-change: opacity;
         }
 
@@ -475,7 +475,7 @@
         (function () {
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 3.5, typingSpeed: 100
+                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.8, typingSpeed: 60
             };
 
             const container = document.getElementById('amadeus-hero-section');
@@ -636,8 +636,8 @@
                     }
 
                     if (!introFinished) {
-                        cx += (hx - cx) * 0.02 * ease;
-                        cy += (hy - cy) * 0.02 * ease;
+                        cx += (hx - cx) * 0.06 * ease;
+                        cy += (hy - cy) * 0.06 * ease;
                         cx -= mDx * 2; cy -= mDy * 2;
                     } else {
                         velocitiesX[i] += (hx - cx) * 0.015; velocitiesY[i] += (hy - cy) * 0.015;
