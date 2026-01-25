@@ -50,6 +50,13 @@
             gap: 40px;
             z-index: 9999;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .nav-hidden {
+            transform: translate(-50%, -100px) !important;
+            opacity: 0;
+            pointer-events: none;
         }
 
         .nav-logo {
@@ -895,6 +902,22 @@
             renderer.render(scene, camera);
         }
         animate();
+    </script>
+    <script>
+        // LÓGICA DE NAVEGACIÓN STICKY (Hide on scroll down, show on up)
+        (function () {
+            let lastScrollY = window.scrollY;
+            const nav = document.querySelector('nav');
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.scrollY;
+                if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                    nav.classList.add('nav-hidden');
+                } else {
+                    nav.classList.remove('nav-hidden');
+                }
+                lastScrollY = currentScrollY;
+            });
+        })();
     </script>
 </body>
 
