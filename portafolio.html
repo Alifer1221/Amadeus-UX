@@ -111,197 +111,198 @@
             .nav-menu {
                 display: none;
             }
+        }
 
-            /* 1. BLINDAJE VISUAL: FONDO NEGRO CRÍTICO */
-            html {
-                background-color: #151515 !important;
-                width: 100%;
-                overflow-x: hidden;
-            }
+        /* 1. BLINDAJE VISUAL: FONDO NEGRO CRÍTICO */
+        html {
+            background-color: #151515 !important;
+            width: 100%;
+            overflow-x: hidden;
+        }
 
-            body {
-                background-color: #151515 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                min-height: 100vh;
-                overflow-x: hidden;
-            }
+        body {
+            background-color: #151515 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-            /* 2. ESTRUCTURA HERO */
-            #amadeus-hero-section {
-                position: relative;
-                width: 100%;
-                height: 100vh;
-                background-color: #151515;
-                overflow: hidden;
-                display: block;
-            }
+        /* 2. ESTRUCTURA HERO */
+        #amadeus-hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-color: #151515;
+            overflow: hidden;
+            display: block;
+        }
 
-            #amadeus-hero-section canvas {
-                display: block;
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 1;
-            }
+        #amadeus-hero-section canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
 
-            /* 3. TEXTO */
-            #amadeus-text-overlay {
-                position: absolute;
-                top: 50%;
-                left: 8%;
-                transform: translateY(-50%);
-                width: 45%;
-                max-width: 650px;
-                z-index: 10;
-                pointer-events: none;
-                margin: 0 !important;
-            }
+        /* 3. TEXTO */
+        #amadeus-text-overlay {
+            position: absolute;
+            top: 50%;
+            left: 8%;
+            transform: translateY(-50%);
+            width: 45%;
+            max-width: 650px;
+            z-index: 10;
+            pointer-events: none;
+            margin: 0 !important;
+        }
 
-            .amadeus-title {
-                font-family: 'Manrope', sans-serif;
-                font-size: 4.5rem;
-                font-weight: 400;
-                line-height: 1.1;
-                margin: 0 0 1.5rem 0;
-                background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-                -webkit-background-clip: text;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                color: #6a11cb;
-                opacity: 0;
-            }
+        .amadeus-title {
+            font-family: 'Manrope', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 400;
+            line-height: 1.1;
+            margin: 0 0 1.5rem 0;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #6a11cb;
+            opacity: 0;
+        }
 
-            .amadeus-desc {
-                font-family: 'Montserrat', sans-serif;
-                font-size: 1.2rem;
-                color: #e0e0e0;
-                line-height: 1.6;
-                margin: 0;
-                opacity: 0;
-                transition: opacity 1s ease;
-            }
+        .amadeus-desc {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
 
-            .amadeus-desc.visible {
+        .amadeus-desc.visible {
+            opacity: 1;
+        }
+
+        .typing-cursor::after {
+            content: '|';
+            display: inline-block;
+            margin-left: 5px;
+            color: #2575fc;
+            animation: amadeus-blink 0.8s infinite;
+        }
+
+        @keyframes amadeus-blink {
+
+            0%,
+            100% {
                 opacity: 1;
             }
 
-            .typing-cursor::after {
-                content: '|';
-                display: inline-block;
-                margin-left: 5px;
-                color: #2575fc;
-                animation: amadeus-blink 0.8s infinite;
-            }
-
-            @keyframes amadeus-blink {
-
-                0%,
-                100% {
-                    opacity: 1;
-                }
-
-                50% {
-                    opacity: 0;
-                }
-            }
-
-            /* === 4. LOGOS (OPTIMIZADOS + HOVER SIN MANITA) === */
-            #amadeus-marquee-final {
-                width: 100%;
-                overflow: hidden;
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                padding: 30px 0;
-                z-index: 20;
-
-                /* Contenedor invisible para el mouse (salvo las imágenes) */
-                pointer-events: none;
+            50% {
                 opacity: 0;
+            }
+        }
 
-                /* ENTRADA SUAVE (CSS PURO) */
-                animation: amadeusEntry 3s ease-in-out forwards;
-                animation-delay: 1.2s;
-                will-change: opacity;
+        /* === 4. LOGOS (OPTIMIZADOS + HOVER SIN MANITA) === */
+        #amadeus-marquee-final {
+            width: 100%;
+            overflow: hidden;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 30px 0;
+            z-index: 20;
+
+            /* Contenedor invisible para el mouse (salvo las imágenes) */
+            pointer-events: none;
+            opacity: 0;
+
+            /* ENTRADA SUAVE (CSS PURO) */
+            animation: amadeusEntry 3s ease-in-out forwards;
+            animation-delay: 1.2s;
+            will-change: opacity;
+        }
+
+        @keyframes amadeusEntry {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .amadeus-track {
+            display: flex;
+            align-items: center;
+            width: max-content;
+            animation: amadeus-scroll-infinite 45s linear infinite;
+            will-change: transform;
+            transform: translateZ(0);
+            /* Aceleración GPU */
+        }
+
+        .amadeus-track img {
+            height: 45px;
+            width: auto;
+            margin: 0 80px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+            transform: translate3d(0, 0, 0);
+
+            /* INTERACCIÓN */
+            pointer-events: auto;
+            /* Reactiva el mouse sobre la imagen */
+            cursor: default;
+            /* Mantiene la flecha normal */
+            transition: filter 0.4s ease, transform 0.4s ease;
+        }
+
+        /* EFECTO HOVER (BRILLO + ESCALA) */
+        .amadeus-track img:hover {
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8)) brightness(1.2);
+            transform: scale(1.05) translate3d(0, 0, 0);
+        }
+
+        @keyframes amadeus-scroll-infinite {
+            0% {
+                transform: translateX(0);
             }
 
-            @keyframes amadeusEntry {
-                to {
-                    opacity: 1;
-                }
+            100% {
+                transform: translateX(-25%);
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            #amadeus-text-overlay {
+                width: 90%;
+                margin: 0 auto !important;
+                text-align: center;
+                transform: none;
+                top: 22%;
+                height: auto;
             }
 
-            .amadeus-track {
-                display: flex;
-                align-items: center;
-                width: max-content;
-                animation: amadeus-scroll-infinite 45s linear infinite;
-                will-change: transform;
-                transform: translateZ(0);
-                /* Aceleración GPU */
+            .amadeus-title {
+                font-size: 3rem;
+                opacity: 1;
+                margin-bottom: 1rem;
+            }
+
+            .amadeus-desc {
+                font-size: 1rem;
             }
 
             .amadeus-track img {
-                height: 45px;
-                width: auto;
-                margin: 0 80px;
-                flex-shrink: 0;
-                filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
-                transform: translate3d(0, 0, 0);
-
-                /* INTERACCIÓN */
-                pointer-events: auto;
-                /* Reactiva el mouse sobre la imagen */
-                cursor: default;
-                /* Mantiene la flecha normal */
-                transition: filter 0.4s ease, transform 0.4s ease;
+                height: 35px;
+                margin: 0 40px;
             }
-
-            /* EFECTO HOVER (BRILLO + ESCALA) */
-            .amadeus-track img:hover {
-                filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8)) brightness(1.2);
-                transform: scale(1.05) translate3d(0, 0, 0);
-            }
-
-            @keyframes amadeus-scroll-infinite {
-                0% {
-                    transform: translateX(0);
-                }
-
-                100% {
-                    transform: translateX(-25%);
-                }
-            }
-
-            /* RESPONSIVE */
-            @media (max-width: 900px) {
-                #amadeus-text-overlay {
-                    width: 90%;
-                    margin: 0 auto !important;
-                    text-align: center;
-                    transform: none;
-                    top: 22%;
-                    height: auto;
-                }
-
-                .amadeus-title {
-                    font-size: 3rem;
-                    opacity: 1;
-                    margin-bottom: 1rem;
-                }
-
-                .amadeus-desc {
-                    font-size: 1rem;
-                }
-
-                .amadeus-track img {
-                    height: 35px;
-                    margin: 0 40px;
-                }
-            }
+        }
     </style>
     <script>
         // SCRIPT CRÍTICO: Previene el flash blanco al recargar
