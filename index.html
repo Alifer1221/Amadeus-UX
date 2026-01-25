@@ -160,6 +160,7 @@
             font-weight: 800;
             background: linear-gradient(to right, #ffffff, #999999);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -864,6 +865,7 @@
             border-radius: 12px;
             overflow: hidden;
             -webkit-mask-image: -webkit-radial-gradient(white, black);
+            mask-image: -webkit-radial-gradient(white, black);
             transform: translateZ(0);
             background: #000;
         }
@@ -1142,18 +1144,7 @@
             letter-spacing: 1px;
         }
 
-        #testimonial-section:hover #testimonial-cursor {
-            /* REMOVE GLOBAL HOVER EFFECT */
-            /* transform: translate(-50%, -50%) scale(1); */
-        }
 
-        /* Show cursor ONLY when hovering cards */
-        .testimonial-card:hover~#testimonial-cursor,
-        #testimonial-section .testimonial-container:hover~#testimonial-cursor {
-            /* This approach is tricky with siblings. Better to handle valid state in JS or strict CSS.
-    Actually, JS is safer for "floating" behavior to avoid flickering.
-    Let's rely on JS for the scale transform. */
-        }
 
         @media (max-width: 768px) {
             #testimonial-section .testimonial-container {
@@ -1200,19 +1191,6 @@
             /* Necessary for some effects */
             cursor: none;
             /* Hide default cursor over card */
-        }
-
-        /* TEXT BLINDS WRAPPER IF NEEDED (Applied via JS/CSS logic) */
-        .testimonial-text {
-            /* overflow: hidden; <-- If we want the container to clip the text sliding up */
-            /* However, simplistic animation on
-        the element itself might just need 'opacity' and 'y' */
-            /* If 'Blinds Up' effectively
-        means 'Revealing from bottom' , we need a mask. */
-            /* But given the user's impatience, a nice smooth slide-up
-        fade is usually what 'blinds' implies in web-speak unless specifically line-masked */
-            /* Let's trust the GSAP
-        y: '100%' -> '0%' with opacity will look sufficiently 'blind-like' */
         }
     </style>
 
@@ -1368,6 +1346,7 @@
             border-radius: 12px;
             overflow: hidden;
             -webkit-mask-image: -webkit-radial-gradient(white, black);
+            mask-image: -webkit-radial-gradient(white, black);
             transform: translateZ(0);
             background: #000;
         }

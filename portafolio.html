@@ -9,7 +9,7 @@
     <meta name="color-scheme" content="dark">
 
     <style>
-        /* 1. ESTILOS CRÍTICOS ANTI-FLASH */
+        /* 1. BLINDAJE VISUAL: FONDO NEGRO CRÍTICO */
         html {
             background-color: #151515 !important;
             width: 100%;
@@ -24,7 +24,7 @@
             overflow-x: hidden;
         }
 
-        /* 2. CONTENEDOR HERO */
+        /* 2. ESTRUCTURA HERO */
         #amadeus-hero-section {
             position: relative;
             width: 100%;
@@ -32,7 +32,6 @@
             background-color: #151515;
             overflow: hidden;
             display: block;
-            z-index: 1;
         }
 
         #amadeus-hero-section canvas {
@@ -106,12 +105,79 @@
             }
         }
 
-        /* 4. RESPONSIVE (MÓVIL) */
+        /* === 4. LOGOS (OPTIMIZADOS + HOVER SIN MANITA) === */
+        #amadeus-marquee-final {
+            width: 100%;
+            overflow: hidden;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 30px 0;
+            z-index: 20;
+
+            /* Contenedor invisible para el mouse (salvo las imágenes) */
+            pointer-events: none;
+            opacity: 0;
+
+            /* ENTRADA SUAVE (CSS PURO) */
+            animation: amadeusEntry 3s ease-in-out forwards;
+            animation-delay: 1.2s;
+            will-change: opacity;
+        }
+
+        @keyframes amadeusEntry {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .amadeus-track {
+            display: flex;
+            align-items: center;
+            width: max-content;
+            animation: amadeus-scroll-infinite 45s linear infinite;
+            will-change: transform;
+            transform: translateZ(0);
+            /* Aceleración GPU */
+        }
+
+        .amadeus-track img {
+            height: 45px;
+            width: auto;
+            margin: 0 80px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+            transform: translate3d(0, 0, 0);
+
+            /* INTERACCIÓN */
+            pointer-events: auto;
+            /* Reactiva el mouse sobre la imagen */
+            cursor: default;
+            /* Mantiene la flecha normal */
+            transition: filter 0.4s ease, transform 0.4s ease;
+        }
+
+        /* EFECTO HOVER (BRILLO + ESCALA) */
+        .amadeus-track img:hover {
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8)) brightness(1.2);
+            transform: scale(1.05) translate3d(0, 0, 0);
+        }
+
+        @keyframes amadeus-scroll-infinite {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-25%);
+            }
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 900px) {
             #amadeus-text-overlay {
                 width: 90%;
                 margin: 0 auto !important;
-                padding-top: 0;
                 text-align: center;
                 transform: none;
                 top: 22%;
@@ -126,6 +192,11 @@
 
             .amadeus-desc {
                 font-size: 1rem;
+            }
+
+            .amadeus-track img {
+                height: 35px;
+                margin: 0 40px;
             }
         }
 
@@ -209,43 +280,7 @@
             box-shadow: 0 0 15px rgba(37, 117, 252, 0.4);
         }
 
-        #amadeus-marquee-final {
-            width: 100%;
-            overflow: hidden;
-            background: transparent !important;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            padding: 30px 0;
-            z-index: 20;
-        }
 
-        #amadeus-marquee-final .amadeus-track {
-            display: flex;
-            align-items: center;
-            width: max-content;
-            animation: amadeus-scroll-infinite 45s linear infinite;
-        }
-
-        #amadeus-marquee-final .amadeus-track img {
-            height: 45px;
-            width: auto;
-            margin: 0 80px;
-            flex-shrink: 0;
-            display: block;
-            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
-            transition: filter 0.3s ease;
-        }
-
-        @keyframes amadeus-scroll-infinite {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-25%);
-            }
-        }
 
         #galaxy-background-wrapper {
             position: fixed;
@@ -296,7 +331,7 @@
     </style>
 
     <script>
-        // Script anti-flash
+        // SCRIPT CRÍTICO: Previene el flash blanco al recargar
         window.onbeforeunload = function () {
             document.body.style.opacity = "0";
             window.scrollTo(0, 0);
@@ -321,48 +356,38 @@
                 están en proceso de creación.
             </p>
         </div>
-        <!-- El marquee se queda pero se revela con GSAP -->
-        <div id="amadeus-marquee-final" style="opacity: 0; visibility: hidden;">
-            <div class="amadeus-track">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
-                    alt="3D Model">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
-                    alt="HTML5">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
-                    alt="Marketing">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
-                    alt="Motion">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
-                    alt="Program">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
-                    alt="Video">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
-                    alt="Webflow">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
-                    alt="Wordpress">
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
-                    alt="Shopify">
 
-                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png" alt="AI">
+        <div id="amadeus-marquee-final">
+            <div class="amadeus-track">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png"
+                    loading="lazy" importance="low" decoding="async" alt="AI">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
-                    alt="3D Model">
+                    loading="lazy" importance="low" decoding="async" alt="3D">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
-                    alt="HTML5">
+                    loading="lazy" importance="low" decoding="async" alt="H5">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
-                    alt="Marketing">
+                    loading="lazy" importance="low" decoding="async" alt="MKT">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/motion%20logo.png"
-                    alt="Motion">
+                    loading="lazy" importance="low" decoding="async" alt="MTN">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/program%20logo.png"
-                    alt="Program">
+                    loading="lazy" importance="low" decoding="async" alt="PRG">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/video%20logo.png"
-                    alt="Video">
+                    loading="lazy" importance="low" decoding="async" alt="VID">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/webflow%20logo.png"
-                    alt="Webflow">
+                    loading="lazy" importance="low" decoding="async" alt="WF">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/wordpress%20logo.png"
-                    alt="Wordpress">
+                    loading="lazy" importance="low" decoding="async" alt="WP">
                 <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/shopify%20logo.png"
-                    alt="Shopify">
+                    loading="lazy" importance="low" decoding="async" alt="SH">
+
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/AI%20logo.png"
+                    loading="lazy" importance="low" decoding="async" alt="AI">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/Logo%203d%20Model.png"
+                    loading="lazy" importance="low" decoding="async" alt="3D">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/html5%20logo.png"
+                    loading="lazy" importance="low" decoding="async" alt="H5">
+                <img src="https://raw.githubusercontent.com/Amadeusguitarte/logosmarquee/main/marketing%20logo.png"
+                    loading="lazy" importance="low" decoding="async" alt="MKT">
             </div>
         </div>
     </section>
@@ -392,7 +417,7 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/gh/Amadeusguitarte/libreria@main/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
         // GALAXY BACKGROUND SCRIPT
@@ -444,8 +469,9 @@
             }
             resize(); animateGalaxy();
         })();
+    </script>
 
-        // HERO LOGIC CON MÓVIL Y REVELACIÓN
+    <script>
         (function () {
             const CONFIG = {
                 imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
@@ -461,8 +487,8 @@
             const clock = new THREE.Clock();
             let elapsedTime = 0;
             let introFinished = false;
-            let framesRendered = 0;
 
+            // Verificación de seguridad
             if (typeof THREE === 'undefined') {
                 console.error("Three.js error.");
             } else {
@@ -472,7 +498,6 @@
             function init() {
                 width = container.offsetWidth;
                 height = container.offsetHeight;
-
                 scene = new THREE.Scene();
                 camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
                 camera.position.z = 10;
@@ -480,17 +505,14 @@
                 renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
                 renderer.setSize(width, height);
                 renderer.setPixelRatio(window.devicePixelRatio);
-
-                renderer.domElement.style.display = 'block';
-                renderer.domElement.style.width = '100%';
-                renderer.domElement.style.height = '100%';
-
                 container.appendChild(renderer.domElement);
 
                 const loader = new THREE.TextureLoader();
                 loader.crossOrigin = "Anonymous";
                 loader.load(CONFIG.imageUrl, function (texture) {
                     createParticles(texture.image);
+                    // Renderizado MANUAL del frame 0: Elimina el parpadeo gris
+                    renderer.render(scene, camera);
                     startTextImmediate();
                     animate();
                 });
@@ -501,7 +523,7 @@
                 document.addEventListener('touchstart', onTouchMove, { passive: true });
             }
 
-            let initialPositions, speeds, offsets, velocitiesX, velocitiesY, count, mouse = { x: -9999, y: -9999 };
+            let initialPositions, offsets, velocitiesX, velocitiesY, count, mouse = { x: -9999, y: -9999 };
 
             function createParticles(image) {
                 const cvs = document.createElement('canvas');
@@ -518,15 +540,8 @@
                     if (logoW > width * 0.6) { logoW = width * 0.6; logoH = logoW / aspectRatio; }
                 }
 
-                let startX, startY;
-
-                if (width >= 900) {
-                    startX = (width * 0.75 - logoW / 2);
-                    startY = (height - logoH) / 2;
-                } else {
-                    startX = (width - logoW) / 2;
-                    startY = (height - logoH) / 2 + (height * 0.18);
-                }
+                let startX = (width >= 900) ? (width * 0.75 - logoW / 2) : (width - logoW) / 2;
+                let startY = (width >= 900) ? (height - logoH) / 2 : (height - logoH) / 2 + (height * 0.18);
 
                 ctx.drawImage(image, startX, startY, logoW, logoH);
                 const data = ctx.getImageData(0, 0, width, height).data;
@@ -539,7 +554,6 @@
                             positions.push((Math.random() - 0.5) * width * 3, (Math.random() - 0.5) * height * 3, 0);
                             inits.push(x - width / 2, -(y - height / 2), 0);
                             colors.push(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255);
-                            spds.push(Math.random() * 0.02 + 0.01);
                             offs.push(Math.random() * Math.PI * 2);
                             velsX.push(0); velsY.push(0);
                         }
@@ -551,7 +565,6 @@
                 geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
                 geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
                 initialPositions = new Float32Array(inits);
-                speeds = new Float32Array(spds);
                 offsets = new Float32Array(offs);
                 velocitiesX = new Float32Array(velsX);
                 velocitiesY = new Float32Array(velsY);
@@ -579,8 +592,7 @@
             function onWindowResize() {
                 width = container.offsetWidth; height = container.offsetHeight;
                 camera.left = width / -2; camera.right = width / 2; camera.top = height / 2; camera.bottom = height / -2;
-                camera.updateProjectionMatrix();
-                renderer.setSize(width, height);
+                camera.updateProjectionMatrix(); renderer.setSize(width, height);
             }
 
             function startTextImmediate() {
@@ -598,70 +610,38 @@
                 }, CONFIG.typingSpeed);
             }
 
-            const easeOut = t => 1 - Math.pow(1 - t, 3);
-
-            let navRevealed = false;
-
             function animate() {
                 requestAnimationFrame(animate);
-
-                // REVELACIÓN GRADUAL (Sin el NAV inicialmente)
-                if (framesRendered < 20) {
-                    framesRendered++;
-                    if (framesRendered === 15) {
-                        gsap.to(["#amadeus-marquee-final", ".next-section", "footer", "#galaxy-background-wrapper"], {
-                            opacity: 1, visibility: "visible", duration: 1.2, stagger: 0.15
-                        });
-                    }
-                }
-
                 const delta = clock.getDelta();
                 elapsedTime += delta;
                 let progress = Math.min(elapsedTime / CONFIG.duration, 1.0);
-
-                if (progress >= 1 && !navRevealed) {
-                    navRevealed = true;
-                    introFinished = true;
-                    // REVELAMOS EL HEADER SOLO AL FINALIZAR LA ANIMACIÓN
-                    gsap.to("nav", { opacity: 1, visibility: "visible", duration: 1.0 });
-                }
-
+                if (progress >= 1) introFinished = true;
                 if (!particles) return;
 
                 const posArray = geometry.attributes.position.array;
-                const ease = easeOut(progress);
+                const ease = 1 - Math.pow(1 - progress, 3);
 
                 for (let i = 0; i < count; i++) {
                     const i3 = i * 3;
                     let cx = posArray[i3], cy = posArray[i3 + 1];
-
                     const hx = initialPositions[i3] + Math.cos(elapsedTime + offsets[i]) * 2.5;
                     const hy = initialPositions[i3 + 1] + Math.sin(elapsedTime + offsets[i]) * 2.5;
 
-                    let mouseDx = 0, mouseDy = 0;
-                    const dx = mouse.x - cx;
-                    const dy = mouse.y - cy;
-                    const dSq = dx * dx + dy * dy;
-
-                    if (dSq < CONFIG.mouseRadius * CONFIG.mouseRadius) {
-                        const dist = Math.sqrt(dSq);
-                        const f = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius;
-                        const a = Math.atan2(dy, dx);
-                        mouseDx = Math.cos(a) * f * CONFIG.mouseForce;
-                        mouseDy = Math.sin(a) * f * CONFIG.mouseForce;
+                    let mDx = 0, mDy = 0;
+                    const dx = mouse.x - cx, dy = mouse.y - cy, dSq = dx * dx + dy * dy;
+                    if (dSq < 1225) {
+                        const dist = Math.sqrt(dSq), f = (35 - dist) / 35, a = Math.atan2(dy, dx);
+                        mDx = Math.cos(a) * f * CONFIG.mouseForce;
+                        mDy = Math.sin(a) * f * CONFIG.mouseForce;
                     }
 
                     if (!introFinished) {
                         cx += (hx - cx) * 0.02 * ease;
                         cy += (hy - cy) * 0.02 * ease;
-                        cx -= mouseDx * 2;
-                        cy -= mouseDy * 2;
-                        velocitiesX[i] = 0; velocitiesY[i] = 0;
+                        cx -= mDx * 2; cy -= mDy * 2;
                     } else {
-                        velocitiesX[i] += (hx - cx) * 0.015;
-                        velocitiesY[i] += (hy - cy) * 0.015;
-                        velocitiesX[i] -= mouseDx;
-                        velocitiesY[i] -= mouseDy;
+                        velocitiesX[i] += (hx - cx) * 0.015; velocitiesY[i] += (hy - cy) * 0.015;
+                        velocitiesX[i] -= mDx; velocitiesY[i] -= mDy;
                         velocitiesX[i] *= 0.94; velocitiesY[i] *= 0.94;
                         cx += velocitiesX[i]; cy += velocitiesY[i];
                     }
@@ -671,7 +651,9 @@
                 renderer.render(scene, camera);
             }
         })();
+    </script>
 
+    <script>
         // NAV HIDE SCRIPT
         (function () {
             let lastScrollY = window.scrollY;
