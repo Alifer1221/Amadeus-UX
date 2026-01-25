@@ -790,8 +790,8 @@
                 model.add(pGltf.scene);
             });
 
-            // ZOOM DE CÁMARA EQUILIBRADO (0.84)
-            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * 0.84);
+            // ZOOM DE CÁMARA EQUILIBRADO (0.8)
+            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * 0.8);
             camera.lookAt(0, box.getSize(new THREE.Vector3()).y / 2, 0);
             applyLensShift();
 
@@ -860,9 +860,9 @@
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (imacOnLeft) {
-                gsap.set(infoSide, { left: 'auto', right: '5%', textAlign: 'right', top: '32%' });
+                gsap.set(infoSide, { left: 'auto', right: '3%', textAlign: 'right', top: '32%', width: '32%' });
             } else {
-                gsap.set(infoSide, { right: 'auto', left: '5%', textAlign: 'left', top: '32%' });
+                gsap.set(infoSide, { right: 'auto', left: '3%', textAlign: 'left', top: '32%', width: '32%' });
             }
 
             videoEl.src = slides[currentIdx].video;
