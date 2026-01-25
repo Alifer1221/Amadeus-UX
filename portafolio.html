@@ -790,8 +790,8 @@
                 model.add(pGltf.scene);
             });
 
-            // ZOOM DE CÁMARA EQUILIBRADO (0.8)
-            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * 0.8);
+            // ZOOM DE CÁMARA EQUILIBRADO (0.84)
+            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * 0.84);
             camera.lookAt(0, box.getSize(new THREE.Vector3()).y / 2, 0);
             applyLensShift();
 
