@@ -34,11 +34,12 @@
             background-color: var(--bg);
             overflow-x: hidden;
             overflow-y: auto;
-            min-height: 200vh;
-            display: block;
-            /* Changed from flex to allow scrolling content */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             font-family: var(--sans);
             position: relative;
+            margin: 0;
         }
 
         /* --- NAVIGATION STYLES (Floating Pill) --- */
@@ -50,7 +51,6 @@
             width: fit-content;
             max-width: 95vw;
             background: rgba(0, 0, 0, 0.05);
-            /* Changed from white for visibility on light bg */
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(0, 0, 0, 0.1);
@@ -138,7 +138,6 @@
         /* --- SLIDER STYLES --- */
         .background-logo {
             position: fixed;
-            /* Changed to fixed to stay during scroll */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -163,7 +162,6 @@
             cursor: grab;
             perspective: 1000px;
             user-select: none;
-            /* Prevent selection while dragging */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -172,14 +170,12 @@
         .slider-wrapper {
             display: flex;
             align-items: center;
-            /* Importante: will-change ayuda al navegador a prepararse */
             will-change: transform;
         }
 
         .card-container {
             padding: 0 1.25vw;
             flex: 0 0 auto;
-            /* Evitamos que el contenedor colapse al escalar el hijo */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -192,13 +188,9 @@
             overflow: hidden;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
             background: #e2e2e2;
-
-            /* OPTIMIZACIÓN EXTREMA */
             transform: translate3d(0, 0, 0);
-            /* Fuerza GPU */
             backface-visibility: hidden;
             will-change: transform;
-            /* Solo transform, nada de filtros */
             transform-origin: center center;
         }
 
@@ -210,7 +202,6 @@
             pointer-events: none;
         }
 
-        /* TAMAÑOS */
         .v-med {
             width: 21vw;
             height: 30.4vw;
@@ -240,8 +231,9 @@
         .reveal-section {
             position: relative;
             width: 100%;
-            min-height: 60vh;
-            padding: 15vh 10vw 5vh;
+            min-height: 80vh;
+            /* Increased slightly from 60vh for safety */
+            padding: 10vh 10vw;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -252,14 +244,16 @@
 
         .reveal-text {
             font-family: var(--manrope);
-            font-size: clamp(1.425rem, 3.325vw, 3.8rem);
+            font-size: clamp(1.425rem, 3.2vw, 3.6rem);
+            /* Balanced size */
             font-weight: 400;
-            line-height: 1.3;
+            line-height: 1.4;
             color: #333;
             text-align: center;
+            width: 100%;
             max-width: 1200px;
-            overflow: hidden;
-            /* Important for the blind effect */
+            margin: 0 auto;
+            opacity: 1;
         }
 
         .reveal-line {
@@ -614,7 +608,8 @@
         gsap.registerPlugin(ScrollTrigger);
 
         const splitText = (el) => {
-            const text = el.innerText.trim().replace(/\s+/g, ' '); // Clean extra whitespace
+            if (!el) return;
+            const text = el.innerText.trim().replace(/\s+/g, ' ');
             const parts = text.split(' ');
             el.innerHTML = '';
 
@@ -625,7 +620,6 @@
                 span.style.display = 'inline-block';
                 el.appendChild(span);
 
-                // Add a space span between words (except after the last one)
                 if (index < parts.length - 1) {
                     const space = document.createElement('span');
                     space.innerHTML = '&nbsp;';
@@ -661,23 +655,43 @@
                 lineDiv.appendChild(innerSpan);
                 el.appendChild(lineDiv);
             });
+
             return el.querySelectorAll('.reveal-line-inner');
         };
 
         const target = document.getElementById('revealText');
-        const animatedLines = splitText(target);
+        let animatedLines;
 
-        gsap.to(animatedLines, {
-            y: "0%",
-            duration: 1.2,
-            stagger: 0.15,
-            ease: "power4.out",
-            scrollTrigger: {
-                trigger: ".reveal-section",
-                start: "top 70%",
-                end: "bottom bottom",
-                toggleActions: "play none none reverse"
+        function initReveal() {
+            animatedLines = splitText(target);
+            if (animatedLines) {
+                gsap.to(animatedLines, {
+                    y: "0%",
+                    duration: 1.5,
+                    stagger: 0.1,
+                    ease: "expo.out",
+                    scrollTrigger: {
+                        trigger: ".reveal-section",
+                        start: "top 75%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
             }
+        }
+
+        // Run after a short delay to ensure layout is ready
+        window.addEventListener('load', () => {
+            setTimeout(initReveal, 100);
+        });
+
+        // Recalculate on resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                ScrollTrigger.getAll().forEach(st => st.kill());
+                initReveal();
+            }, 250);
         });
 
         // --- MULTI-COLUMN VERTICAL SLIDER LOGIC ---
