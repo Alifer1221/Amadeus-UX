@@ -274,6 +274,130 @@
             transform: translateY(100%);
             transition: none;
         }
+
+        /* --- MULTI-COLUMN SLIDER STYLES --- */
+        .vertical-slider-container {
+            height: 570vh;
+            background-color: var(--bg);
+            position: relative;
+            z-index: 3;
+        }
+
+        .sticky-viewport {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: flex-start;
+        }
+
+        .titles-column {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .service-title {
+            font-family: var(--manrope);
+            font-size: clamp(1.8rem, 3vw, 3rem);
+            font-weight: 800;
+            color: #d1d1d1;
+            line-height: 1.1;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            opacity: 0.4;
+        }
+
+        .service-title.active {
+            color: #333;
+            transform: scale(1.10);
+            opacity: 1;
+        }
+
+        .track-column {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: center;
+            padding: 0 30px;
+            will-change: transform;
+        }
+
+        .spacer {
+            height: 80vh;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .card-slot {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .work-card {
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            opacity: 0.1;
+            transform: translateY(30px) scale(0.9);
+            transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .work-card.focus {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .work-card img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-meta p {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card-meta a {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 2px solid #333;
+            padding-bottom: 4px;
+            text-transform: uppercase;
+            font-family: var(--manrope);
+        }
+
+        @media (max-width: 1024px) {
+            .sticky-viewport {
+                grid-template-columns: 1fr;
+            }
+
+            .track-column {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -305,7 +429,81 @@
         </p>
     </section>
 
+    <!-- MULTI-COLUMN VERTICAL SLIDER -->
+    <div class="vertical-slider-container">
+        <div class="sticky-viewport">
+            <div class="track-column" id="trackLeft">
+                <div class="card-slot">
+                    <div class="work-card" data-step="0">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
+                            alt="UX">
+                        <div class="card-meta">
+                            <p>Investigación y diseño de interfaces intuitivas.</p><a href="#">Ver Caso</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div class="card-slot">
+                    <div class="work-card" data-step="2">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80"
+                            alt="Data">
+                        <div class="card-meta">
+                            <p>Visualización de datos y tableros complejos.</p><a href="#">Explorar Data</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+            </div>
+
+            <div class="titles-column">
+                <div class="service-title" id="title-0">UX/UI Design</div>
+                <div class="service-title" id="title-1">Web & App</div>
+                <div class="service-title" id="title-2">Dashboards</div>
+                <div class="service-title" id="title-3">Branding</div>
+            </div>
+
+            <div class="track-column" id="trackRight">
+                <div class="spacer"></div>
+                <div class="card-slot">
+                    <div class="work-card" data-step="1">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80"
+                            alt="Web">
+                        <div class="card-meta">
+                            <p>Plataformas web de alto rendimiento.</p><a href="#">Ver Web</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div class="card-slot">
+                    <div class="work-card" data-step="3">
+                        <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=600&q=80"
+                            alt="Branding">
+                        <div class="card-meta">
+                            <p>Identidades de marca con propósito.</p><a href="#">Ver Identidad</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GSAP & Lenis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+
     <script>
+        // LENIS SMOOTH SCROLL
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+        });
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
         // LÓGICA DE NAVEGACIÓN STICKY
         (function () {
             let lastScrollY = window.scrollY;
@@ -350,22 +548,22 @@
         createCards();
 
         // Referencias para animación optimizada
-        const cards = document.querySelectorAll('.card');
+        const cardsSlider = document.querySelectorAll('.card');
 
         // --- MOTOR DE RENDIMIENTO ---
         // Usamos quickSetter de GSAP. Es mucho más rápido que actualizar style.transform manualmente.
-        const setScale = gsap.quickSetter(cards, "scale");
-        const setX = gsap.quickSetter(wrapper, "x", "px");
+        const setScaleSlider = gsap.quickSetter(cardsSlider, "scale");
+        const setXSlider = gsap.quickSetter(wrapper, "x", "px");
 
-        let scrollX = 0;
-        let isDragging = false;
-        let startX = 0;
+        let scrollXSlider = 0;
+        let isDraggingSlider = false;
+        let startXSlider = 0;
 
         // --- VELOCIDAD EXPLOSIVA ---
-        let proxy = { velocity: 400 };
+        let proxySlider = { velocity: 400 };
 
         // Animación de frenado
-        gsap.to(proxy, {
+        gsap.to(proxySlider, {
             velocity: 0.8,    // Velocidad crucero final
             duration: 2.5,    // Tiempo de estabilización
             ease: "expo.out", // Curva exponencial
@@ -373,43 +571,43 @@
         });
 
         // Eventos
-        window.addEventListener('mousedown', (e) => { isDragging = true; startX = e.pageX; });
-        window.addEventListener('mouseup', () => isDragging = false);
-        window.addEventListener('mouseleave', () => isDragging = false);
+        window.addEventListener('mousedown', (e) => { isDraggingSlider = true; startXSlider = e.pageX; });
+        window.addEventListener('mouseup', () => isDraggingSlider = false);
+        window.addEventListener('mouseleave', () => isDraggingSlider = false);
         window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            scrollX += (e.pageX - startX) * 1.5;
-            startX = e.pageX;
+            if (!isDraggingSlider) return;
+            scrollXSlider += (e.pageX - startXSlider) * 1.5;
+            startXSlider = e.pageX;
         });
 
         // Bucle usando GSAP Ticker
         gsap.ticker.add(() => {
-            if (!isDragging) {
-                scrollX -= proxy.velocity;
+            if (!isDraggingSlider) {
+                scrollXSlider -= proxySlider.velocity;
             }
 
             // Lógica de Bucle Infinito
             const totalWidth = wrapper.offsetWidth;
             const singleSetWidth = totalWidth / 3;
 
-            if (scrollX <= -singleSetWidth) {
-                scrollX += singleSetWidth;
-            } else if (scrollX > 0) {
-                scrollX -= singleSetWidth;
+            if (scrollXSlider <= -singleSetWidth) {
+                scrollXSlider += singleSetWidth;
+            } else if (scrollXSlider > 0) {
+                scrollXSlider -= singleSetWidth;
             }
 
             // 1. Aplicamos movimiento al wrapper
-            setX(scrollX);
+            setXSlider(scrollXSlider);
 
             // 2. Calculamos Escala basada en Velocidad
-            let scaleVal = 1 - (Math.max(0, proxy.velocity - 0.8) / 800);
+            let scaleVal = 1 - (Math.max(0, proxySlider.velocity - 0.8) / 800);
 
             // Límites de seguridad (mínimo 0.6, máximo 1.0)
             if (scaleVal < 0.6) scaleVal = 0.6;
             if (scaleVal > 1) scaleVal = 1;
 
             // 3. Aplicamos escala a TODAS las tarjetas de golpe
-            setScale(scaleVal);
+            setScaleSlider(scaleVal);
         });
 
         // --- TEXT REVEAL LOGIC (Blind Effect) ---
@@ -481,6 +679,39 @@
                 toggleActions: "play none none reverse"
             }
         });
+
+        // --- MULTI-COLUMN VERTICAL SLIDER LOGIC ---
+        const vTitles = document.querySelectorAll('.service-title');
+        const vCards = document.querySelectorAll('.work-card');
+
+        let vTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".vertical-slider-container",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0.15,
+                onUpdate: (self) => updateVState(self.progress)
+            }
+        });
+
+        vTl.fromTo("#trackLeft", { y: "80vh" }, { y: "-320vh", ease: "none" }, 0)
+            .fromTo("#trackRight", { y: "80vh" }, { y: "-320vh", ease: "none" }, 0);
+
+        function updateVState(progress) {
+            let index = Math.floor(progress * 4);
+            if (index > 3) index = 3;
+
+            vTitles.forEach((t, i) => {
+                if (i === index) t.classList.add('active');
+                else t.classList.remove('active');
+            });
+
+            vCards.forEach((c) => {
+                const step = parseInt(c.dataset.step);
+                if (step === index) c.classList.add('focus');
+                else c.classList.remove('focus');
+            });
+        }
     </script>
 </body>
 
