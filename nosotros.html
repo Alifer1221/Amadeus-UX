@@ -416,31 +416,39 @@
         gsap.registerPlugin(ScrollTrigger);
 
         const splitText = (el) => {
-            const text = el.innerText.trim();
-            const words = text.split(' ');
+            const text = el.innerText.trim().replace(/\s+/g, ' '); // Clean extra whitespace
+            const parts = text.split(' ');
             el.innerHTML = '';
 
-            // For a "blind" effect per line, we first need to identify the lines.
-            // Since we don't have SplitText, we'll wrap words and then group them based on their offsetTop.
-            words.forEach(word => {
+            // Create word spans
+            parts.forEach((word, index) => {
                 const span = document.createElement('span');
-                span.innerText = word + ' ';
+                span.innerText = word;
                 span.style.display = 'inline-block';
                 el.appendChild(span);
+
+                // Add a space span between words (except after the last one)
+                if (index < parts.length - 1) {
+                    const space = document.createElement('span');
+                    space.innerHTML = '&nbsp;';
+                    space.style.display = 'inline-block';
+                    el.appendChild(space);
+                }
             });
 
-            const spans = el.querySelectorAll('span');
+            const spans = Array.from(el.children);
             const lines = [];
             let currentLine = [];
             let lastTop = -1;
 
             spans.forEach(span => {
-                if (span.offsetTop > lastTop + 5 && lastTop !== -1) {
+                const top = span.offsetTop;
+                if (top > lastTop + 5 && lastTop !== -1) {
                     lines.push(currentLine);
                     currentLine = [];
                 }
                 currentLine.push(span);
-                lastTop = span.offsetTop;
+                lastTop = top;
             });
             lines.push(currentLine);
 
@@ -455,7 +463,6 @@
                 lineDiv.appendChild(innerSpan);
                 el.appendChild(lineDiv);
             });
-
             return el.querySelectorAll('.reveal-line-inner');
         };
 
