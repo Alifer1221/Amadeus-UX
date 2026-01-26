@@ -4,13 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosotros - Amadeus UX</title>
+    <title>Nosotros - Amadeus Company | High Performance Core</title>
 
-    <!-- Fonts: Manrope (Sans) & Playfair Display (Serif) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;700&family=Manrope:wght@200..800&display=swap"
         rel="stylesheet">
 
     <!-- GSAP -->
@@ -19,29 +17,27 @@
 
     <style>
         :root {
-            --bg-color: #050505;
-            --text-color: #ffffff;
-            --accent-color: #6a11cb;
-            --sans-font: 'Manrope', sans-serif;
+            --bg: #f5f2eb;
+            --serif: 'DM Serif Display', serif;
+            --sans: 'Inter', sans-serif;
+            --manrope: 'Manrope', sans-serif;
+            --accent-color: #8A2BE2;
         }
 
-        *,
-        *::before,
-        *::after {
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        html,
         body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--sans-font);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
+            background-color: var(--bg);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: var(--sans);
+            position: relative;
         }
 
         /* --- NAVIGATION STYLES (Floating Pill) --- */
@@ -52,10 +48,11 @@
             transform: translateX(-50%);
             width: fit-content;
             max-width: 95vw;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.05);
+            /* Changed from white for visibility on light bg */
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 100px;
             padding: 10px 30px;
             display: flex;
@@ -63,7 +60,7 @@
             justify-content: space-between;
             gap: 40px;
             z-index: 9999;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
@@ -74,11 +71,11 @@
         }
 
         .nav-logo {
-            font-family: 'Manrope', sans-serif;
+            font-family: var(--manrope);
             font-weight: 700;
             font-size: 1.1rem;
             text-decoration: none;
-            color: #fff;
+            color: #333;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
@@ -92,9 +89,9 @@
         }
 
         .nav-menu a {
-            font-family: 'Manrope', sans-serif;
+            font-family: var(--manrope);
             text-decoration: none;
-            color: #ccc;
+            color: #666;
             font-size: 0.9rem;
             font-weight: 500;
             transition: color 0.3s ease;
@@ -103,7 +100,7 @@
         }
 
         .nav-menu a:hover {
-            color: #fff;
+            color: #000;
         }
 
         .nav-cta {
@@ -112,7 +109,7 @@
             padding: 10px 24px;
             border-radius: 50px;
             text-decoration: none;
-            font-family: 'Manrope', sans-serif;
+            font-family: var(--manrope);
             font-size: 0.85rem;
             font-weight: 700;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -137,21 +134,99 @@
             }
         }
 
-        .empty-state {
+        /* --- SLIDER STYLES --- */
+        .background-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            height: 85%;
+            background-image: url('https://raw.githubusercontent.com/Alifer1221/logo-grande/main/logo-grande.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: contain;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .infinite-slider {
+            position: relative;
+            width: 100%;
             height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0 20px;
+            z-index: 1;
+            cursor: grab;
+            perspective: 1000px;
         }
 
-        .empty-state h1 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            font-weight: 200;
-            color: rgba(255, 255, 255, 0.1);
-            letter-spacing: 4px;
-            text-transform: uppercase;
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            /* Importante: will-change ayuda al navegador a prepararse */
+            will-change: transform;
+        }
+
+        .card-container {
+            padding: 0 1.25vw;
+            flex: 0 0 auto;
+            /* Evitamos que el contenedor colapse al escalar el hijo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            background: #e2e2e2;
+
+            /* OPTIMIZACIÓN EXTREMA */
+            transform: translate3d(0, 0, 0);
+            /* Fuerza GPU */
+            backface-visibility: hidden;
+            will-change: transform;
+            /* Solo transform, nada de filtros */
+            transform-origin: center center;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        /* TAMAÑOS */
+        .v-med {
+            width: 21vw;
+            height: 30.4vw;
+        }
+
+        .h-std {
+            width: 24vw;
+            height: 18vw;
+        }
+
+        .h-large {
+            width: 28vw;
+            height: 20vw;
+        }
+
+        .v-small {
+            width: 17vw;
+            height: 24.7vw;
+        }
+
+        .h-med {
+            width: 22vw;
+            height: 16vw;
         }
     </style>
 </head>
@@ -170,8 +245,10 @@
         <a href="https://wa.me/573246649104" target="_blank" class="nav-cta">Hablemos</a>
     </nav>
 
-    <div class="empty-state">
-        <h1>Página en Construcción</h1>
+    <div class="background-logo"></div>
+
+    <div class="infinite-slider">
+        <div class="slider-wrapper" id="wrapper"></div>
     </div>
 
     <script>
@@ -189,6 +266,97 @@
                 lastScrollY = currentScrollY;
             });
         })();
+
+        // DATOS DEL SLIDER
+        const items = [
+            { cls: 'v-med', src: 'https://images.unsplash.com/photo-1481487196290-c152efe083f5?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'h-std', src: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'h-large', src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'v-small', src: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'h-med', src: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'v-med', src: 'https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'h-std', src: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'h-large', src: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'v-small', src: 'https://images.unsplash.com/photo-1504868584819-f8e90526ef55?auto=format&fit=crop&q=80&w=600' },
+            { cls: 'h-med', src: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?auto=format&fit=crop&q=80&w=600' }
+        ];
+
+        const wrapper = document.getElementById('wrapper');
+
+        // Renderizado inicial (3 Sets para bucle seguro)
+        function createCards() {
+            let html = '';
+            for (let i = 0; i < 3; i++) {
+                items.forEach(item => {
+                    html += `<div class="card-container"><div class="card ${item.cls}"><img src="${item.src}"></div></div>`;
+                });
+            }
+            wrapper.innerHTML = html;
+        }
+        createCards();
+
+        // Referencias para animación optimizada
+        const cards = document.querySelectorAll('.card');
+
+        // --- MOTOR DE RENDIMIENTO ---
+        // Usamos quickSetter de GSAP. Es mucho más rápido que actualizar style.transform manualmente.
+        const setScale = gsap.quickSetter(cards, "scale");
+        const setX = gsap.quickSetter(wrapper, "x", "px");
+
+        let scrollX = 0;
+        let isDragging = false;
+        let startX = 0;
+
+        // --- VELOCIDAD EXPLOSIVA ---
+        let proxy = { velocity: 400 };
+
+        // Animación de frenado
+        gsap.to(proxy, {
+            velocity: 0.8,    // Velocidad crucero final
+            duration: 2.5,    // Tiempo de estabilización
+            ease: "expo.out", // Curva exponencial
+            delay: 0.1
+        });
+
+        // Eventos
+        window.addEventListener('mousedown', (e) => { isDragging = true; startX = e.pageX; });
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mouseleave', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            scrollX += (e.pageX - startX) * 1.5;
+            startX = e.pageX;
+        });
+
+        // Bucle usando GSAP Ticker
+        gsap.ticker.add(() => {
+            if (!isDragging) {
+                scrollX -= proxy.velocity;
+            }
+
+            // Lógica de Bucle Infinito
+            const totalWidth = wrapper.offsetWidth;
+            const singleSetWidth = totalWidth / 3;
+
+            if (scrollX <= -singleSetWidth) {
+                scrollX += singleSetWidth;
+            } else if (scrollX > 0) {
+                scrollX -= singleSetWidth;
+            }
+
+            // 1. Aplicamos movimiento al wrapper
+            setX(scrollX);
+
+            // 2. Calculamos Escala basada en Velocidad
+            let scaleVal = 1 - (Math.max(0, proxy.velocity - 0.8) / 800);
+
+            // Límites de seguridad (mínimo 0.6, máximo 1.0)
+            if (scaleVal < 0.6) scaleVal = 0.6;
+            if (scaleVal > 1) scaleVal = 1;
+
+            // 3. Aplicamos escala a TODAS las tarjetas de golpe
+            setScale(scaleVal);
+        });
     </script>
 </body>
 
