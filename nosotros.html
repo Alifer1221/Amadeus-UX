@@ -486,16 +486,49 @@
     </div>
 
     <!-- OUR PROCESS REVEAL SECTION -->
-    <section class="reveal-section process-section"
-        style="min-height: auto; padding-top: 5vh; align-items: flex-start;">
-        <span class="section-label" style="text-align: left; margin-bottom: 1rem;">• Our Process</span>
-        <p class="reveal-text reveal-target" style="text-align: left; margin: 0;">
-            We partner with founders and brands to validate concepts, attract investors, and craft experiences that
-            resonate. Rooted in strategy and driven by elegance, our work bridges creativity and function, elevating
-            brands across industries like education, fintech, real estate, wellness, and beyond. As our impact builds
-            trust and fuels client growth, we continue to design with intention, helping brands scale toward their full
-            potential.
-        </p>
+    <style>
+        .process-container {
+            display: grid;
+            grid-template-columns: 15vw 1fr;
+            gap: 2vw;
+            width: 100%;
+            max-width: 1400px;
+            align-items: flex-start;
+        }
+
+        .process-section .reveal-text {
+            font-size: clamp(1.2rem, 2.5vw, 2.8rem) !important;
+            text-align: left !important;
+            line-height: 1.4;
+            max-width: none;
+        }
+
+        .process-section .section-label {
+            text-align: left;
+            margin-bottom: 0;
+            padding-top: 0.6rem;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .process-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <section class="reveal-section process-section" style="min-height: auto; padding-top: 5vh; padding-bottom: 15vh;">
+        <div class="process-container">
+            <span class="section-label">• Our Process</span>
+            <p class="reveal-text reveal-target">
+                We partner with founders and brands to validate concepts, attract investors, and craft experiences that
+                resonate. Rooted in strategy and driven by elegance, our work bridges creativity and function, elevating
+                brands across industries like education, fintech, real estate, wellness, and beyond. As our impact
+                builds
+                trust and fuels client growth, we continue to design with intention, helping brands scale toward their
+                full potential.
+            </p>
+        </div>
     </section>
 
     <!-- GSAP & Lenis -->
