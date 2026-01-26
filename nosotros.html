@@ -508,7 +508,7 @@
             text-transform: none;
             letter-spacing: 0.5px;
             font-weight: 500;
-            vertical-align: middle;
+            vertical-align: baseline;
         }
 
         .process-section .reveal-text {
@@ -671,22 +671,29 @@
         const splitText = (el) => {
             if (!el) return;
 
-            // Handle label if exists
-            const label = el.querySelector('.section-label');
-            const labelHtml = label ? label.outerHTML : '';
-            if (label) label.remove();
-
-            const text = el.innerText.trim().replace(/\s+/g, ' ');
-            const parts = text.split(' ');
+            const nodes = Array.from(el.childNodes);
             el.innerHTML = '';
 
-            parts.forEach((word, index) => {
-                const span = document.createElement('span');
-                span.innerText = word;
-                span.style.display = 'inline-block';
-                el.appendChild(span);
+            nodes.forEach(node => {
+                if (node.nodeType === 3) {
+                    const text = node.textContent.trim();
+                    if (!text) return;
+                    const words = text.split(/\s+/);
+                    words.forEach(word => {
+                        const wordSpan = document.createElement('span');
+                        wordSpan.innerText = word;
+                        wordSpan.style.display = 'inline-block';
+                        el.appendChild(wordSpan);
 
-                if (index < parts.length - 1) {
+                        const space = document.createElement('span');
+                        space.innerHTML = '&nbsp;';
+                        space.style.display = 'inline-block';
+                        el.appendChild(space);
+                    });
+                } else if (node.nodeType === 1) {
+                    node.style.display = 'inline-block';
+                    el.appendChild(node);
+
                     const space = document.createElement('span');
                     space.innerHTML = '&nbsp;';
                     space.style.display = 'inline-block';
@@ -694,35 +701,30 @@
                 }
             });
 
-            const spans = Array.from(el.children);
+            const items = Array.from(el.children);
             const lines = [];
             let currentLine = [];
             let lastTop = -1;
 
-            spans.forEach(span => {
-                const top = span.offsetTop;
-                if (top > lastTop + 5 && lastTop !== -1) {
+            items.forEach(item => {
+                const top = item.offsetTop;
+                if (top > lastTop + 10 && lastTop !== -1) {
                     lines.push(currentLine);
                     currentLine = [];
                 }
-                currentLine.push(span);
+                currentLine.push(item);
                 lastTop = top;
             });
             lines.push(currentLine);
 
             el.innerHTML = '';
-            lines.forEach((lineSpans, i) => {
+            lines.forEach(lineItems => {
                 const lineDiv = document.createElement('span');
                 lineDiv.className = 'reveal-line';
                 const innerSpan = document.createElement('span');
                 innerSpan.className = 'reveal-line-inner';
 
-                // Put label back into the first line
-                if (i === 0 && labelHtml) {
-                    innerSpan.innerHTML = labelHtml;
-                }
-
-                lineSpans.forEach(s => innerSpan.appendChild(s));
+                lineItems.forEach(item => innerSpan.appendChild(item));
                 lineDiv.appendChild(innerSpan);
                 el.appendChild(lineDiv);
             });
