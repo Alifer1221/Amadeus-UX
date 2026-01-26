@@ -500,23 +500,21 @@
             text-align: left;
         }
 
-        .process-section .section-label {
-            float: left;
+        .section-label {
+            display: inline-block;
             margin-right: 1.5rem;
-            margin-bottom: 0.5rem;
             font-size: 0.85rem;
             color: #b3a492;
             text-transform: none;
             letter-spacing: 0.5px;
             font-weight: 500;
-            padding-top: 1.15rem;
-            /* Precise alignment with first line of text */
+            vertical-align: middle;
         }
 
         .process-section .reveal-text {
             font-size: clamp(1.4rem, 2.8vw, 2.8rem) !important;
             text-align: left !important;
-            line-height: 1.4;
+            line-height: 1.45;
             font-weight: 500;
             color: #1a1a1a;
             max-width: none;
@@ -524,30 +522,16 @@
             display: block;
         }
 
-        /* Clearfix to maintain document flow after wrapping */
-        .process-wrapper::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
         @media (max-width: 768px) {
-            .process-section .section-label {
-                float: none;
-                display: block;
-                margin-bottom: 1rem;
-                padding-top: 0;
-            }
-
             .process-section .reveal-text {
                 font-size: 1.5rem !important;
             }
         }
     </style>
-    <section class="reveal-section process-section" style="min-height: auto;">
+    <section class="reveal-section process-section" style="min-height: auto; padding-bottom: 25vh;">
         <div class="process-wrapper">
-            <span class="section-label">• Nuestros Procesos</span>
             <p class="reveal-text reveal-target">
+                <span class="section-label">• Nuestros Procesos</span>
                 We partner with founders and brands to validate concepts, attract investors, and craft experiences that
                 resonate. Rooted in strategy and driven by elegance, our work bridges creativity and function, elevating
                 brands across industries like education, fintech, real estate, wellness, and beyond. As our impact
@@ -686,11 +670,16 @@
 
         const splitText = (el) => {
             if (!el) return;
+
+            // Handle label if exists
+            const label = el.querySelector('.section-label');
+            const labelHtml = label ? label.outerHTML : '';
+            if (label) label.remove();
+
             const text = el.innerText.trim().replace(/\s+/g, ' ');
             const parts = text.split(' ');
             el.innerHTML = '';
 
-            // Create word spans
             parts.forEach((word, index) => {
                 const span = document.createElement('span');
                 span.innerText = word;
@@ -722,11 +711,16 @@
             lines.push(currentLine);
 
             el.innerHTML = '';
-            lines.forEach(lineSpans => {
+            lines.forEach((lineSpans, i) => {
                 const lineDiv = document.createElement('span');
                 lineDiv.className = 'reveal-line';
                 const innerSpan = document.createElement('span');
                 innerSpan.className = 'reveal-line-inner';
+
+                // Put label back into the first line
+                if (i === 0 && labelHtml) {
+                    innerSpan.innerHTML = labelHtml;
+                }
 
                 lineSpans.forEach(s => innerSpan.appendChild(s));
                 lineDiv.appendChild(innerSpan);
