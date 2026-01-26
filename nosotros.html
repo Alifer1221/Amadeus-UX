@@ -420,7 +420,7 @@
     </div>
 
     <section class="reveal-section">
-        <p class="reveal-text" id="revealText">
+        <p class="reveal-text reveal-target">
             Interpretamos la esencia única de cada negocio y la materializamos en el entorno digital. Diseñamos sitios
             web y soluciones digitales a la medida que funcionan como la extensión perfecta de su marca, logrando que su
             voz resuene con autoridad y distinción.
@@ -484,6 +484,18 @@
             </div>
         </div>
     </div>
+
+    <!-- OUR PROCESS REVEAL SECTION -->
+    <section class="reveal-section" style="min-height: 100vh; padding-top: 15vh;">
+        <span class="section-label">• Our Process</span>
+        <p class="reveal-text reveal-target">
+            We partner with founders and brands to validate concepts, attract investors, and craft experiences that
+            resonate. Rooted in strategy and driven by elegance, our work bridges creativity and function, elevating
+            brands across industries like education, fintech, real estate, wellness, and beyond. As our impact builds
+            trust and fuels client growth, we continue to design with intention, helping brands scale toward their full
+            potential.
+        </p>
+    </section>
 
     <!-- GSAP & Lenis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -663,29 +675,30 @@
             return el.querySelectorAll('.reveal-line-inner');
         };
 
-        const target = document.getElementById('revealText');
-        let animatedLines;
+        function initReveals() {
+            const revealTargets = document.querySelectorAll('.reveal-target');
 
-        function initReveal() {
-            animatedLines = splitText(target);
-            if (animatedLines) {
-                gsap.to(animatedLines, {
-                    y: "0%",
-                    duration: 1.5,
-                    stagger: 0.1,
-                    ease: "expo.out",
-                    scrollTrigger: {
-                        trigger: ".reveal-section",
-                        start: "top 75%",
-                        toggleActions: "play none none reverse"
-                    }
-                });
-            }
+            revealTargets.forEach(target => {
+                const animatedLines = splitText(target);
+                if (animatedLines) {
+                    gsap.to(animatedLines, {
+                        y: "0%",
+                        duration: 1.5,
+                        stagger: 0.1,
+                        ease: "expo.out",
+                        scrollTrigger: {
+                            trigger: target.closest('.reveal-section'),
+                            start: "top 75%",
+                            toggleActions: "play none none reverse"
+                        }
+                    });
+                }
+            });
         }
 
         // Run after a short delay to ensure layout is ready
         window.addEventListener('load', () => {
-            setTimeout(initReveal, 100);
+            setTimeout(initReveals, 100);
         });
 
         // Recalculate on resize
@@ -693,8 +706,12 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                ScrollTrigger.getAll().forEach(st => st.kill());
-                initReveal();
+                ScrollTrigger.getAll().forEach(st => {
+                    if (st.trigger && st.trigger.classList && st.trigger.classList.contains('reveal-section')) {
+                        st.kill();
+                    }
+                });
+                initReveals();
             }, 250);
         });
 
