@@ -160,6 +160,11 @@
             z-index: 1;
             cursor: grab;
             perspective: 1000px;
+            user-select: none;
+            /* Prevent selection while dragging */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .slider-wrapper {
