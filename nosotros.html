@@ -542,6 +542,164 @@
         </div>
     </section>
 
+    <!-- STICKY PROCESS SECTION -->
+    <style>
+        .sticky-process-section {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20vh 40px;
+            gap: 20px;
+            position: relative;
+            background-color: var(--bg);
+        }
+
+        .sticky-process-section .left-column {
+            flex: 1.3;
+        }
+
+        .sticky-process-section .sticky-wrapper {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 100px;
+            height: 75vh;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .sticky-process-section .sticky-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            will-change: transform;
+        }
+
+        .sticky-process-section .right-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 40px;
+        }
+
+        .process-step-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            margin-bottom: 35vh;
+            align-items: baseline;
+            min-height: 150px;
+        }
+
+        .process-step-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 10vh;
+        }
+
+        .process-step-number {
+            font-family: var(--manrope);
+            font-size: 1.1rem;
+            color: #b3a492;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .process-step-content h3 {
+            font-family: var(--manrope);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        .process-step-content p {
+            font-family: var(--sans);
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        @media (max-width: 1024px) {
+            .process-step-item {
+                grid-template-columns: 80px 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sticky-process-section {
+                flex-direction: column;
+                gap: 50px;
+                padding: 10vh 20px;
+            }
+
+            .sticky-process-section .sticky-wrapper {
+                position: static;
+                height: 450px;
+                margin-bottom: 20px;
+            }
+
+            .process-step-item {
+                grid-template-columns: 50px 1fr;
+                margin-bottom: 60px;
+            }
+
+            .process-step-number {
+                text-align: left;
+            }
+        }
+    </style>
+    <section class="reveal-section sticky-process-section" id="sticky-process-container">
+        <div class="left-column">
+            <div class="sticky-wrapper">
+                <img id="zoom-image-proc"
+                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                    alt="Process Interaction">
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="process-step-item">
+                <span class="process-step-number">01.</span>
+                <div class="process-step-content">
+                    <h3>Discover & Define</h3>
+                    <p>We begin with deep listening—understanding your vision, challenges, audience, and goals. Through
+                        research, workshops, and strategic insight, we define a foundation for everything that follows.
+                    </p>
+                </div>
+            </div>
+
+            <div class="process-step-item">
+                <span class="process-step-number">02.</span>
+                <div class="process-step-content">
+                    <h3>Structure & Strategy</h3>
+                    <p>With clarity in place, we map the experience. From site architecture to user flows and product
+                        positioning, we shape a strategic framework that supports both form and function.</p>
+                </div>
+            </div>
+
+            <div class="process-step-item">
+                <span class="process-step-number">03.</span>
+                <div class="process-step-content">
+                    <h3>Design & Refine</h3>
+                    <p>We translate strategy into high fidelity design—crafting elegant visual systems, scalable
+                        components, and intuitive interfaces. Through feedback and iteration, we ensure every detail
+                        aligns.</p>
+                </div>
+            </div>
+
+            <div class="process-step-item">
+                <span class="process-step-number">04.</span>
+                <div class="process-step-content">
+                    <h3>Deliver & Support</h3>
+                    <p>We prepare every asset for real-world execution, providing Figma handoff files, documentation,
+                        and collaboration with developers. Our support continues post-launch.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- GSAP & Lenis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -753,9 +911,29 @@
             });
         }
 
-        // Run after a short delay to ensure layout is ready
+        // --- STICKY IMAGE ZOOM LOGIC ---
+        function initStickyZoom() {
+            const container = document.getElementById('sticky-process-container');
+            const img = document.getElementById('zoom-image-proc');
+            if (!container || !img) return;
+
+            gsap.to(img, {
+                scale: 1.25,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: container,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        }
+
         window.addEventListener('load', () => {
-            setTimeout(initReveals, 100);
+            setTimeout(() => {
+                initReveals();
+                initStickyZoom();
+            }, 100);
         });
 
         // Recalculate on resize
