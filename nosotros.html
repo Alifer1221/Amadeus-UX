@@ -492,74 +492,62 @@
         }
 
         .process-wrapper {
-            display: flex;
             width: 100%;
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
-            gap: 5vw;
-            align-items: flex-start;
-        }
-
-        .process-label-part {
-            flex: 0 0 120px;
-            padding-top: 1.2rem;
+            text-align: left;
         }
 
         .process-section .section-label {
-            font-size: 0.8rem;
+            float: left;
+            margin-right: 6vw;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
             color: #b3a492;
-            /* Muted brown from image */
             text-transform: none;
             letter-spacing: 0.5px;
-            margin-bottom: 0;
-            text-align: left;
             font-weight: 500;
-        }
-
-        .process-text-part {
-            flex: 1;
+            padding-top: 1.1rem;
         }
 
         .process-section .reveal-text {
-            font-size: clamp(1.5rem, 2.8vw, 2.8rem) !important;
+            font-size: clamp(1.4rem, 2.6vw, 2.6rem) !important;
             text-align: left !important;
-            line-height: 1.25;
+            line-height: 1.35;
             font-weight: 500;
             color: #1a1a1a;
             max-width: none;
             margin: 0;
+            display: block;
         }
 
-        @media (max-width: 1024px) {
-            .process-wrapper {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
+        /* Clearfix */
+        .process-wrapper::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
-            .process-label-part {
-                flex: none;
+        @media (max-width: 768px) {
+            .process-section .section-label {
+                float: none;
+                margin-right: 0;
+                margin-bottom: 2rem;
                 padding-top: 0;
             }
         }
     </style>
     <section class="reveal-section process-section" style="min-height: auto; padding-bottom: 20vh;">
         <div class="process-wrapper">
-            <div class="process-label-part">
-                <span class="section-label">• Our Process</span>
-            </div>
-            <div class="process-text-part">
-                <p class="reveal-text reveal-target">
-                    We partner with founders and brands to validate concepts, attract investors, and craft experiences
-                    that
-                    resonate. Rooted in strategy and driven by elegance, our work bridges creativity and function,
-                    elevating
-                    brands across industries like education, fintech, real estate, wellness, and beyond. As our impact
-                    builds
-                    trust and fuels client growth, we continue to design with intention, helping brands scale toward
-                    their
-                    full potential.
-                </p>
-            </div>
+            <span class="section-label">• Our Process</span>
+            <p class="reveal-text reveal-target">
+                We partner with founders and brands to validate concepts, attract investors, and craft experiences that
+                resonate. Rooted in strategy and driven by elegance, our work bridges creativity and function, elevating
+                brands across industries like education, fintech, real estate, wellness, and beyond. As our impact
+                builds
+                trust and fuels client growth, we continue to design with intention, helping brands scale toward their
+                full potential.
+            </p>
         </div>
     </section>
 
