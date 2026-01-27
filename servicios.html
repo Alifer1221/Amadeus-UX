@@ -375,13 +375,16 @@
             z-index: 10;
             text-align: center;
             width: 100%;
-            max-width: 900px;
+            max-width: 1200px;
             padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .hero-headline {
-            font-size: clamp(2.5rem, 5.8vw, 5.2rem);
-            /* Reducido otro 15% para una sola línea */
+            font-size: clamp(2.375rem, 5.5vw, 4.95rem);
+            /* Reducido 5% adicional y ajustado para centrado */
             font-weight: 700;
             color: #111;
             margin-bottom: 40px;
@@ -389,7 +392,8 @@
             letter-spacing: -0.03em;
             line-height: 1.1;
             white-space: nowrap;
-            /* Forzar una sola línea si es posible */
+            width: 100%;
+            text-align: center;
             position: relative;
             /* For cursor positioning */
         }
