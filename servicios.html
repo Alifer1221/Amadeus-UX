@@ -735,7 +735,7 @@
                 scale: 1,
                 duration: 2.5,
                 ease: "power3.out"
-            }, "+=0.1"); // Small 0.1s buffer after text finishes
+            }, 0); // Start simultaneously with headline (duration 1.5s)
 
             // NEW: Unified Animation for Logo & Subtext (Fade Up) to match
             const logo = document.querySelector(".amadeus-logo");
