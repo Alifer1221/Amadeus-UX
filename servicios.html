@@ -873,7 +873,8 @@
                         Creamos ecosistemas digitales de alto rendimiento que transforman usuarios en clientes mediante
                         experiencias interactivas y escalables.
                     </div>
-                    <a href="javascript:void(0)" class="btn" onclick="event.preventDefault(); openServicePanel()">Leer
+                    <a href="javascript:void(0)" class="btn"
+                        onclick="event.preventDefault(); openServicePanel('Desarrollo Web y Apps', 'No solo escribimos código; construimos soluciones de negocio. Desde sitios web corporativos y e-commerce hasta aplicaciones móviles personalizadas, nos enfocamos en la arquitectura de software robusta, tiempos de carga optimizados (SEO-friendly) y un diseño de interfaz (UI/UX) que garantiza una navegación fluida.<br><br>Utilizamos las últimas tecnologías para asegurar que tu plataforma sea segura, intuitiva y capaz de crecer junto con tu empresa.', 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80')">Leer
                         más</a>
                 </div>
             </div>
@@ -926,8 +927,8 @@
                     <div class="service-label">Marketing Digital</div>
                     <div class="service-info">
                         <div class="service-desc">
-                            Impulsamos tu crecimiento mediante estrategias de marketing basadas en datos, SEO avanzado y
-                            campañas digitales de alto impacto.
+                            Estrategias orientadas a resultados que aumentan tu visibilidad, atraen tráfico cualificado
+                            y maximizan tu retorno de inversión (ROI).
                         </div>
                         <a href="#" class="btn">Leer más</a>
                     </div>
@@ -987,24 +988,11 @@
             <button class="close-panel-btn" onclick="closeServicePanel()">×</button>
             <div class="panel-content">
                 <div class="panel-image-container">
-                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80"
-                        alt="Desarrollo Web y Apps">
+                    <img id="panel-img" src="" alt="">
                 </div>
                 <div class="panel-text-content">
-                    <h2>Desarrollo Web y Apps</h2>
-                    <p>
-                        No solo escribimos código; construimos soluciones de negocio. Desde sitios web corporativos y
-                        e-commerce hasta aplicaciones móviles personalizadas, nos enfocamos en la arquitectura de
-                        software
-                        robusta, tiempos de carga optimizados (SEO-friendly) y un diseño de interfaz (UI/UX) que
-                        garantiza
-                        una navegación fluida.
-                    </p>
-                    <p>
-                        Utilizamos las últimas tecnologías para asegurar que tu plataforma sea segura, intuitiva y capaz
-                        de
-                        crecer junto con tu empresa.
-                    </p>
+                    <h2 id="panel-title"></h2>
+                    <div id="panel-desc"></div>
                 </div>
             </div>
         </div>
@@ -1128,7 +1116,12 @@
         </style>
 
         <script>
-            function openServicePanel() {
+            function openServicePanel(title, description, imageUrl) {
+                document.getElementById('panel-title').innerText = title;
+                document.getElementById('panel-desc').innerHTML = description;
+                document.getElementById('panel-img').src = imageUrl;
+                document.getElementById('panel-img').alt = title;
+
                 document.getElementById('service-panel').classList.add('active');
                 document.getElementById('panel-overlay').classList.add('active');
                 document.body.style.overflow = 'hidden'; // Prevent scrolling bg
