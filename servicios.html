@@ -915,211 +915,231 @@
                     <a href="#" class="btn">Leer más</a>
                 </div>
             </div>
+            <div class="service-item">
+                <div class="line-container">
+                    <svg>
+                        <path d="M0,50 Q500,50 1000,50" class="elastic-path" />
+                    </svg>
+                </div>
+
+                <div class="service-content">
+                    <div class="service-label">Marketing Digital</div>
+                    <div class="service-info">
+                        <div class="service-desc">
+                            Impulsamos tu crecimiento mediante estrategias de marketing basadas en datos, SEO avanzado y
+                            campañas digitales de alto impacto.
+                        </div>
+                        <a href="#" class="btn">Leer más</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-    </div>
 
+        <script>
+            const containers = document.querySelectorAll('.line-container');
 
-    <script>
-        const containers = document.querySelectorAll('.line-container');
-
-        containers.forEach(container => {
-            const path = container.querySelector('.elastic-path');
-            let width = container.offsetWidth;
-            const startY = 50; // Altura fija de la línea dentro del SVG
-
-            const resetLine = () => {
-                width = container.offsetWidth;
-                gsap.to(path, {
-                    attr: { d: `M0,${startY} Q${width / 2},${startY} ${width},${startY}` },
-                    duration: 1.5,
-                    ease: "elastic.out(1, 0.2)"
-                });
-            };
-
-            container.addEventListener('mousemove', (e) => {
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                // Animación rápida al mover
-                gsap.to(path, {
-                    attr: { d: `M0,${startY} Q${x},${y} ${width},${startY}` },
-                    duration: 0.1,
-                    ease: "power2.out"
-                });
-            });
-
-            container.addEventListener('mouseleave', resetLine);
-            resetLine();
-        });
-
-        window.addEventListener('resize', () => {
             containers.forEach(container => {
                 const path = container.querySelector('.elastic-path');
-                const width = container.offsetWidth;
-                const startY = 50;
-                gsap.set(path, { attr: { d: `M0,${startY} Q${width / 2},${startY} ${width},${startY}` } });
-            });
-        });
-    </script>
+                let width = container.offsetWidth;
+                const startY = 50; // Altura fija de la línea dentro del SVG
 
-    <!-- SERVICE DETAIL PANEL -->
-    <div id="panel-overlay" class="panel-overlay" onclick="closeServicePanel()"></div>
-    <div id="service-panel" class="service-panel">
-        <button class="close-panel-btn" onclick="closeServicePanel()">×</button>
-        <div class="panel-content">
-            <div class="panel-image-container">
-                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80"
-                    alt="Desarrollo Web y Apps">
-            </div>
-            <div class="panel-text-content">
-                <h2>Desarrollo Web y Apps</h2>
-                <p>
-                    No solo escribimos código; construimos soluciones de negocio. Desde sitios web corporativos y
-                    e-commerce hasta aplicaciones móviles personalizadas, nos enfocamos en la arquitectura de software
-                    robusta, tiempos de carga optimizados (SEO-friendly) y un diseño de interfaz (UI/UX) que garantiza
-                    una navegación fluida.
-                </p>
-                <p>
-                    Utilizamos las últimas tecnologías para asegurar que tu plataforma sea segura, intuitiva y capaz de
-                    crecer junto con tu empresa.
-                </p>
+                const resetLine = () => {
+                    width = container.offsetWidth;
+                    gsap.to(path, {
+                        attr: { d: `M0,${startY} Q${width / 2},${startY} ${width},${startY}` },
+                        duration: 1.5,
+                        ease: "elastic.out(1, 0.2)"
+                    });
+                };
+
+                container.addEventListener('mousemove', (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    // Animación rápida al mover
+                    gsap.to(path, {
+                        attr: { d: `M0,${startY} Q${x},${y} ${width},${startY}` },
+                        duration: 0.1,
+                        ease: "power2.out"
+                    });
+                });
+
+                container.addEventListener('mouseleave', resetLine);
+                resetLine();
+            });
+
+            window.addEventListener('resize', () => {
+                containers.forEach(container => {
+                    const path = container.querySelector('.elastic-path');
+                    const width = container.offsetWidth;
+                    const startY = 50;
+                    gsap.set(path, { attr: { d: `M0,${startY} Q${width / 2},${startY} ${width},${startY}` } });
+                });
+            });
+        </script>
+
+        <!-- SERVICE DETAIL PANEL -->
+        <div id="panel-overlay" class="panel-overlay" onclick="closeServicePanel()"></div>
+        <div id="service-panel" class="service-panel">
+            <button class="close-panel-btn" onclick="closeServicePanel()">×</button>
+            <div class="panel-content">
+                <div class="panel-image-container">
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80"
+                        alt="Desarrollo Web y Apps">
+                </div>
+                <div class="panel-text-content">
+                    <h2>Desarrollo Web y Apps</h2>
+                    <p>
+                        No solo escribimos código; construimos soluciones de negocio. Desde sitios web corporativos y
+                        e-commerce hasta aplicaciones móviles personalizadas, nos enfocamos en la arquitectura de
+                        software
+                        robusta, tiempos de carga optimizados (SEO-friendly) y un diseño de interfaz (UI/UX) que
+                        garantiza
+                        una navegación fluida.
+                    </p>
+                    <p>
+                        Utilizamos las últimas tecnologías para asegurar que tu plataforma sea segura, intuitiva y capaz
+                        de
+                        crecer junto con tu empresa.
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <style>
-        /* PANEL STYLES */
-        .panel-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 9998;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-
-        .panel-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .service-panel {
-            position: fixed;
-            top: 0;
-            right: -55%;
-            width: 50%;
-            height: 100vh;
-            background: #fff;
-            z-index: 9999;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
-            transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .service-panel.active {
-            right: 0;
-        }
-
-        .close-panel-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 2.5rem;
-            color: #333;
-            cursor: pointer;
-            z-index: 10;
-            line-height: 1;
-            transition: transform 0.3s ease;
-        }
-
-        .close-panel-btn:hover {
-            transform: rotate(90deg);
-            color: #000;
-        }
-
-        .panel-content {
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .panel-image-container {
-            width: 100%;
-            height: 40vh;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .panel-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .panel-text-content {
-            padding: 40px 50px;
-            flex-grow: 1;
-            background: #fff;
-        }
-
-        .panel-text-content h2 {
-            font-family: 'Manrope', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 25px;
-            letter-spacing: -1px;
-        }
-
-        .panel-text-content p {
-            font-family: 'Manrope', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.7;
-            color: #555;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 900px) {
-            .service-panel {
+        <style>
+            /* PANEL STYLES */
+            .panel-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
                 width: 100%;
-                right: -100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(5px);
+                z-index: 9998;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.4s ease, visibility 0.4s ease;
             }
 
-            .panel-text-content {
-                padding: 30px 25px;
+            .panel-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .service-panel {
+                position: fixed;
+                top: 0;
+                right: -55%;
+                width: 50%;
+                height: 100vh;
+                background: #fff;
+                z-index: 9999;
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+                transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .service-panel.active {
+                right: 0;
+            }
+
+            .close-panel-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: none;
+                border: none;
+                font-size: 2.5rem;
+                color: #333;
+                cursor: pointer;
+                z-index: 10;
+                line-height: 1;
+                transition: transform 0.3s ease;
+            }
+
+            .close-panel-btn:hover {
+                transform: rotate(90deg);
+                color: #000;
+            }
+
+            .panel-content {
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
             }
 
             .panel-image-container {
-                height: 35vh;
+                width: 100%;
+                height: 40vh;
+                overflow: hidden;
+                flex-shrink: 0;
             }
-        }
-    </style>
 
-    <script>
-        function openServicePanel() {
-            document.getElementById('service-panel').classList.add('active');
-            document.getElementById('panel-overlay').classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling bg
-        }
+            .panel-image-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
 
-        function closeServicePanel() {
-            document.getElementById('service-panel').classList.remove('active');
-            document.getElementById('panel-overlay').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    </script>
+            .panel-text-content {
+                padding: 40px 50px;
+                flex-grow: 1;
+                background: #fff;
+            }
+
+            .panel-text-content h2 {
+                font-family: 'Manrope', sans-serif;
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: #111;
+                margin-bottom: 25px;
+                letter-spacing: -1px;
+            }
+
+            .panel-text-content p {
+                font-family: 'Manrope', sans-serif;
+                font-size: 1.1rem;
+                line-height: 1.7;
+                color: #555;
+                margin-bottom: 20px;
+            }
+
+            @media (max-width: 900px) {
+                .service-panel {
+                    width: 100%;
+                    right: -100%;
+                }
+
+                .panel-text-content {
+                    padding: 30px 25px;
+                }
+
+                .panel-image-container {
+                    height: 35vh;
+                }
+            }
+        </style>
+
+        <script>
+            function openServicePanel() {
+                document.getElementById('service-panel').classList.add('active');
+                document.getElementById('panel-overlay').classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling bg
+            }
+
+            function closeServicePanel() {
+                document.getElementById('service-panel').classList.remove('active');
+                document.getElementById('panel-overlay').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        </script>
 </body>
 
 </html>
