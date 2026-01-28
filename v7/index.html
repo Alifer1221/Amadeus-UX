@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio - ItsIzzy</title>
+
+    <!-- Hero Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,300;1,300&display=swap"
+        rel="stylesheet">
+
+    <!-- Portfolio Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Ocean Slider Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+
+    <!-- Hero Script -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.29/build/spline-viewer.js"></script>
+
+    <style>
+        /* --- NAVIGATION STYLES (Floating Pill) --- */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: fit-content;
+            max-width: 95vw;
+            background: rgba(255, 255, 255, 0.05);
+            /* 5% White Glass */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            z-index: 9999;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: #fff;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-menu a {
+            font-family: 'Manrope', sans-serif;
+            text-decoration: none;
+            color: #ccc;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-menu a:hover {
+            color: #fff;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: 'Manrope', sans-serif;
+            /* Enforce Sans to match other buttons */
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(37, 117, 252, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                top: auto;
+                bottom: 20px;
+                padding: 10px 20px;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            /* Hide text links on mobile for cleaner look, rely on CTA or Logo/Home */
+        }
+
+        /* =========================================
+       HERO SECTION
+       ========================================= */
+        #hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .hero-content-overlay {
+            display: none;
+            position: absolute;
+            z-index: 10;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+            pointer-events: none;
+            width: 100%;
+            top: 37.5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-title {
+            font-family: 'Manrope', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 300;
+            margin: 0 0 10px 0;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            color: white;
+        }
+
+        .hero-title span {
+            display: block;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #999999);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: #aaa;
+            margin-top: 15px;
+            font-weight: 400;
+        }
+
+        .desktop-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .spline-scale-wrapper {
+            transform: scale(1.23);
+            transform-origin: center center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        spline-viewer {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .mobile-wrapper {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-wrapper {
+                display: none;
+            }
+
+            .mobile-wrapper {
+                display: block;
+            }
+
+            .hero-content-overlay {
+                display: block;
+            }
+        }
+
+        /* SCOPED CSS: #info-section-vignette */
+        #info-section-vignette {
+            width: 100%;
+            padding: 100px 5%;
+            background-color: #151515;
+            color: #ffffff;
+            font-family: 'Manrope', sans-serif;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #info-section-vignette .content-grid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            width: 100%;
+            gap: 80px;
+        }
+
+        /* COLUMNA VIDEO */
+        #info-section-vignette .video-col {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* WRAPPER DEL VIDEO */
+        #info-section-vignette .video-wrapper {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 4 / 3;
+            border-radius: 30px;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+
+            /* CAMBIO 1: SE ELIMINÓ LA SOMBRA EXTERNA */
+            box-shadow: none;
+        }
+
+        /* CAMBIO 2: PSEUDO-ELEMENTO PARA EL EFECTO DE DIFUMINADO INTERNO */
+        #info-section-vignette .video-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            /* LA MAGIA: Sombra interna (inset) usando el color de fondo #151515 */
+            /* inset | offset-x | offset-y | blur-radius | spread-radius | color */
+            box-shadow: inset 0 0 80px 40px #151515;
+
+            border-radius: 30px;
+            /* Debe coincidir con el wrapper */
+            pointer-events: none;
+            /* Permite que los clicks pasen al video si fuera necesario */
+            z-index: 2;
+            /* Se coloca SOBRE el video */
+        }
+
+        #info-section-vignette video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* COLUMNA TEXTO */
+        #info-section-vignette .text-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding-right: 20px;
+        }
+
+        #info-section-vignette p {
+            font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+            font-weight: 300;
+            line-height: 1.6;
+            margin: 0;
+            color: #ccc;
+        }
+
+        /* BOTÓN ANIMADO GRANDE */
+        #info-section-vignette .pill-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            margin-top: 20px;
+
+            padding: 20px 50px;
+            font-size: 1.2rem;
+
+            border: 1px solid #fff;
+            border-radius: 100px;
+            background: transparent;
+            color: #fff;
+
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: color 0.7s ease;
+            z-index: 1;
+        }
+
+        #info-section-vignette .pill-btn::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            padding-bottom: 150%;
+            background-color: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: -1;
+        }
+
+        #info-section-vignette .pill-btn:hover {
+            color: #000;
+            border-color: #fff;
+        }
+
+        #info-section-vignette .pill-btn:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @media (max-width: 900px) {
+            #info-section-vignette {
+                padding: 40px 5%;
+                /* REDUCED FROM 100px */
+            }
+
+            #info-section-vignette .content-grid {
+                flex-direction: column;
+                gap: 50px;
+            }
+
+            #info-section-vignette .video-col,
+            #info-section-vignette .text-col {
+                width: 100%;
+                padding-right: 0;
+                text-align: left;
+            }
+
+            #info-section-vignette .pill-btn {
+                width: 100%;
+            }
+
+            /* Adjust previous video section gap too if needed */
+            .video-section-wrapper {
+                padding-bottom: 60px !important;
+                /* REDUCED FROM 160px */
+            }
+        }
+
+        /* --- VIDEO SECTION STYLES --- */
+        /* CAPA 1: EL FONDO (CONTENEDOR PADRE) */
+        .video-section-wrapper {
+            background-color: #151515 !important;
+            /* Tono gris oscuro solicitado */
+            width: 100%;
+
+            /* AQUÍ ESTÁ EL CAMBIO: 
+               Arriba tiene padding normal (clamp).
+               Abajo tiene MUCHO MÁS espacio (160px), pero sigue siendo parte del fondo #151515.
+            */
+            padding-top: clamp(40px, 5vh, 80px);
+            padding-bottom: 160px;
+            /* Este es el espacio extra que pediste */
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            position: relative;
+            /* Ensure it stacks correctly */
+            z-index: 15;
+            /* Match or exceed scroll container z-index to be visible */
+        }
+
+        /* CAPA 2: EL CONTENEDOR DEL VIDEO */
+        .video-box-final {
+            /* 1. TAMAÑO AJUSTADO (-11%) */
+            width: 82%;
+
+            /* Tope máximo ajustado proporcionalmente */
+            max-width: 1335px;
+
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            line-height: 0;
+            position: relative;
+            background: #000;
+
+            /* Transición suave al redimensionar la ventana */
+            transition: width 0.3s ease, max-width 0.3s ease;
+        }
+
+        /* VIDEO */
+        .video-box-final video {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* --- CONTACT SECTION (IMPORTED) --- */
+        .contact-section {
+            background-color: #000;
+            color: #fff;
+            padding: 60px 50px 100px 50px;
+            /* margin-top: 100px; Remove top margin to fit under testimonials seamlessly */
+            position: relative;
+            z-index: 20;
+            /* Ensure on top */
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        /* Form Card */
+        .contact-form-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            color: #000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-form-card h2 {
+            font-size: 1.84rem;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .contact-form-card h2 span {
+            color: #999;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #666;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            background: #f5f5f5;
+            border: 1px solid transparent;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Manrope', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            background: #fff;
+            border-color: #000;
+            outline: none;
+        }
+
+        .form-textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 18px;
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s ease, opacity 0.3s;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.01);
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            font-size: 0.7rem;
+            color: #999;
+            text-align: center;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .form-footer a {
+            color: #666;
+            text-decoration: underline;
+        }
+
+        /* Right Content */
+        .contact-info {
+            padding-left: 20px;
+        }
+
+        .contact-info h1 {
+            font-size: 4.7rem;
+            margin-bottom: 30px;
+            /* Reduced from 20px */
+            letter-spacing: -2px;
+            font-weight: 700;
+            line-height: 1;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .contact-sub {
+            font-size: 1.4rem;
+            color: #999;
+            margin-bottom: 25px;
+            /* Reduced from 60px */
+            line-height: 1.3;
+            max-width: 500px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 25px;
+            /* Reduced from 60px */
+        }
+
+        .feature-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .feature-item p {
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 15px 20px 15px 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            color: #000;
+        }
+
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #eee;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .profile-details h4 {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 2px;
+            font-weight: 600;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .profile-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .schedule-btn {
+            background: #000;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        @media (max-width: 900px) {
+            .contact-section {
+                padding: 60px 20px;
+                width: 100%;
+                box-sizing: border-box;
+                /* Ensure padding doesn't add to width */
+                overflow-x: hidden;
+                /* Prevent horizontal scroll */
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+                width: 100%;
+                margin: 0;
+            }
+
+            .contact-info {
+                padding-left: 0;
+                padding-right: 0;
+                order: -1;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .contact-info h1 {
+                font-size: 3.5rem;
+                padding-right: 10px;
+                /* Slight buffer if needed */
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            /* Global Overflow Fix for Mobile */
+            body,
+            html {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+        }
+
+        /* Contact Methods (Phone/Email) */
+        .contact-methods {
+            margin-top: 20px;
+            /* Reduced from 40px */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            /* Reduced from 15px */
+        }
+
+        .contact-method-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1rem;
+            color: #fff;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .contact-method-row i {
+            font-size: 1.4rem;
+            color: #fff;
+            /* or generic icon color */
+        }
+
+        .contact-method-row span {
+            font-weight: 500;
+        }
+
+        .contact-method-row a {
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            /* Slightly larger for email as per design */
+        }
+
+        /* Footer Styles Copy */
+        .next-section {
+            position: relative;
+            z-index: 16;
+            background-color: #000;
+            color: #fff;
+            padding: 100px 60px;
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-top: 1px solid #222;
+        }
+
+        .next-section h2 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .next-section a {
+            color: #fff;
+            font-size: 1.5rem;
+            text-decoration: underline;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* SCOPED CSS: #ocean-component */
+
+        #ocean-component {
+            position: relative;
+            width: 100%;
+            height: 95vh;
+            min-height: 700px;
+            background: linear-gradient(180deg, #151515 0%, #000000 100%);
+            overflow: hidden;
+            font-family: 'Manrope', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding-top: 0;
+        }
+
+        /* TÍTULO PRINCIPAL */
+        #ocean-component .section-title {
+            position: absolute;
+            top: 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: clamp(2.85rem, 4.75vw, 5.225rem);
+            color: #fff;
+            letter-spacing: 2px;
+            z-index: 20;
+            margin: 0;
+            text-align: center;
+        }
+
+        #ocean-component .ocean-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            perspective: 2000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #ocean-component .card-group {
+            position: absolute;
+            width: 90%;
+            max-width: 1600px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform: translate3d(100vw, 0, 0);
+            opacity: 0;
+            pointer-events: none;
+            /* SEPARATION UPDATE: Push cards down from center to create space from title */
+            margin-top: 80px;
+        }
+
+        #ocean-component .card-group.active {
+            pointer-events: auto;
+        }
+
+        #ocean-component .visual-box {
+            position: relative;
+            width: 58%;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                0 0 12px rgba(130, 110, 255, 0.4),
+                0 0 30px rgba(120, 100, 255, 0.3),
+                0 0 60px rgba(120, 100, 255, 0.2);
+        }
+
+        #ocean-component .media-mask {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
+            mask-image: -webkit-radial-gradient(white, black);
+            transform: translateZ(0);
+            background: #000;
+        }
+
+        #ocean-component .media-mask img,
+        #ocean-component .media-mask video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* TEXTO */
+        #ocean-component .text-box {
+            width: 35%;
+            padding-left: 3%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+        }
+
+        #ocean-component .title-wrapper {
+            display: inline-flex;
+            align-items: baseline;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            margin-bottom: 20px;
+            min-height: 4rem;
+        }
+
+        #ocean-component h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: clamp(2.5rem, 3.5vw, 4rem);
+            color: #fff;
+            margin: 0;
+            line-height: 1;
+        }
+
+        #ocean-component .cursor {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: clamp(2.5rem, 3.5vw, 4rem);
+            color: #fff;
+            display: inline-block;
+            margin-left: 2px;
+            animation: oceanBlink 1s step-end infinite;
+        }
+
+        @keyframes oceanBlink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #ocean-component p {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 300;
+            font-size: 1rem;
+            color: #ccc;
+            line-height: 1.6;
+            border-top: 1px solid #444;
+            padding-top: 20px;
+            opacity: 0;
+        }
+
+        /* CONTROLES */
+        #ocean-component .nav-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            display: flex;
+            gap: 20px;
+        }
+
+        #ocean-component .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        #ocean-component .nav-btn:hover {
+            background: rgba(120, 100, 255, 0.6);
+            border-color: rgba(120, 100, 255, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            #ocean-component .card-group {
+                flex-direction: column;
+                justify-content: center;
+                gap: 30px;
+            }
+
+            #ocean-component .visual-box {
+                width: 90%;
+            }
+
+            #ocean-component .text-box {
+                width: 90%;
+                padding-left: 0;
+                align-items: center;
+                text-align: center;
+            }
+
+            #ocean-component .title-wrapper {
+                justify-content: center;
+            }
+        }
+
+        #ocean-component .title-wrapper {
+            justify-content: flex-start;
+        }
+
+
+        /* SCOPED CSS: #testimonial-section */
+        #testimonial-section {
+            background-color: #000;
+            color: #fff;
+            padding: 120px 5%;
+            font-family: 'Manrope', sans-serif;
+            position: relative;
+            cursor: none;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            /* Stack Title + Cards */
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0;
+            /* Align with footer */
+        }
+
+        #testimonial-section .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #888;
+        }
+
+        #testimonial-section .testimonial-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        /* NEW CARD STYLING */
+        .testimonial-card {
+            background-color: #222;
+            /* Visible card background */
+            padding: 60px;
+            /* Generous padding as requested */
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            opacity: 1;
+            /* Default state */
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+            /* STATIC HEIGHT FIX */
+            min-height: 400px;
+            /* Force visual stability */
+            /* Space out content if needed */
+
+            /* NEON BORDER DEFAULT */
+            border: 1px solid rgba(102, 0, 255, 0.3);
+            box-shadow: 0 0 10px rgba(102, 0, 255, 0.2);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 0, 255, 1);
+            box-shadow: 0 0 20px rgba(102, 0, 255, 0.6), 0 0 40px rgba(102, 0, 255, 0.3);
+        }
+
+        .testimonial-card:hover {
+            background-color: #252525;
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #333;
+        }
+
+        .testimonial-info h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 0;
+            color: #fff;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .testimonial-info span {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .testimonial-text {
+            font-size: 1.25rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #ddd;
+            flex-grow: 1;
+            /* Take up available space */
+        }
+
+        /* CUSTOM CURSOR */
+        #testimonial-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 12px 24px;
+            background-color: #6600ff;
+            /* BLUE-VIOLET */
+            color: #fff;
+            /* White text */
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%) scale(0);
+            mix-blend-mode: normal;
+            box-shadow: 0 0 15px #6600ff;
+            color: #000;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            letter-spacing: 1px;
+        }
+
+
+
+        @media (max-width: 768px) {
+            #testimonial-section .testimonial-container {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-card {
+                padding: 40px;
+            }
+
+            #testimonial-cursor {
+                display: none !important;
+            }
+
+            #testimonial-section {
+                cursor: auto;
+            }
+        }
+
+        /* --- INTERACTIVE CURSOR BADGE --- */
+        #testimonial-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 8px 16px;
+            background-color: #6600ff;
+            color: #fff;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%) scale(0);
+            box-shadow: 0 0 15px rgba(102, 0, 255, 0.6);
+            white-space: nowrap;
+        }
+
+        .testimonial-card {
+            position: relative;
+            /* Ensure positioning context */
+            overflow: hidden;
+            /* Necessary for some effects */
+            cursor: none;
+            /* Hide default cursor over card */
+        }
+    </style>
+
+</head>
+
+<body style="background:#000;">
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
+        </a>
+        <div class="nav-menu">
+            <a href="portafolio.html">Portafolio</a>
+            <a href="servicios.html">Servicios</a>
+            <a href="nosotros.html">Nosotros</a>
+        </div>
+        <a href="https://wa.me/573246649104" target="_blank" class="nav-cta">Hablemos</a>
+    </nav>
+    <!-- HERO SECTION -->
+    <section id="hero-section">
+        <div class="hero-content-overlay">
+            <h1 class="hero-title">Tu Web, nuestra obra <br /><span>maestra</span></h1>
+            <p class="hero-subtitle">Interpretamos la esencia única de cada negocio</p>
+        </div>
+
+        <div class="desktop-wrapper">
+            <div class="spline-scale-wrapper">
+                <spline-viewer url="https://prod.spline.design/FyzGSSutvpQE5E9W/scene.splinecode?v=3"></spline-viewer>
+            </div>
+        </div>
+
+        <div class="mobile-wrapper">
+            <canvas id="mobileCanvas"></canvas>
+        </div>
+    </section>
+
+
+
+
+
+    <!-- VIDEO SECTION (WARP SPEED) -->
+    <div class="video-section-wrapper">
+        <div class="video-box-final"><video
+                src="https://github.com/Amadeusguitarte/Video-3/raw/main/Sequence%2009_6.mp4" autoplay loop muted
+                playsinline></video></div>
+    </div>
+    <!-- INFO SECTION VIGNETTE -->
+    <section id="info-section-vignette">
+        <div class="content-grid">
+            <div class="video-col">
+                <div class="video-wrapper"><video id="video-fast-vignette"
+                        src="https://github.com/Amadeusguitarte/Video33/raw/main/Sequence%2010_1.mp4" autoplay loop
+                        muted playsinline></video></div>
+            </div>
+            <div class="text-col">
+                <p>Orquestamos interfaces donde la estética y la función conviven en armonía. Hacemos que la
+                    tecnología
+                    se sienta humana.</p>
+                <p>Evitamos lo genérico. Construimos soluciones personalizadas desde cero, cuidando cada detalle
+                    para
+                    garantizar una experiencia de usuario impecable.</p><a href="servicios.html"
+                    class="pill-btn">Nuestros Servicios</a>
+            </div>
+        </div>
+    </section>
+    <!-- VIDEO SECTION MOVED UP -->
+    <!-- OCEAN SLIDER COMPONENT -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+
+    <style>
+        /* SCOPED CSS: #ocean-component */
+
+        #ocean-component {
+            position: relative;
+            width: 100%;
+            height: 95vh;
+            min-height: 700px;
+            background: linear-gradient(180deg, #151515 0%, #000000 100%);
+            overflow: hidden;
+            font-family: 'Manrope', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding-top: 0;
+        }
+
+        /* TÍTULO PRINCIPAL */
+        #ocean-component .section-title {
+            position: absolute;
+            top: 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: clamp(2.85rem, 4.75vw, 5.225rem);
+            color: #fff;
+            letter-spacing: 2px;
+            z-index: 20;
+            margin: 0;
+            text-align: center;
+        }
+
+        #ocean-component .ocean-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            perspective: 2000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #ocean-component .card-group {
+            position: absolute;
+            width: 90%;
+            max-width: 1600px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform: translate3d(100vw, 0, 0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #ocean-component .card-group.active {
+            pointer-events: auto;
+        }
+
+        #ocean-component .visual-box {
+            position: relative;
+            width: 58%;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                0 0 12px rgba(130, 110, 255, 0.4),
+                0 0 30px rgba(120, 100, 255, 0.3),
+                0 0 60px rgba(120, 100, 255, 0.2);
+        }
+
+        #ocean-component .media-mask {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
+            mask-image: -webkit-radial-gradient(white, black);
+            transform: translateZ(0);
+            background: #000;
+        }
+
+        #ocean-component .media-mask img,
+        #ocean-component .media-mask video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* TEXTO */
+        #ocean-component .text-box {
+            width: 35%;
+            padding-left: 3%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+        }
+
+        #ocean-component .title-wrapper {
+            display: inline-flex;
+            align-items: baseline;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            margin-bottom: 20px;
+            min-height: 4rem;
+        }
+
+        #ocean-component h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: clamp(2.5rem, 3.5vw, 4rem);
+            color: #fff;
+            margin: 0;
+            line-height: 1;
+        }
+
+        #ocean-component .cursor {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: clamp(2.5rem, 3.5vw, 4rem);
+            color: #fff;
+            display: inline-block;
+            margin-left: 2px;
+            animation: oceanBlink 1s step-end infinite;
+        }
+
+        @keyframes oceanBlink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #ocean-component p {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 300;
+            font-size: 1rem;
+            color: #ccc;
+            line-height: 1.6;
+            border-top: 1px solid #444;
+            padding-top: 20px;
+            opacity: 0;
+        }
+
+        /* CONTROLES */
+        #ocean-component .nav-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            display: flex;
+            gap: 20px;
+        }
+
+        #ocean-component .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        #ocean-component .nav-btn:hover {
+            background: rgba(120, 100, 255, 0.6);
+            border-color: rgba(120, 100, 255, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            #ocean-component .card-group {
+                flex-direction: column;
+                justify-content: center;
+                gap: 30px;
+                padding-bottom: 120px;
+                padding-top: 150px;
+                /* INCREASED: More space for original title size */
+            }
+
+            #ocean-component .visual-box {
+                width: 90%;
+            }
+
+            #ocean-component .section-title {
+                top: 20px;
+                /* Removed font-size clamp to keep original size */
+                width: 100%;
+                z-index: 10;
+            }
+
+            #ocean-component .section-title {
+                top: 20px;
+                /* Reduce top space */
+                font-size: clamp(1.9rem, 7.6vw, 2.375rem);
+                /* Smaller title on mobile */
+                width: 100%;
+                z-index: 10;
+                /* Ensure it stays above/below correctly */
+            }
+
+            #ocean-component .text-box {
+                width: 90%;
+                padding-left: 0;
+                align-items: center;
+                text-align: center;
+            }
+
+            #ocean-component .title-wrapper {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+
+    <div id="ocean-component">
+
+        <h1 class="section-title">Proyectos Destacados</h1>
+
+        <div class="ocean-stage">
+
+            <div class="card-group" data-title="Izzy">
+                <div class="visual-box">
+                    <div class="media-mask">
+                        <video
+                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da0cd76298e94cc41f994e_Recording%202025-09-29%20001607_1.mp4"
+                            loop muted playsinline preload="auto"></video>
+                    </div>
+                </div>
+                <div class="text-box">
+                    <div class="title-wrapper">
+                        <h2 class="type-target"></h2><span class="cursor">_</span>
+                    </div>
+                    <p>Influencer Marketing Agency Plataforma que conecta marcas de consumo masivo (CPG) con
+                        creadores
+                        de contenido verificados para impulsar ventas en retail, Amazon y canales directos. Se
+                        especializa en campañas "Buy & Try" impulsadas por datos reales y tecnología IA para generar
+                        contenido auténtico y medible.</p>
+                </div>
+            </div>
+
+            <div class="card-group" data-title="MedicTravel">
+                <div class="visual-box">
+                    <div class="media-mask">
+                        <video
+                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/Sequence%2007_9.mp4"
+                            loop muted playsinline preload="auto"></video>
+                    </div>
+                </div>
+                <div class="text-box">
+                    <div class="title-wrapper">
+                        <h2 class="type-target"></h2><span class="cursor">_</span>
+                    </div>
+                    <p>Turismo Médico Premium, es una plataforma integral que conecta pacientes internacionales con
+                        clínicas de alta calidad en Colombia. Facilita el acceso a cirugías plásticas, odontología y
+                        tratamientos especializados con un modelo "Todo Incluido" (viaje, cirugía y recuperación),
+                        garantizando seguridad, acreditación internacional y ahorros significativos.</p>
+                </div>
+            </div>
+
+            <div class="card-group" data-title="DeskShare">
+                <div class="visual-box">
+                    <div class="media-mask">
+                        <video
+                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1d9d47b54d5e99ab69c9_Recording%202025-09-29%20001607_6.mp4"
+                            loop muted playsinline preload="auto"></video>
+                    </div>
+                </div>
+                <div class="text-box">
+                    <div class="title-wrapper">
+                        <h2 class="type-target"></h2><span class="cursor">_</span>
+                    </div>
+                    <p>Potencia de cómputo bajo demanda Marketplace "Peer-to-Peer" que democratiza el acceso a
+                        hardware
+                        de alto rendimiento. Permite a usuarios alquilar ordenadores potentes por horas a través de
+                        acceso remoto (para renderizado, gaming o diseño complejo), o monetizar sus propios equipos
+                        inactivos. Una solución escalable que elimina las barreras de hardware para profesionales
+                        creativos.</p>
+                </div>
+            </div>
+
+            <div class="card-group" data-title="Staffna">
+                <div class="visual-box">
+                    <div class="media-mask">
+                        <video
+                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da124ff15a31572805bd5c_Recording%202025-09-29%20001607_4.mp4"
+                            loop muted playsinline preload="auto"></video>
+                    </div>
+                </div>
+                <div class="text-box">
+                    <div class="title-wrapper">
+                        <h2 class="type-target"></h2><span class="cursor">_</span>
+                    </div>
+                    <p>Aceleradora de Carreras en Ventas Tech Plataforma educativa tipo bootcamp diseñada bajo un
+                        modelo
+                        de "Riesgo Cero": los estudiantes solo pagan su matrícula una vez consiguen empleo. El sitio
+                        integra un flujo de aplicación optimizado, presentación clara del currículo de 12 semanas y
+                        testimonios sociales para generar confianza en un modelo de pago basado en resultados.</p>
+                </div>
+            </div>
+
+            <div class="card-group" data-title="Portafolio Arq">
+                <div class="visual-box">
+                    <div class="media-mask">
+                        <video
+                            src="https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1a7145c6f790ceee27b3_Recording%202025-09-29%20001607_5.mp4"
+                            loop muted playsinline preload="auto"></video>
+                    </div>
+                </div>
+                <div class="text-box">
+                    <div class="title-wrapper">
+                        <h2 class="type-target"></h2><span class="cursor">_</span>
+                    </div>
+                    <p>Arquitectura Computacional y Diseño Portafolio multidisciplinario que explora la intersección
+                        entre arquitectura, inteligencia artificial y diseño paramétrico. Presenta investigaciones
+                        avanzadas como "RE BIM" (integración de flujos de trabajo con Rhino.Inside.Revit) y
+                        ecosistemas
+                        urbanos especulativos, demostrando una capacidad única para fusionar rigor técnico con
+                        visualización inmersiva.</p>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <button class="nav-btn" id="ocean-prev"><i class="ri-arrow-left-line"></i></button>
+                <button class="nav-btn" id="ocean-next"><i class="ri-arrow-right-line"></i></button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const container = document.getElementById('ocean-component');
+            if (!container) return;
+
+            gsap.registerPlugin(TextPlugin);
+
+            const slides = container.querySelectorAll(".card-group");
+            const totalSlides = slides.length;
+            let currentSlide = 0;
+            let isAnimating = false;
+            let autoPlayTimer;
+
+            function initOceanSlider() {
+                gsap.set(slides[0], { x: "0%", opacity: 1 });
+                slides[0].classList.add("active");
+                typeWrite(slides[0], "in");
+                playVideo(slides[0]);
+                startAutoPlay();
+            }
+
+            function startAutoPlay() {
+                if (autoPlayTimer) clearInterval(autoPlayTimer);
+                autoPlayTimer = setInterval(() => {
+                    if (currentSlide < totalSlides - 1) {
+                        changeSlide(currentSlide + 1, "next");
+                    } else {
+                        changeSlide(0, "next");
+                    }
+                }, 10000);
+            }
+
+            function resetAutoPlay() {
+                clearInterval(autoPlayTimer);
+                startAutoPlay();
+            }
+
+            function typeWrite(group, direction) {
+                const h2 = group.querySelector(".type-target");
+                const textContent = group.getAttribute("data-title");
+                const p = group.querySelector("p");
+
+                if (direction === "in") {
+                    h2.textContent = "";
+                    gsap.to(h2, {
+                        text: textContent,
+                        duration: 0.8,
+                        ease: "none",
+                        delay: 0.2
+                    });
+                    gsap.to(p, { opacity: 1, duration: 1, delay: 0.6 });
+                } else {
+                    gsap.to(h2, {
+                        text: "",
+                        duration: 0.4,
+                        ease: "none"
+                    });
+                    gsap.to(p, { opacity: 0, duration: 0.3 });
+                }
+            }
+
+            function changeSlide(nextIndex, directionStr) {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const currentGroup = slides[currentSlide];
+                const nextGroup = slides[nextIndex];
+
+                // 1. SALIDA
+                typeWrite(currentGroup, "out");
+                pauseVideo(currentGroup);
+
+                gsap.to(currentGroup, {
+                    x: directionStr === "next" ? "-100%" : "100%",
+                    z: -500,
+                    rotationY: directionStr === "next" ? -45 : 45,
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power3.inOut",
+                    onComplete: () => {
+                        currentGroup.classList.remove("active");
+                    }
+                });
+
+                // 2. ENTRADA
+                gsap.set(nextGroup, {
+                    x: directionStr === "next" ? "100%" : "-100%",
+                    z: -500,
+                    rotationY: directionStr === "next" ? 45 : -45,
+                    opacity: 0
+                });
+
+                nextGroup.classList.add("active");
+
+                gsap.to(nextGroup, {
+                    x: "0%",
+                    z: 0,
+                    rotationY: 0,
+                    opacity: 1,
+                    duration: 1.2,
+                    ease: "power3.out",
+                    onComplete: () => {
+                        isAnimating = false;
+                        currentSlide = nextIndex;
+                    }
+                });
+
+                typeWrite(nextGroup, "in");
+                playVideo(nextGroup);
+            }
+
+            function playVideo(group) {
+                const video = group.querySelector('video');
+                if (video) {
+                    // Eliminado video.currentTime = 0 para evitar conflictos de carga
+                    video.play().catch(e => console.log('Autoplay prevented:', e));
+                }
+            }
+
+            function pauseVideo(group) {
+                const video = group.querySelector('video');
+                if (video) video.pause();
+            }
+
+            container.querySelector("#ocean-next").addEventListener("click", () => {
+                resetAutoPlay();
+                if (currentSlide < totalSlides - 1) {
+                    changeSlide(currentSlide + 1, "next");
+                } else {
+                    changeSlide(0, "next");
+                }
+            });
+
+            container.querySelector("#ocean-prev").addEventListener("click", () => {
+                resetAutoPlay();
+                if (currentSlide > 0) {
+                    changeSlide(currentSlide - 1, "prev");
+                } else {
+                    changeSlide(totalSlides - 1, "prev");
+                }
+            });
+
+            // --- SWIPE LOGIC FOR MOBILE ---
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            container.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            container.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const swipeThreshold = 50; // Minimum distance to trigger swipe
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swiped Left -> Next Slide
+                    resetAutoPlay();
+                    if (currentSlide < totalSlides - 1) {
+                        changeSlide(currentSlide + 1, "next");
+                    } else {
+                        changeSlide(0, "next");
+                    }
+                }
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swiped Right -> Prev Slide
+                    resetAutoPlay();
+                    if (currentSlide > 0) {
+                        changeSlide(currentSlide - 1, "prev");
+                    } else {
+                        changeSlide(totalSlides - 1, "prev");
+                    }
+                }
+            }
+
+            initOceanSlider();
+
+        })();
+    </script>
+    <!-- TESTIMONIALS SECTION -->
+    <section id="testimonial-section">
+        <div id="testimonial-cursor">Clic para ver el siguiente</div>
+        <div class="section-header">Lo que dicen nuestros clientes</div>
+        <div class="testimonial-container">
+            <!-- Card 1 -->
+            <div class="testimonial-card" id="card-1">
+                <div class="testimonial-header"><img src="" alt="User" class="testimonial-avatar" id="t-avatar-1">
+                    <div class="testimonial-info">
+                        <h3 id="t-name-1"></h3><span id="t-role-1"></span>
+                    </div>
+                </div>
+                <div class="testimonial-text" id="t-text-1"></div>
+            </div>
+            <!-- Card 2 -->
+            <div class="testimonial-card" id="card-2">
+                <div class="testimonial-header"><img src="" alt="User" class="testimonial-avatar" id="t-avatar-2">
+                    <div class="testimonial-info">
+                        <h3 id="t-name-2"></h3><span id="t-role-2"></span>
+                    </div>
+                </div>
+                <div class="testimonial-text" id="t-text-2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+        <div class="contact-container">
+            <!-- Left: Form -->
+            <div class="contact-form-card">
+                <h2>¿Listo para digitalizar tu <span>negocio?</span></h2>
+
+                <form id="contactForm"
+                    action="https://script.google.com/macros/s/AKfycbw1BC_u2iKZ6XiM_lFaxWiOzSNL0SmdLPjq_xAcPr1UXN0eFDZGtMR3I8YCLKz7ty7Z/exec"
+                    method="POST">
+                    <div class="form-group">
+                        <label>Tu nombre*</label>
+                        <input type="text" name="name" class="form-input" placeholder="Tu nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>E-mail*</label>
+                        <input type="email" name="email" class="form-input" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mensaje</label>
+                        <textarea name="message" class="form-textarea" placeholder="Tu mensaje"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="submit-btn">Enviar Mensaje</button>
+
+                    <div class="form-footer">
+                        Al enviar, aceptas nuestros <a href="#">Términos</a> y <a href="#">Política de
+                            Privacidad</a>.
+                    </div>
+                    <div id="formStatus" style="margin-top:10px; font-size: 0.9rem; color: #fff; min-height: 20px;">
+                    </div>
+                </form>
+
+                <script>
+                    document.getElementById('contactForm').addEventListener('submit', function (e) {
+                        e.preventDefault();
+
+                        var form = this;
+                        var btn = document.getElementById('submitBtn');
+                        var status = document.getElementById('formStatus');
+
+                        // Disable button and show loading state
+                        btn.disabled = true;
+                        btn.innerText = "Enviando...";
+                        status.innerText = "";
+
+                        var formData = new FormData(form);
+
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.result === 'success') {
+                                    btn.innerText = "¡Enviado!";
+                                    btn.style.backgroundColor = "#4CAF50"; // Green color for success
+                                    status.innerText = "Gracias. Hemos recibido tu mensaje.";
+                                    form.reset();
+                                    setTimeout(() => {
+                                        btn.disabled = false;
+                                        btn.innerText = "Enviar Mensaje";
+                                        btn.style.backgroundColor = ""; // Reset color
+                                        status.innerText = "";
+                                    }, 5000);
+                                } else {
+                                    throw new Error('Error en el script: ' + data.error);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error!', error.message);
+                                btn.innerText = "Error";
+                                btn.style.backgroundColor = "#f44336"; // Red color for error
+                                status.innerText = "Hubo un problema. Por favor intenta de nuevo.";
+                                setTimeout(() => {
+                                    btn.disabled = false;
+                                    btn.innerText = "Enviar Mensaje";
+                                    btn.style.backgroundColor = "";
+                                }, 3000);
+                            });
+                    });
+                </script>
+            </div>
+
+            <!-- Right: Info -->
+            <div class="contact-info">
+                <h1>Construyamos</h1>
+                <p class="contact-sub">Tu presencia digital empieza aquí. Desarrollo web estratégico enfocado en
+                    conversión y velocidad.</p>
+
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <h3>🎨 Diseño único.</h3>
+                        <p>No usamos plantillas genéricas. Creamos una identidad visual exclusiva que refleja la
+                            esencia
+                            de tu marca.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>📱 100% Responsivo.</h3>
+                        <p>Tu web se verá perfecta en celulares, tablets y computadoras, garantizando la mejor
+                            experiencia de usuario.</p>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <div class="profile-img">
+                        <!-- Using a generic professional avatar -->
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
+                            alt="Profile">
+                    </div>
+                    <div class="profile-details">
+                        <h4>Estratega Digital at Amadeus UX</h4>
+                        <div class="profile-name">César Jiménez</div>
+                        <a href="https://calendly.com/es" target="_blank" class="schedule-btn">Agendar llamada ●</a>
+                    </div>
+                </div>
+
+                <!-- Contact Methods -->
+                <div class="contact-methods">
+                    <div class="contact-method-row">
+                        <i class="ri-whatsapp-line"></i>
+                        <span>(+57) 324 664 9104</span>
+                    </div>
+                    <div class="contact-method-row">
+                        <i class="ri-mail-line"></i>
+                        <a href="mailto:cesarjimenez@amadeusux.com">cesarjimenez@amadeusux.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    < !-- FOOTER -->
+        <footer class="next-section">
+            <div class="footer-content">
+                <h2>¿Trabajamos juntos?</h2><a
+                    href="mailto:cesarjimenez@amadeusux.com">cesarjimenez@amadeusux.com</a><br><br>
+                <p style="opacity: 0.5;">© 2026 AMADEUS UX</p>
+            </div>
+        </footer>
+        < !-- OCEAN SLIDER SCRIPT -->
+
+            <script>document.addEventListener("DOMContentLoaded", function () {
+                    var video = document.getElementById("video-fast-vignette");
+
+                    if (video) {
+                        video.playbackRate = 1.25;
+                    }
+                });
+
+            </script><!-- TESTIMONIALS SCRIPT -->
+            <script>document.addEventListener("DOMContentLoaded", function () {
+
+                    // TESTIMONIAL DATA
+                    const testimonials = [{
+                        name: "Juan Vivas",
+                        role: "CEO Staffna Tech Sales",
+                        image: "assets/juan_vivas.png",
+                        text: "Amadeus UX aportó un dinamismo excepcional al diseño y la funcionalidad de nuestra plataforma de cursos de ventas. Su capacidad para fusionar un diseño intuitivo con una experiencia de aprendizaje estructurada le dio a Staffna una identidad fresca y atractiva. Más allá de la estética, Amadeus UX gestionó la estructura del programa educativo a través de la plataforma, asegurando que la entrega de contenido no solo fuera fluida sino también motivadora para nuestros usuarios. Gracias a su visión, nuestra plataforma se convirtió en un entorno de aprendizaje vibrante que empodera a los profesionales de ventas para crecer."
+                    }, {
+                        name: "Richard Carbo",
+                        role: "Head of IZZY",
+                        image: "assets/richard_carbo.png",
+                        text: "Trabajar con Amadeus UX en la plataforma de Izzy fue un cambio radical. Capturó la esencia de nuestro modelo innovador —conectar marcas emergentes con influencers— a través de un diseño que se siente moderno y confiable. Amadeus UX logró traducir una propuesta de valor compleja en una experiencia clara y atractiva en nuestra página de comercio electrónico, facilitando que marcas e influencers conecten sin problemas. Su visión le dio a Izzy una identidad profesional pero dinámica."
+                    }
+
+                        ,
+                    {
+                        name: "Juan Hernandez",
+                        role: "Head of DeskShare Company",
+                        image: "assets/juan_hernandez.png",
+                        text: "Trabajar con Amadeus UX en el desarrollo de la propuesta de DeskShare fue una experiencia transformadora. Amadeus UX no solo aportó soluciones estéticas, sino que también anticipó necesidades técnicas y comerciales, asegurando que el diseño fuera realmente funcional. Su enfoque creativo y orientado al detalle ayudó a DeskShare a evolucionar de una idea a un producto con una identidad sólida y escalable. Recomiendo totalmente su trabajo como diseñador."
+                    }];
+
+
+                    let currentIndex = 0;
+                    let isAnimating = false;
+
+                    // DOM Elements
+                    const card1 = document.getElementById("card-1");
+                    const card2 = document.getElementById("card-2");
+                    const avatar1 = document.getElementById("t-avatar-1");
+                    const name1 = document.getElementById("t-name-1");
+                    const role1 = document.getElementById("t-role-1");
+                    const text1 = document.getElementById("t-text-1");
+                    const avatar2 = document.getElementById("t-avatar-2");
+                    const name2 = document.getElementById("t-name-2");
+                    const role2 = document.getElementById("t-role-2");
+                    const text2 = document.getElementById("t-text-2");
+                    const section = document.getElementById("testimonial-section");
+
+                    // INITIAL SETUP: Cursor & Structural Prep
+                    const cursor = document.getElementById("testimonial-cursor");
+
+                    // Mouse Move Logic (Global or Section specific)
+                    // We use fixed position, so clientX/Y works perfectly.
+                    document.addEventListener("mousemove", (e) => {
+                        gsap.to(cursor, {
+                            x: e.clientX,
+                            y: e.clientY,
+                            duration: 0.1,
+                            ease: "power2.out"
+                        });
+                    });
+
+                    [card1, card2].forEach(card => {
+                        // Hover Effects for Cursor
+                        card.addEventListener("mouseenter", () => {
+                            gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out" });
+                        });
+                        card.addEventListener("mouseleave", () => {
+                            gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2 });
+                        });
+                    });
+
+                    // --- RENDER FUNCTION ---
+                    function updateCardContentDOM(cardNum, index) {
+                        const data = testimonials[index % testimonials.length];
+                        const avatar = cardNum === 1 ? avatar1 : avatar2;
+                        const name = cardNum === 1 ? name1 : name2;
+                        const role = cardNum === 1 ? role1 : role2;
+                        const text = cardNum === 1 ? text1 : text2;
+
+                        avatar.src = data.image;
+
+                        // For Typewriter: PRE-SET empty or full. 
+                        // If we animate IN, we start empty.
+                        name.textContent = "";
+                        role.textContent = "";
+
+                        // For Blinds: text content set, but we transform it out of view initially if animating in.
+                        // We'll handle visual state in the animate function.
+                        // Here just set data.
+                        text.textContent = data.text;
+
+                        // Store Key Data for Typewriter
+                        name.dataset.final = data.name;
+                        role.dataset.final = data.role;
+                    }
+
+                    // Initial Render (Static, no animation)
+                    updateCardContentDOM(1, 0);
+                    name1.textContent = testimonials[0].name;
+                    role1.textContent = testimonials[0].role;
+
+                    updateCardContentDOM(2, 1);
+                    name2.textContent = testimonials[1].name;
+                    role2.textContent = testimonials[1].role;
+
+                    // --- ANIMATION SEQUENCE ---
+                    function animateTransition() {
+                        if (isAnimating) return;
+                        isAnimating = true;
+
+                        // 1. EXIT ANIMATION (Fade Out / Slide Up)
+                        gsap.to([card1.children, card2.children], {
+
+                            opacity: 0,
+                            y: -20,
+                            duration: 0.4,
+                            ease: "power2.in",
+                            onComplete: () => {
+                                // 2. DATA UPDATE
+                                currentIndex = (currentIndex + 2) % testimonials.length;
+                                updateCardContentDOM(1, currentIndex);
+                                updateCardContentDOM(2, currentIndex + 1);
+
+                                // RESET POSITIONS FOR ENTRY
+                                // Reset opacity/y for wrapper containers
+                                gsap.set([card1.children, card2.children], {
+                                    y: 0, opacity: 1
+                                });
+
+                                // HIDE SPECIFIC ELEMENTS FOR EFFECT
+                                // Avatar: Zoom In
+                                gsap.set([avatar1, avatar2], {
+                                    scale: 0, opacity: 0
+                                });
+
+                                // Text: Blinds Down (Hidden)
+                                // We achieve Blinds Up by: 
+                                // clipping it from bottom? Or translating Y?
+                                // "Perciana hacia arriba" -> Content reveals upwards.
+                                gsap.set([text1, text2], {
+                                    y: "100%", opacity: 0
+                                });
+                                // Note: text-blind-wrapper needs overflow hidden in CSS for this to look like blinds.
+
+                                // 3. ENTER ANIMATION
+                                const tl = gsap.timeline({
+                                    onComplete: () => {
+                                        isAnimating = false;
+                                    }
+                                });
+
+                                // A. Avatars Pop In
+                                tl.to([avatar1, avatar2], {
+                                    scale: 1,
+                                    opacity: 1,
+                                    duration: 0.5,
+                                    ease: "back.out(1.7)"
+                                });
+
+                                // B. Typewriter Name & Role
+                                // We use TextPlugin logic manually or Tween
+                                [name1, role1, name2, role2].forEach(el => {
+                                    tl.to(el, {
+                                        text: el.dataset.final,
+                                        duration: 0.8,
+                                        ease: "none"
+                                    }
+
+                                        , "<0.1"); // Start slightly after avatar
+                                });
+
+                                // C. Blinds Up Text
+                                // Animate Y from 100% to 0%
+                                tl.to([text1, text2], {
+                                    y: "0%",
+                                    opacity: 1,
+                                    duration: 0.8,
+                                    ease: "power3.out",
+                                    stagger: 0.1
+                                }
+
+                                    , "<0.4"); // Overlap
+                            }
+                        });
+                    }
+
+                    // CLICK LISTENER
+                    section.addEventListener("click", animateTransition);
+
+                    // HOVER EFFECT FOR BADGE
+                    // CSS handles badge visibility usually, but we can enhance.
+                });
+            </script>
+            < !-- HERO CANVAS SCRIPT -->
+                <script>const canvas = document.getElementById('mobileCanvas');
+                    const ctx = canvas.getContext('2d');
+                    const heroSection = document.getElementById('hero-section');
+
+                    let width,
+                        height,
+                        lines = [],
+                        animationFrameId;
+
+                    const config = {
+                        lineCount: 40,
+                        baseAmplitude: 25,
+                        baseGap: 8,
+                        baseFrequency: 0.003,
+                        speed: 0.0008,
+                        currentAmplitude: 0,
+                        currentGap: 0
+                    }
+
+                        ;
+
+                    function initLines() {
+                        lines = [];
+                        const totalHeight = config.lineCount * config.currentGap;
+                        const startY = (height / 2) + (totalHeight * 0.15);
+
+                        for (let i = 0; i < config.lineCount; i++) {
+                            lines.push({
+                                y: startY + (i * config.currentGap), phase: i * 0.2
+                            });
+                        }
+                    }
+
+                    function resize() {
+                        width = canvas.width = heroSection.clientWidth;
+                        height = canvas.height = heroSection.clientHeight;
+
+                        let scaleFactor = width / 450;
+                        scaleFactor = Math.min(Math.max(scaleFactor, 0.5), 1.0);
+
+                        config.currentAmplitude = config.baseAmplitude * scaleFactor;
+                        config.currentGap = config.baseGap * scaleFactor;
+
+                        initLines();
+                    }
+
+                    function draw() {
+                        if (window.getComputedStyle(document.querySelector('.mobile-wrapper')).display === 'none') {
+                            animationFrameId = requestAnimationFrame(draw);
+                            return;
+                        }
+
+                        // --- CAMBIO AQUÍ: FONDO CON DEGRADADO PARA MÓVIL ---
+                        // Creamos un gradiente lineal vertical (de arriba hacia abajo)
+                        // Coordenadas: (x0, y0) -> (0, 0) a (x1, y1) -> (0, height)
+                        const gradientBg = ctx.createLinearGradient(0, 0, 0, height);
+
+                        // Definimos los colores del gradiente
+                        gradientBg.addColorStop(0, '#000000'); // Inicio (Arriba): Negro puro
+                        gradientBg.addColorStop(1, '#151515'); // Final (Abajo): El gris oscuro solicitado
+
+                        // Aplicamos el gradiente como estilo de relleno
+                        ctx.fillStyle = gradientBg;
+                        // Rellenamos todo el canvas con el gradiente en cada frame
+                        ctx.fillRect(0, 0, width, height);
+                        // ----------------------------------------------------
+
+                        const time = Date.now() * config.speed;
+
+                        lines.forEach((line, index) => {
+                            ctx.beginPath();
+                            const alpha = 1 - (index / config.lineCount);
+                            const saturation = 50 + index;
+
+                            ctx.strokeStyle = `hsla(260, ${saturation}%, 70%, ${alpha})`;
+                            ctx.lineWidth = 1.5;
+
+                            for (let x = 0; x <= width; x += 2) {
+                                const dist = Math.abs(width / 2 - x);
+                                const scale = Math.max(0, 1 - Math.pow(dist / (width * 0.6), 2));
+
+                                const wave1 = Math.sin(x * config.baseFrequency + time + line.phase);
+                                const wave2 = Math.cos(x * (config.baseFrequency * 0.5) - time);
+
+                                const combinedWave = (wave1 + wave2 * 0.3) * config.currentAmplitude * scale;
+                                ctx.lineTo(x, line.y + combinedWave);
+                            }
+
+                            ctx.stroke();
+                        });
+
+                        animationFrameId = requestAnimationFrame(draw);
+                    }
+
+                    window.addEventListener('resize', resize);
+                    resize();
+                    draw();
+                </script>
+</body>
+
+</html>

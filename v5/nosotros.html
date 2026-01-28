@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - Amadeus UX</title>
+
+    <!-- Fonts: Manrope (Sans) & Playfair Display (Serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-color: #6a11cb;
+            /* Amadeus Purple/Blue */
+            --serif-font: 'Playfair Display', serif;
+            --sans-font: 'Manrope', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--sans-font);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- NAVIGATION STYLES (Floating Pill) --- */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: fit-content;
+            max-width: 95vw;
+            background: rgba(255, 255, 255, 0.05);
+            /* 5% White Glass */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            z-index: 9999;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-logo {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: #fff;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-menu a {
+            font-family: 'Manrope', sans-serif;
+            text-decoration: none;
+            color: #ccc;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-menu a:hover {
+            color: #fff;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(37, 117, 252, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                top: auto;
+                bottom: 20px;
+                padding: 10px 20px;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        /* --- HERO SECTION --- */
+        .cb-hero {
+            padding: 200px 5vw 100px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cb-hero-title {
+            font-family: var(--sans-font);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1;
+            margin: 0 0 40px;
+            letter-spacing: -2px;
+            opacity: 0;
+            /* JS Fade In */
+            transform: translateY(30px);
+        }
+
+        /* --- VIDEO REEL COMPONENT --- */
+        .cb-reel-container {
+            width: 100%;
+            height: 70vh;
+            max-width: 1400px;
+            background: #111;
+            border-radius: 40px;
+            /* Cuberto Roundness */
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 150px;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .cb-reel-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Placeholder gradient or video styling */
+            background: linear-gradient(45deg, #000, #1a1a1a);
+        }
+
+        /* Floating Play Button Placeholder (Optional) */
+        .cb-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .cb-play-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+
+        /* --- 2-COLUMN SECTION (Philosophy) --- */
+        .cb-section {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto 150px;
+            padding: 0 5vw;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .cb-col-left {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .cb-col-right {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .cb-label {
+            font-family: var(--sans-font);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            border-radius: 50px;
+        }
+
+        .cb-text-lg {
+            font-family: var(--sans-font);
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            line-height: 1.3;
+            font-weight: 300;
+            color: #eee;
+        }
+
+        .cb-text-highlight {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* --- STATS ROW --- */
+        .cb-stats-row {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto 150px;
+            padding: 0 5vw;
+            flex-wrap: wrap;
+            gap: 50px;
+        }
+
+        .cb-stat-item {
+            text-align: left;
+        }
+
+        .cb-stat-number {
+            display: block;
+            font-size: clamp(4rem, 6vw, 6rem);
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .cb-stat-label {
+            font-size: 1.1rem;
+            color: #888;
+        }
+
+        /* --- TEAM LIST (Cuberto Style) --- */
+        .cb-team-section {
+            max-width: 1400px;
+            margin: 0 auto 150px;
+            padding: 0 5vw;
+        }
+
+        .cb-team-list {
+            position: relative;
+        }
+
+        .cb-team-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+            border-top: 1px solid #333;
+            cursor: pointer;
+            transition: padding 0.4s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cb-team-item:last-child {
+            border-bottom: 1px solid #333;
+        }
+
+        .cb-team-item:hover {
+            padding: 40px 20px;
+        }
+
+        .cb-team-name {
+            font-size: 2rem;
+            font-weight: 500;
+        }
+
+        .cb-team-role {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        /* Hover Reveal Image - Fixed/Following */
+        .cb-team-reveal-img {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 300px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.4s ease-out;
+            filter: brightness(0.8);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
+        </a>
+        <div class="nav-menu">
+            <a href="portafolio.html">Portafolio</a>
+            <a href="servicios.html">Servicios</a>
+            <a href="nosotros.html">Nosotros</a>
+        </div>
+        <a href="https://wa.me/573246649104" target="_blank" class="nav-cta">Hablemos</a>
+    </nav>
+
+    <!-- HERO + REEL -->
+    <section class="cb-hero">
+        <h1 class="cb-hero-title">
+            CREADORES<br>
+            DE FUTURO
+        </h1>
+
+        <!-- Video Reel Container -->
+        <div class="cb-reel-container">
+            <!-- Placeholder for video, or actual video if user has one. Using gradient/image for now. -->
+            <!-- Ideally we would use a <video> tag here -->
+            <img src="assets/images/stat_bg_global.png" class="cb-reel-video" alt="Amadeus Studio Reel">
+            <div class="cb-play-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHILOSOPHY / GOAL -->
+    <section class="cb-section">
+        <div class="cb-col-left">
+            <span class="cb-label">Nuestra Filosofía</span>
+        </div>
+        <div class="cb-col-right">
+            <p class="cb-text-lg">
+                <span class="cb-text-highlight">Somos una agencia digital centrada en la evolución.</span>
+                No solo diseñamos interfaces; construimos ecosistemas que fusionan una <span
+                    class="cb-text-highlight">estética radical</span> con una velocidad sónica.
+                Nuestro objetivo es crear experiencias que no solo se vean bien, sino que lideren el mercado.
+            </p>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="cb-stats-row">
+        <div class="cb-stat-item">
+            <span class="cb-stat-number">50+</span>
+            <span class="cb-stat-label">Proyectos Entregados</span>
+        </div>
+        <div class="cb-stat-item">
+            <span class="cb-stat-number">98%</span>
+            <span class="cb-stat-label">Clientes Fieles</span>
+        </div>
+        <div class="cb-stat-item">
+            <span class="cb-stat-number">Global</span>
+            <span class="cb-stat-label">Alcance Internacional</span>
+        </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="cb-team-section">
+        <div style="margin-bottom: 60px;">
+            <span class="cb-label">El Equipo</span>
+        </div>
+
+        <div class="cb-team-list">
+            <!-- Cesar -->
+            <div class="cb-team-item" data-img="img-cesar-reveal">
+                <span class="cb-team-name">César Jiménez</span>
+                <span class="cb-team-role">Estratega Digital</span>
+            </div>
+
+            <!-- Louis -->
+            <div class="cb-team-item" data-img="img-louis-reveal">
+                <span class="cb-team-name">Louis Amadeus</span>
+                <span class="cb-team-role">Diseñador UX/UI</span>
+            </div>
+
+            <!-- Reveal Images -->
+            <!-- Reveal Images -->
+            <img src="assets/images/team_avatar_cesar.png" id="img-cesar-reveal" class="cb-team-reveal-img" alt="Cesar">
+            <img src="assets/images/team_avatar_louis.png" id="img-louis-reveal" class="cb-team-reveal-img" alt="Louis">
+        </div>
+    </section>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 1. HERO REVEAL
+        const tlHero = gsap.timeline();
+        tlHero.to(".cb-hero-title", { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.2 })
+            .to(".cb-reel-container", { opacity: 1, scale: 1, duration: 1.2, ease: "expo.out" }, "-=0.6");
+
+        // 2. TEXT REVEAL (Philosophy)
+        gsap.from(".cb-text-lg", {
+            scrollTrigger: {
+                trigger: ".cb-section",
+                start: "top 80%",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out"
+        });
+
+        // 3. STATS REVEAL
+        gsap.from(".cb-stat-item", {
+            scrollTrigger: {
+                trigger: ".cb-stats-row",
+                start: "top 85%",
+            },
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power3.out"
+        });
+
+        // 4. TEAM HOVER (Floating Image Effect)
+        const teamItems = document.querySelectorAll('.cb-team-item');
+
+        teamItems.forEach(item => {
+            const imgId = item.getAttribute('data-img');
+            const img = document.getElementById(imgId);
+
+            item.addEventListener('mousemove', (e) => {
+                if (img) {
+                    gsap.to(img, {
+                        x: e.clientX, // Follow cursor logic requires cleaner math relative to screen, simplified here
+                        opacity: 1,
+                        scale: 1,
+                        duration: 0.4
+                    });
+                    // Using fixed position for simplicity:
+                    // Ideally we track mouse strictly
+                }
+            });
+
+            // Simplified Hover Logic: Just show centered or near cursor
+            item.addEventListener('mouseenter', () => {
+                if (img) {
+                    gsap.to(img, { opacity: 1, scale: 1, duration: 0.3 });
+                }
+            });
+
+            item.addEventListener('mouseleave', () => {
+                if (img) {
+                    gsap.to(img, { opacity: 0, scale: 0.8, duration: 0.3 });
+                }
+            });
+        });
+
+        // BETTER MOUSE FOLLOWER FOR TEAM IMAGES
+        document.addEventListener('mousemove', (e) => {
+            // Update position of all active reveal images to follow mouse loosely
+            gsap.to(".cb-team-reveal-img", {
+                left: e.clientX,
+                top: e.clientY,
+                duration: 0.6,
+                ease: "power2.out"
+            });
+        });
+
+    </script>
+</body>
+
+</html>
