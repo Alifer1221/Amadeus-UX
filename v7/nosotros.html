@@ -711,6 +711,223 @@
         </div>
     </section>
 
+    <!-- SECCIÓN DE EQUIPO (SIDE PANEL REPLICA) -->
+    <style>
+        .team-replica-section {
+            background-color: #e0ddd7;
+            width: 100%;
+            position: relative;
+            z-index: 90;
+        }
+
+        .full-width-container-team {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doctor-card {
+            width: 100%;
+            height: 50vh;
+            background-color: #f2efe9;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            position: relative;
+            cursor: pointer;
+            border-bottom: 1px solid #e0ddd7;
+            transition: background-color 0.4s ease;
+        }
+
+        .doctor-card:hover {
+            background-color: #ffffff;
+        }
+
+        .doctor-photo-main {
+            width: 200px;
+            height: 240px;
+            object-fit: cover;
+            margin-right: 60px;
+        }
+
+        .doctor-card .name {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 0.95;
+            letter-spacing: -2px;
+            color: #2d2d3a;
+            font-family: var(--manrope);
+        }
+
+        /* --- MODAL 50% --- */
+        .modal-overlay-team {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            z-index: 2000;
+        }
+
+        .modal-panel-team {
+            position: absolute;
+            top: 0;
+            right: -50vw;
+            width: 50vw;
+            height: 100%;
+            display: flex;
+            transition: right 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay-team.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-overlay-team.active .modal-panel-team {
+            right: 0;
+        }
+
+        .modal-left-aside-team {
+            width: 45%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+            transform: translateX(100%);
+            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+        }
+
+        .modal-overlay-team.active .modal-left-aside-team {
+            transform: translateX(0);
+        }
+
+        .modal-img-container-team {
+            height: 50%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .modal-img-team {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .contact-box-team {
+            background-color: #8fb3e2;
+            height: 50%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #2d2d3a;
+        }
+
+        .modal-right-bio-team {
+            width: 55%;
+            height: 100%;
+            background: white;
+            padding: 80px 50px;
+            position: relative;
+            z-index: 2;
+            overflow-y: auto;
+        }
+
+        .close-btn-team {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #2d2d3a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .bio-content-team {
+            margin-top: 40px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        @media (max-width: 900px) {
+            .modal-panel-team {
+                width: 100vw;
+                right: -100vw;
+            }
+
+            .modal-left-aside-team {
+                display: none;
+            }
+
+            .modal-right-bio-team {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <section class="team-replica-section">
+        <div class="full-width-container-team">
+            <div class="doctor-card" onclick="openTeamModal('Jacques')">
+                <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=600" class="doctor-photo-main">
+                <div>
+                    <p style="color: #888; margin-bottom: 5px; font-family: var(--sans);">Chirurgien-dentiste</p>
+                    <h2 class="name">Dr Louis-Philippe<br>Jacques</h2>
+                </div>
+            </div>
+
+            <div class="doctor-card" onclick="openTeamModal('Matte')">
+                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600" class="doctor-photo-main">
+                <div>
+                    <p style="color: #888; margin-bottom: 5px; font-family: var(--sans);">Chirurgien-dentiste</p>
+                    <h2 class="name">Dr Louis-Olivier Matte</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay-team" id="modalOverlayTeam" onclick="closeTeamModal()">
+        <div class="modal-panel-team" onclick="event.stopPropagation()">
+            <div class="modal-left-aside-team">
+                <div class="modal-img-container-team">
+                    <img src="" id="modalImgTeam" class="modal-img-team">
+                </div>
+                <div class="contact-box-team">
+                    <h3 style="margin-bottom: 15px; font-family: var(--manrope);">Contact</h3>
+                    <p style="font-size: 0.9rem; font-family: var(--sans);">info@jacques-cie.com</p>
+                    <p style="font-size: 0.9rem; font-family: var(--sans);">418 682-6600</p>
+                    <button
+                        style="margin-top:30px; padding: 15px; border-radius: 50px; border: 1px solid #2d2d3a; background: none; cursor:pointer; font-family: var(--manrope);">Prendre
+                        rendez-vous</button>
+                </div>
+            </div>
+
+            <div class="modal-right-bio-team">
+                <button class="close-btn-team" onclick="closeTeamModal()">&times;</button>
+                <p style="color: #888; font-family: var(--sans);">Chirurgien-dentiste</p>
+                <h2 id="modalNameTeam"
+                    style="font-size: 3rem; margin: 10px 0; line-height: 1; font-family: var(--manrope); color: #2d2d3a;">
+                </h2>
+                <div class="bio-content-team">
+                    <p style="font-family: var(--sans);">Dr. Jacques allie précision, expertise et passion para
+                        transformar el sourire de ses patients. Diplômé de l’Université Laval en 2013, il débute sa
+                        carrera en Australie...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- GSAP & Lenis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
