@@ -43,6 +43,10 @@
             /* Standard flow is safer for multiple long sections */
         }
 
+        html.no-scroll {
+            overflow: hidden !important;
+        }
+
         /* --- NAVIGATION STYLES (Floating Pill) --- */
         nav {
             position: fixed;
@@ -950,6 +954,7 @@
             let lastScrollY = window.scrollY;
             const nav = document.querySelector('nav');
             window.addEventListener('scroll', () => {
+                if (document.getElementById('modalOverlayTeam').classList.contains('active')) return;
                 const currentScrollY = window.scrollY;
                 if (currentScrollY > lastScrollY && currentScrollY > 100) {
                     nav.classList.add('nav-hidden');
@@ -1227,10 +1232,14 @@
                 img.src = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600";
             }
             document.getElementById('modalOverlayTeam').classList.add('active');
+            document.documentElement.classList.add('no-scroll');
+            document.querySelector('nav').classList.add('nav-hidden');
             if (typeof lenis !== 'undefined') lenis.stop();
         }
         function closeTeamModal() {
             document.getElementById('modalOverlayTeam').classList.remove('active');
+            document.documentElement.classList.remove('no-scroll');
+            document.querySelector('nav').classList.remove('nav-hidden');
             if (typeof lenis !== 'undefined') lenis.start();
         }
     </script>
