@@ -882,7 +882,7 @@
             <div class="doctor-card" onclick="openTeamModal('Louis')">
                 <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=600" class="doctor-photo-main">
                 <div>
-                    <p style="color: #888; margin-bottom: 5px; font-family: var(--sans);">Founder & CEO</p>
+                    <p style="color: #888; margin-bottom: 5px; font-family: var(--sans);">Diseñador UX/UI</p>
                     <h2 class="name">Louis Amadeus<br>Arteaga Benavides</h2>
                 </div>
             </div>
@@ -915,7 +915,7 @@
 
             <div class="modal-right-bio-team">
                 <button class="close-btn-team" onclick="closeTeamModal()">&times;</button>
-                <p style="color: #888; font-family: var(--sans);">Chirurgien-dentiste</p>
+                <p id="modalCargoTeam" style="color: #888; font-family: var(--sans);">Diseñador UX/UI</p>
                 <h2 id="modalNameTeam"
                     style="font-size: 3rem; margin: 10px 0; line-height: 1; font-family: var(--manrope); color: #2d2d3a;">
                 </h2>
@@ -1217,9 +1217,11 @@
             const img = document.getElementById('modalImgTeam');
             if (doc === 'Louis') {
                 name.innerHTML = "Louis Amadeus Arteaga Benavides";
+                document.getElementById('modalCargoTeam').innerHTML = "Diseñador UX/UI";
                 img.src = "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=600";
             } else {
                 name.innerHTML = "Dr Louis-Olivier Matte";
+                document.getElementById('modalCargoTeam').innerHTML = "Chirurgien-dentiste";
                 img.src = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600";
             }
             document.getElementById('modalOverlayTeam').classList.add('active');
