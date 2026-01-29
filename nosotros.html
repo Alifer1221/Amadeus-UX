@@ -920,9 +920,7 @@
                     style="font-size: 3rem; margin: 10px 0; line-height: 1; font-family: var(--manrope); color: #2d2d3a;">
                 </h2>
                 <div class="bio-content-team">
-                    <p style="font-family: var(--sans);">Dr. Jacques allie précision, expertise et passion para
-                        transformar el sourire de ses patients. Diplômé de l’Université Laval en 2013, il débute sa
-                        carrera en Australie...</p>
+                    <p id="modalBioTeam" style="font-family: var(--sans);">Biografía en proceso...</p>
                 </div>
             </div>
         </div>
@@ -1218,10 +1216,12 @@
             if (doc === 'Louis') {
                 name.innerHTML = "Louis Amadeus Arteaga Benavides";
                 document.getElementById('modalCargoTeam').innerHTML = "Diseñador UX/UI";
+                document.getElementById('modalBioTeam').innerHTML = "Biografía en proceso...";
                 img.src = "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=600";
             } else if (doc === 'Cesar') {
                 name.innerHTML = "César Fernando Jiménez Reyes";
                 document.getElementById('modalCargoTeam').innerHTML = "Estratega Digital";
+                document.getElementById('modalBioTeam').innerHTML = "Administrador de Empresas de la Pontificia Universidad Javeriana y Estratega Digital con una visión orientada a transformar el impacto de las dinámicas globales en oportunidades de crecimiento organizacional. Mi perfil se distingue por una sólida rigurosidad académica y una trayectoria de alto impacto en sectores críticos. En el Congreso de la República, perfeccioné mi capacidad de comunicación estratégica y resolución de problemas bajo presión, mientras que en la multinacional Takeda apliqué un enfoque analítico avanzado para la optimización de la cadena de suministro. Mi compromiso con la generación de valor social se consolidó en la Fundación Nacional de Trasplantes, donde lideré iniciativas con un impacto tangible en la vida de las personas. Este recorrido se complementa con un liderazgo natural forjado desde la academia como fundador del Semillero de Investigación y monitor en la Universidad Javeriana, roles que me permitieron integrar la investigación profunda con la gestión de equipos y la visión estratégica que hoy aplico en el entorno digital.";
                 img.src = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600";
             }
             document.getElementById('modalOverlayTeam').classList.add('active');
