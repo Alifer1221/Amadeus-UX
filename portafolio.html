@@ -1408,9 +1408,17 @@
 
         function updateRendererSize() {
             const w = wrapper.clientWidth;
-            const h = isMobile ? (window.innerHeight * 0.55) : wrapper.clientHeight; // 55vh en móvil para que encaje perfecto
+            const h = isMobile ? (window.innerHeight * 0.55) : wrapper.clientHeight;
             renderer.setSize(w, h);
             camera.aspect = w / h;
+
+            // ZOOM EXTREMO: Reducir FOV en móviles para que el objeto se vea MASIVO sin distorsión
+            if (isMobile) {
+                camera.fov = 28;
+            } else {
+                camera.fov = 35;
+            }
+
             camera.updateProjectionMatrix();
         }
 
@@ -1459,8 +1467,8 @@
                 }
             });
 
-            // ESCALA ADAPTATIVA (Maximizada a 0.06 para impacto visual sin distorsión)
-            const scale = isMobile ? 0.06 : 0.072;
+            // ESCALA MASIVA (Aumentada a 0.085 para impacto visual XL)
+            const scale = isMobile ? 0.085 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
