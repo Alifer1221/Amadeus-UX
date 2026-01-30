@@ -488,8 +488,8 @@
 
             #imac-3d-wrapper canvas {
                 position: relative !important;
-                height: 45vh !important;
-                /* Altura controlada para el iMac */
+                height: 65vh !important;
+                /* Agrandado masivamente */
                 width: 100% !important;
                 order: 1;
             }
@@ -507,8 +507,8 @@
                 align-items: center !important;
                 pointer-events: auto !important;
                 order: 2;
-                margin-top: -30px !important;
-                /* "Succiona" el texto hacia el iMac */
+                margin-top: -10px !important;
+                /* Ajustado para el nuevo tamaño del canvas */
             }
 
             #info-side h1 {
@@ -1450,8 +1450,8 @@
                 }
             });
 
-            // ESCALA ADAPTATIVA (Refinada a 0.025 para mejor impacto visual)
-            const scale = isMobile ? 0.025 : 0.072;
+            // ESCALA ADAPTATIVA (Agrandada masivamente para impacto visual)
+            const scale = isMobile ? 0.045 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
