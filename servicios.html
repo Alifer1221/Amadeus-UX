@@ -118,14 +118,66 @@
 
         @media (max-width: 768px) {
             nav {
-                top: auto;
-                bottom: 20px;
-                padding: 10px 20px;
-                gap: 15px;
+                top: 15px;
+                padding: 5px;
+                gap: 5px;
+                width: 95%;
+                justify-content: space-between;
+                border-radius: 100px;
+                background: rgba(255, 255, 255, 0.4);
+                /* Tema claro */
+                border: 1px solid rgba(0, 0, 0, 0.1);
             }
 
-            .nav-menu {
+            .nav-logo {
+                font-size: 0.8rem;
+                padding-left: 15px;
+                gap: 2px;
+                flex-shrink: 0;
+            }
+
+            .nav-logo span:first-child {
                 display: none;
+            }
+
+            .nav-logo::before {
+                content: 'A';
+                font-weight: 800;
+                margin-right: 2px;
+            }
+
+            /* SEGMENTED CONTROL LOOK */
+            .nav-menu {
+                display: flex;
+                gap: 2px;
+                background: rgba(0, 0, 0, 0.05);
+                padding: 3px;
+                border-radius: 100px;
+                flex-grow: 1;
+                justify-content: center;
+                margin: 0 5px;
+            }
+
+            .nav-menu a {
+                font-size: 0.65rem;
+                padding: 6px 10px;
+                border-radius: 100px;
+                color: #666;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+                background: transparent;
+            }
+
+            .nav-menu a.active {
+                color: #000;
+                background: rgba(0, 0, 0, 0.08);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            }
+
+            .nav-cta {
+                padding: 8px 14px;
+                font-size: 0.65rem;
+                flex-shrink: 0;
             }
         }
 
@@ -1301,6 +1353,36 @@
             <p>Diseño & Estrategia · High Performance Core</p>
         </div>
     </footer>
+    <script>
+        // --- NAV SCROLL HIDE & ACTIVE STATE LOGIC ---
+        (function () {
+            let lastScrollTop = 0;
+            const nav = document.querySelector('nav');
+            const skipThreshold = 5;
+
+            // 1. Scroll Hide Logic
+            window.addEventListener('scroll', function () {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (Math.abs(lastScrollTop - scrollTop) <= skipThreshold) return;
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    nav.classList.add('nav-hidden');
+                } else {
+                    nav.classList.remove('nav-hidden');
+                }
+                lastScrollTop = scrollTop;
+            }, { passive: true });
+
+            // 2. Active State Logic
+            const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            navLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                if (linkPath === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>
