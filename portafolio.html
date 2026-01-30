@@ -1467,8 +1467,8 @@
                 }
             });
 
-            // ESCALA MASIVA PERO REAL (Sin distorsión vertical)
-            const scale = isMobile ? 0.11 : 0.072;
+            // ESCALA GIGANTE DEFINITIVA (0.15 para impacto total)
+            const scale = isMobile ? 0.15 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
