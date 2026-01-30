@@ -507,8 +507,8 @@
                 align-items: center !important;
                 pointer-events: auto !important;
                 order: 2;
-                margin-top: -10px !important;
-                /* Ajustado para el nuevo tamaño del canvas */
+                margin-top: -40px !important;
+                /* Más pegado al modelo grande */
             }
 
             #info-side h1 {
@@ -1459,8 +1459,8 @@
                 }
             });
 
-            // ESCALA ADAPTATIVA (Corregida: Tamaño grande pero con proporciones reales)
-            const scale = isMobile ? 0.04 : 0.072;
+            // ESCALA ADAPTATIVA (Maximizada a 0.06 para impacto visual sin distorsión)
+            const scale = isMobile ? 0.06 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
