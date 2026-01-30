@@ -471,27 +471,53 @@
 
         /* --- MOBILE ADJUSTMENTS FOR 3D SECTION --- */
         @media (max-width: 768px) {
+            #imac-3d-wrapper {
+                height: auto !important;
+                min-height: 100vh;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                overflow: visible !important;
+                gap: 20px;
+                padding-bottom: 50px;
+                margin-top: 0 !important;
+                padding-top: 20px;
+            }
+
+            #imac-3d-wrapper canvas {
+                position: relative !important;
+                height: 45vh !important;
+                /* Altura controlada para el iMac */
+                width: 100% !important;
+                order: 1;
+            }
+
             #info-side {
-                top: 70% !important;
+                position: relative !important;
+                top: 0 !important;
                 width: 90% !important;
-                left: 5% !important;
-                right: 5% !important;
+                left: 0 !important;
+                right: 0 !important;
                 text-align: center !important;
-                padding: 0 !important;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                padding: 10px 5% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                pointer-events: auto !important;
+                order: 2;
+                margin-top: 0 !important;
             }
 
             #imac-actions-block {
-                margin-top: 25px !important;
+                margin-top: 20px !important;
                 align-items: center !important;
                 gap: 15px !important;
                 width: 100%;
             }
 
             #imac-nav-arrows {
-                margin-top: 0 !important;
+                margin-top: 10px !important;
                 justify-content: center !important;
             }
 
@@ -502,17 +528,12 @@
                 display: inline-block !important;
             }
 
-            #imac-3d-wrapper {
-                height: 130vh !important;
-                overflow: visible !important;
-                margin-top: -60px !important;
-                /* Jala el iMac hacia arriba sin recortar el fondo */
-            }
-
             #rotation-indicator {
-                top: 5% !important;
+                top: 10px !important;
                 bottom: auto !important;
                 left: 50% !important;
+                transform: translateX(-50%) !important;
+                z-index: 100;
             }
 
             .nav-btn {
