@@ -479,10 +479,11 @@
                 align-items: center !important;
                 justify-content: flex-start !important;
                 overflow: visible !important;
-                gap: 20px;
-                padding-bottom: 50px;
+                gap: 0px;
+                /* Reducido para unir el iMac con el texto */
+                padding-bottom: 60px;
                 margin-top: 0 !important;
-                padding-top: 20px;
+                padding-top: 10px;
             }
 
             #imac-3d-wrapper canvas {
@@ -500,13 +501,25 @@
                 left: 0 !important;
                 right: 0 !important;
                 text-align: center !important;
-                padding: 10px 5% !important;
+                padding: 0 5% !important;
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
                 pointer-events: auto !important;
                 order: 2;
-                margin-top: 0 !important;
+                margin-top: -30px !important;
+                /* "Succiona" el texto hacia el iMac */
+            }
+
+            #info-side h1 {
+                font-size: 2.8rem !important;
+                /* Más elegante, menos gigante */
+            }
+
+            #tw-desc {
+                font-size: 0.95rem !important;
+                margin-bottom: 20px !important;
+                max-width: 320px;
             }
 
             #imac-actions-block {
@@ -1437,15 +1450,15 @@
                 }
             });
 
-            // ESCALA ADAPTATIVA (Diseño en cascada: iMac arriba, texto abajo)
-            const scale = isMobile ? 0.018 : 0.072;
+            // ESCALA ADAPTATIVA (Refinada a 0.025 para mejor impacto visual)
+            const scale = isMobile ? 0.025 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
 
-            // POSICIÓN ADAPTATIVA (Centrado vertical en su contenedor para móvil)
-            const posY = isMobile ? (-box.min.y) : (-box.min.y - 0.4);
+            // POSICIÓN ADAPTATIVA (Posicionado para que la base del iMac toque el texto en móvil)
+            const posY = isMobile ? (-box.min.y - 0.2) : (-box.min.y - 0.4);
             model.position.set(-center.x, posY, -center.z);
 
             mouseRotationGroup.add(model);
