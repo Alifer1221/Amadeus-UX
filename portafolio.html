@@ -542,11 +542,8 @@
             }
 
             #rotation-indicator {
-                top: 10px !important;
-                bottom: auto !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                z-index: 100;
+                display: none !important;
+                /* Eliminado a petición del usuario */
             }
 
             .nav-btn {
@@ -1406,9 +1403,18 @@
         const scene = new THREE.Scene();
         // scene.background = new THREE.Color(0x151515); // Removed to allow background particles to show through
 
-        const camera = new THREE.PerspectiveCamera(35, wrapper.clientWidth / wrapper.clientHeight, 0.1, 2000);
+        const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 2000); // Aspecto inicial temporal
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+
+        function updateRendererSize() {
+            const w = wrapper.clientWidth;
+            const h = isMobile ? (window.innerHeight * 0.6) : wrapper.clientHeight; // 60vh en móvil
+            renderer.setSize(w, h);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        }
+
+        updateRendererSize();
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         wrapper.appendChild(renderer.domElement);
@@ -1450,8 +1456,8 @@
                 }
             });
 
-            // ESCALA ADAPTATIVA (Agrandada masivamente para impacto visual)
-            const scale = isMobile ? 0.045 : 0.072;
+            // ESCALA ADAPTATIVA (Corregida: Tamaño grande pero con proporciones reales)
+            const scale = isMobile ? 0.04 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
