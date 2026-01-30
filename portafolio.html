@@ -1393,16 +1393,15 @@
                 }
             });
 
-            // ESCALA ADAPTATIVA
-            // ESCALA ADAPTATIVA (Reducida para móvil)
-            const scale = isMobile ? 0.04 : 0.072;
+            // ESCALA ADAPTATIVA (Reducida un 20% adicional para móvil)
+            const scale = isMobile ? 0.032 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
 
-            // POSICIÓN ADAPTATIVA (Más arriba en móvil para dejar espacio al texto)
-            const posY = isMobile ? (-box.min.y + 0.3) : (-box.min.y - 0.4);
+            // POSICIÓN ADAPTATIVA (Ajustada para compensar el tamaño reducido en móvil)
+            const posY = isMobile ? (-box.min.y + 0.35) : (-box.min.y - 0.4);
             model.position.set(-center.x, posY, -center.z);
 
             mouseRotationGroup.add(model);
