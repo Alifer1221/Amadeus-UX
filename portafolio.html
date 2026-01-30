@@ -472,12 +472,20 @@
         /* --- MOBILE ADJUSTMENTS FOR 3D SECTION --- */
         @media (max-width: 768px) {
             #info-side {
-                top: 75% !important;
+                top: 70% !important;
                 width: 90% !important;
                 left: 5% !important;
                 right: 5% !important;
                 text-align: center !important;
                 padding: 0 !important;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #imac-nav-arrows {
+                margin-top: 40px !important;
+                justify-content: center !important;
             }
 
             #info-side h1 {
@@ -486,26 +494,23 @@
 
             #info-side hr {
                 margin: 15px 0 !important;
+                width: 100%;
             }
 
             #info-side p {
-                font-size: 0.95rem !important;
+                font-size: 1rem !important;
                 margin-bottom: 20px !important;
             }
 
             #rotation-indicator {
-                top: 20% !important;
+                top: 15% !important;
                 bottom: auto !important;
                 left: 50% !important;
             }
 
-            #imac-nav-arrows {
-                bottom: 20px !important;
-            }
-
             .nav-btn {
-                width: 45px !important;
-                height: 45px !important;
+                width: 50px !important;
+                height: 50px !important;
             }
         }
 
@@ -1037,6 +1042,23 @@
             <a id="visit-btn" href="#" target="_blank" style="pointer-events: auto;">
                 Visitar sitio web
             </a>
+
+            <!-- Arrows moved inside for better mobile flow -->
+            <div id="imac-nav-arrows"
+                style="margin-top: 30px; display: flex; gap: 20px; justify-content: flex-start; pointer-events: auto;">
+                <div id="btn-prev" class="nav-btn"
+                    style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="m15 18-6-6 6-6" />
+                    </svg>
+                </div>
+                <div id="btn-next" class="nav-btn"
+                    style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </div>
+            </div>
         </div>
 
         <div id="rotation-indicator" class="active-spin"
@@ -1047,21 +1069,6 @@
             </svg>
         </div>
 
-        <div id="imac-nav-arrows"
-            style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 1000;">
-            <div id="btn-prev" class="nav-btn"
-                style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                    <path d="m15 18-6-6 6-6" />
-                </svg>
-            </div>
-            <div id="btn-next" class="nav-btn"
-                style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </div>
-        </div>
     </div>
 
     <!-- PROYECTOS AUDIOVISUALES SECTION -->
@@ -1488,7 +1495,7 @@
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (isMobile) {
-                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '75%', width: '90%' });
+                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '70%', width: '90%' });
             } else {
                 if (imacOnLeft) {
                     gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
