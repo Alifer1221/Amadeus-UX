@@ -483,23 +483,23 @@
                 align-items: center;
             }
 
-            #imac-nav-arrows {
-                margin-top: 40px !important;
-                justify-content: center !important;
-            }
-
-            #info-side h1 {
-                font-size: 2.2rem !important;
-            }
-
-            #info-side hr {
-                margin: 15px 0 !important;
+            #imac-actions-block {
+                margin-top: 25px !important;
+                align-items: center !important;
+                gap: 15px !important;
                 width: 100%;
             }
 
-            #info-side p {
-                font-size: 1rem !important;
-                margin-bottom: 20px !important;
+            #imac-nav-arrows {
+                margin-top: 0 !important;
+                justify-content: center !important;
+            }
+
+            #visit-btn {
+                width: auto !important;
+                padding: 12px 30px !important;
+                font-size: 0.8rem !important;
+                display: inline-block !important;
             }
 
             #rotation-indicator {
@@ -1039,24 +1039,26 @@
                 style="font-family: 'Manrope', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #ccc; transition: opacity 0.3s; font-weight: 300; margin-bottom: 30px;">
             </p>
 
-            <a id="visit-btn" href="#" target="_blank" style="pointer-events: auto;">
-                Visitar sitio web
-            </a>
+            <!-- Bloque de Acciones: Botón + Flechas -->
+            <div id="imac-actions-block"
+                style="margin-top: 30px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; pointer-events: auto;">
+                <a id="visit-btn" href="#" target="_blank">
+                    Visitar sitio web
+                </a>
 
-            <!-- Arrows moved inside for better mobile flow -->
-            <div id="imac-nav-arrows"
-                style="margin-top: 30px; display: flex; gap: 20px; justify-content: flex-start; pointer-events: auto;">
-                <div id="btn-prev" class="nav-btn"
-                    style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="m15 18-6-6 6-6" />
-                    </svg>
-                </div>
-                <div id="btn-next" class="nav-btn"
-                    style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="m9 18 6-6-6-6" />
-                    </svg>
+                <div id="imac-nav-arrows" style="display: flex; gap: 20px; justify-content: flex-start;">
+                    <div id="btn-prev" class="nav-btn"
+                        style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                    </div>
+                    <div id="btn-next" class="nav-btn"
+                        style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
