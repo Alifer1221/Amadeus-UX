@@ -488,8 +488,8 @@
 
             #imac-3d-wrapper canvas {
                 position: relative !important;
-                height: 70vh !important;
-                /* Más espacio para el gigante */
+                height: 65vh !important;
+                /* Altura sincronizada con JS */
                 width: 100% !important;
                 order: 1;
             }
@@ -1467,8 +1467,8 @@
                 }
             });
 
-            // ESCALA BRUTAL (0.2 para asegurar que ocupe todo el ancho)
-            const scale = isMobile ? 0.2 : 0.072;
+            // ESCALA MASIVA PERO REAL (Sin distorsión vertical)
+            const scale = isMobile ? 0.11 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
