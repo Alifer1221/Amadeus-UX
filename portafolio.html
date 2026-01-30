@@ -1423,8 +1423,8 @@
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
 
-            // POSICIÓN ADAPTATIVA (iMac al tope en móvil)
-            const posY = isMobile ? (-box.min.y + 1.2) : (-box.min.y - 0.4);
+            // POSICIÓN ADAPTATIVA (Centrado vertical en su contenedor para móvil)
+            const posY = isMobile ? (-box.min.y) : (-box.min.y - 0.4);
             model.position.set(-center.x, posY, -center.z);
 
             mouseRotationGroup.add(model);
@@ -1502,11 +1502,13 @@
 
             gsap.to(rotationIcon, { left: imacOnLeft ? '30%' : '70%', duration: 1.5, ease: "power2.inOut" });
 
-            gsap.to(lensShift, { x: targetX, duration: 1.5, ease: "power2.inOut", onUpdate: applyLensShift, overwrite: true });
+            if (!isMobile) {
+                gsap.to(lensShift, { x: targetX, duration: 1.5, ease: "power2.inOut", onUpdate: applyLensShift, overwrite: true });
+            }
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (isMobile) {
-                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '70%', width: '90%' });
+                // En móvil el layout es estático, no necesitamos mover el infoSide lateralmente
             } else {
                 if (imacOnLeft) {
                     gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
