@@ -472,7 +472,7 @@
         /* --- MOBILE ADJUSTMENTS FOR 3D SECTION --- */
         @media (max-width: 768px) {
             #info-side {
-                top: 70% !important;
+                top: 60% !important;
                 width: 90% !important;
                 left: 5% !important;
                 right: 5% !important;
@@ -1412,8 +1412,8 @@
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
 
-            // POSICIÓN ADAPTATIVA (Subir el modelo un poco más en móvil)
-            const posY = isMobile ? (-box.min.y + 0.45) : (-box.min.y - 0.4);
+            // POSICIÓN ADAPTATIVA (Mucho más arriba en móvil para evitar recortes abajo)
+            const posY = isMobile ? (-box.min.y + 0.8) : (-box.min.y - 0.4);
             model.position.set(-center.x, posY, -center.z);
 
             mouseRotationGroup.add(model);
@@ -1495,7 +1495,7 @@
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (isMobile) {
-                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '70%', width: '90%' });
+                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '60%', width: '90%' });
             } else {
                 if (imacOnLeft) {
                     gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
