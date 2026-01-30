@@ -2474,26 +2474,33 @@
             </div>
         </footer>
         <script>
-            // --- NAV SCROLL HIDE LOGIC ---
+            // --- NAV SCROLL HIDE & ACTIVE STATE LOGIC ---
             (function () {
                 let lastScrollTop = 0;
                 const nav = document.querySelector('nav');
-                const skipThreshold = 5; // Minimum scroll distance to act
+                const skipThreshold = 5;
 
+                // 1. Scroll Hide Logic
                 window.addEventListener('scroll', function () {
                     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
                     if (Math.abs(lastScrollTop - scrollTop) <= skipThreshold) return;
-
                     if (scrollTop > lastScrollTop && scrollTop > 100) {
-                        // Scrolling Down
                         nav.classList.add('nav-hidden');
                     } else {
-                        // Scrolling Up
                         nav.classList.remove('nav-hidden');
                     }
                     lastScrollTop = scrollTop;
                 }, { passive: true });
+
+                // 2. Active State Logic
+                const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+                const navLinks = document.querySelectorAll('.nav-menu a');
+                navLinks.forEach(link => {
+                    const linkPath = link.getAttribute('href');
+                    if (linkPath === currentPath) {
+                        link.classList.add('active');
+                    }
+                });
             })();
         </script>
 </body>
