@@ -591,70 +591,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        /* --- PORTFOLIO FILTER MENU --- */
-        .portfolio-filter-container {
-            width: 100%;
-            background-color: #151515;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .portfolio-filter-menu {
-            display: flex;
-            gap: 40px;
-            position: relative;
-        }
-
-        .filter-item {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #888;
-            cursor: pointer;
-            padding: 10px 5px;
-            transition: color 0.3s ease;
-            position: relative;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .filter-item:hover {
-            color: #fff;
-        }
-
-        .filter-item.active {
-            color: #fff;
-        }
-
-        .filter-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-            border-radius: 2px;
-        }
-
-        .section-hidden {
-            display: none !important;
-        }
-
-        @media (max-width: 768px) {
-            .portfolio-filter-menu {
-                gap: 20px;
-            }
-
-            .filter-item {
-                font-size: 0.8rem;
-            }
-        }
     </style>
 
 <body>
@@ -714,15 +650,6 @@
             </div>
         </div>
     </section>
-
-    <!-- PORTFOLIO FILTER NAV -->
-    <div class="portfolio-filter-container">
-        <div class="portfolio-filter-menu">
-            <div class="filter-item active" onclick="filterPortfolio('all', this)">Todos</div>
-            <div class="filter-item" onclick="filterPortfolio('web', this)">Desarrollo Web</div>
-            <div class="filter-item" onclick="filterPortfolio('av', this)">Audiovisuales</div>
-        </div>
-    </div>
 
     <!-- IMAC 3D SHOWCASE SECTION -->
     <div id="imac-3d-wrapper"
@@ -1312,32 +1239,6 @@
                     lastScrollY = currentScrollY;
                 });
             })();
-
-            // PORTFOLIO FILTER LOGIC
-            function filterPortfolio(category, element) {
-                const imacSection = document.getElementById('imac-3d-wrapper');
-                const avSection = document.querySelector('.amadeus-portfolio-wrapper');
-                const filterItems = document.querySelectorAll('.filter-item');
-
-                // Update active state in menu
-                filterItems.forEach(item => item.classList.remove('active'));
-                element.classList.add('active');
-
-                // Show/Hide sections
-                if (category === 'all') {
-                    imacSection.classList.remove('section-hidden');
-                    avSection.classList.remove('section-hidden');
-                } else if (category === 'web') {
-                    imacSection.classList.remove('section-hidden');
-                    avSection.classList.add('section-hidden');
-                } else if (category === 'av') {
-                    imacSection.classList.add('section-hidden');
-                    avSection.classList.remove('section-hidden');
-                }
-
-                // Smooth scroll to top of content after filter (optional but helpful)
-                // window.scrollTo({ top: document.querySelector('.portfolio-filter-container').offsetTop - 80, behavior: 'smooth' });
-            }
         </script>
 </body>
 

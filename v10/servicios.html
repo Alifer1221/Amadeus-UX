@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - Amadeus UX</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;700&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <style>
+        :root {
+            --bg: #f1f1f1;
+            --serif: 'DM Serif Display', serif;
+            --sans: 'Inter', sans-serif;
+            --manrope: 'Manrope', sans-serif;
+            --accent-color: #8A2BE2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--sans);
+            background-color: var(--bg);
+            color: #000;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* --- NAVIGATION STYLES (Floating Pill) --- */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: fit-content;
+            max-width: 95vw;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 100px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .nav-hidden {
+            transform: translate(-50%, -100px) !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-logo {
+            font-family: var(--manrope);
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: #333;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-menu a {
+            font-family: var(--manrope);
+            text-decoration: none;
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-menu a:hover {
+            color: #000;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: var(--manrope);
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(37, 117, 252, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                top: auto;
+                bottom: 20px;
+                padding: 10px 20px;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        .hero {
+            padding: 180px 50px 50px 50px;
+            /* Ajustado el padding inferior */
+        }
+
+        h1 {
+            font-size: 5.5vw;
+            line-height: 1;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+        }
+
+        .services-list {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- AQUÍ ESTÁ EL CAMBIO --- */
+        .service-item {
+            position: relative;
+            /* Antes estaba en 50px, lo subí a 150px para bajar los textos */
+            padding-top: 150px;
+            padding-bottom: 80px;
+        }
+
+        /* La línea se mantiene arriba */
+        .line-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            /* Aumenté el área sensible un poco */
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: visible;
+            pointer-events: none;
+        }
+
+        path {
+            stroke: #663399;
+            /* Mora azul base */
+            stroke-width: 2;
+            filter: drop-shadow(0 0 3px rgba(102, 51, 153, 0.3));
+            /* Brillo leve (10%) */
+            fill: none;
+        }
+
+        .service-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            pointer-events: none;
+        }
+
+        .service-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .service-info {
+            pointer-events: auto;
+        }
+
+        .service-desc {
+            font-size: 1.35rem;
+            line-height: 1.4;
+            font-weight: 400;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 20px 60px;
+            border: 1px solid #000;
+            border-radius: 100px;
+            text-decoration: none;
+            color: #000;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #000;
+            color: #fff;
+        }
+
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 120px 20px 50px 20px;
+            }
+
+            .services-list {
+                padding: 0 20px;
+            }
+
+            h1 {
+                font-size: 10vw;
+            }
+
+            .service-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            /* Más espacio en móvil */
+            .service-desc {
+                font-size: 1.15rem;
+            }
+
+            .service-item {
+                padding-top: 100px;
+            }
+
+            /* Ajuste para móvil */
+        }
+
+        /* CAPA 1: EL FONDO (CONTENEDOR PADRE) */
+        /* CAPA 1: FONDO CLARO */
+        .video-section-wrapper {
+            background-color: #f1f1f1 !important;
+            /* Mismo color de fondo */
+            width: 100%;
+
+            /* Mismo espaciado exacto */
+            padding-top: 0;
+            padding-bottom: 40px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* CAPA 2: CONTENEDOR (Sin sombra externa) */
+        .video-box-final {
+            width: 82%;
+            max-width: 1335px;
+
+            border-radius: 20px;
+            overflow: hidden;
+
+            /* Sin sombra negra */
+            box-shadow: none;
+
+            line-height: 0;
+            position: relative;
+            background: #f1f1f1;
+
+            transition: width 0.3s ease, max-width 0.3s ease;
+        }
+
+        /* CAPA 3: BORDE INTERNO DIFUMINADO (Vignette) */
+        .video-box-final::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            /* Sombra interna para fundir los bordes con el fondo */
+            box-shadow: inset 0 0 100px 60px #f1f1f1;
+
+            border-radius: 20px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* VIDEO */
+        .video-box-final video {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
+        </a>
+        <div class="nav-menu">
+            <a href="portafolio.html">Portafolio</a>
+            <a href="servicios.html">Servicios</a>
+            <a href="nosotros.html">Nosotros</a>
+        </div>
+        <a href="https://wa.me/573246649104" target="_blank" class="nav-cta">Hablemos</a>
+    </nav>
+
+
+
+    <!-- HERO INTERACTIVO -->
+    <section class="interactive-hero">
+        <canvas id="particle-canvas"></canvas>
+        <div class="hero-content">
+            <!-- LOGO (Fade Up Reveal) - TOP -->
+            <div class="logo-wrapper">
+                <!-- Logo SVG o Texto Estilizado -->
+                <div class="amadeus-logo">
+                    <span style="font-weight: 500;">Amadeus</span> <span
+                        style="font-weight: 400; color: #663399;">UX</span>
+                </div>
+            </div>
+
+            <!-- TITULO (Typewriter) - BOTTOM -->
+            <h1 class="hero-headline"></h1>
+
+            <p class="hero-subtext">Lleva Tu Visión Al Siguiente Nivel Hoy Mismo.</p>
+
+        </div>
+    </section>
+
+    <!-- ESTILOS ESPECÍFICOS DEL HERO -->
+    <style>
+        .interactive-hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-color: #f1f1f1;
+            /* overflow: hidden; */
+            /* Permitir scroll si es necesario, pero idealmente hidden para el efecto header */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 60px;
+            /* Espacio para el header fijo */
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            /* Dejar pasar clicks si fuera necesario, o auto para interactuar */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-headline {
+            font-size: clamp(2.375rem, 5.5vw, 4.95rem);
+            /* Reducido 5% adicional y ajustado para centrado */
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 40px;
+            min-height: 1.2em;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            white-space: nowrap;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            /* For cursor positioning */
+        }
+
+        /* Blinking Cursor Effect */
+        /* Blinking Cursor Effect */
+        .hero-headline::after {
+            content: "|";
+            font-weight: 100;
+            /* Thinner */
+            color: #663399;
+            /* Mora Azul */
+            margin-left: 5px;
+            animation: blink 0.8s infinite;
+        }
+
+        /* Hide cursor when done (Keep space to prevent bounce) */
+        .hero-headline.typing-done::after {
+            opacity: 0;
+            animation: none;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* LOGO WRAPPER */
+        .logo-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .amadeus-logo {
+            font-size: 2.5rem;
+            font-family: 'Manrope', sans-serif;
+            opacity: 0;
+            /* Inicia invisible */
+        }
+
+        .hero-subtext {
+            font-size: 1.26rem;
+            color: #666;
+            margin-top: 20px;
+            margin-top: 20px;
+            opacity: 0;
+            /* transform managed by GSAP for consistency */
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    </style>
+
+    <!-- SCRIPT DEL HERO -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // 0. REGISTER PLUGINS (Seguridad)
+            if (typeof gsap !== 'undefined') {
+                gsap.registerPlugin(TextPlugin, ScrollTrigger);
+            }
+
+            // ------------------------------------------------
+            // 1. BACKGROUND ANIMATION: ANTIGRAVITY CLOUD (3D SPHERE)
+            // ------------------------------------------------
+            // MOVIDO AL PRINCIPIO PARA ASEGURAR CARGA
+            const canvas = document.getElementById('particle-canvas');
+
+            // Safety Check
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let dashes = [];
+
+                // Configuración
+                const numDashes = 350;
+                const sphereRadius = 650; // Massively increased from 400
+                const perspective = 800;
+
+                // Colores "Mora Azul" (Blueberry & Derivatives)
+                const colors = ['#663399', '#8A2BE2', '#4B0082', '#9370DB', '#7B68EE'];
+
+                // Mouse interaction state
+                let rotationSpeed = { x: 0, y: 0 };
+                let targetSpeed = { x: 0.001, y: 0.002 };
+                let mouseX = -1000, mouseY = -1000; // Init off-screen
+
+                // Position Tracking & Parallax Center
+                let currentCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 }; // Kept for lag effect if needed, or backward compat
+                let targetCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+                const centerFixed = { x: window.innerWidth / 2, y: window.innerHeight / 2 }; // Fixed point for Parallax
+                let mouseActive = false;
+
+                // SHAPE MORPHING STATE
+                let currentShape = 'sphere';
+                let lastMorphTime = 0;
+                const morphInterval = 400;
+
+                function resize() {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+
+                    centerFixed.x = width / 2;
+                    centerFixed.y = height / 2;
+
+                    targetCenter.x = width / 2;
+                    targetCenter.y = height / 2;
+                }
+                window.addEventListener('resize', resize);
+                resize(); // Call AFTER variables are declared
+
+                // Mouse Move = Camera Rotation Control (Not dragging center)
+                // "No parezca un circulo siguiendo el cursor" -> Now it looks like looking around a 3D space
+                window.addEventListener('mousemove', (e) => {
+                    const Sensitivity = 0.005;
+                    targetSpeed.y = (e.clientX / width - 0.5) * Sensitivity * 2;
+                    targetSpeed.x = (e.clientY / height - 0.5) * Sensitivity * 2;
+
+                    // Track position for repulsion
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                window.addEventListener('mouseleave', () => {
+                    targetSpeed = { x: 0.001, y: 0.002 };
+                });
+
+                class Dash {
+                    constructor() {
+                        // Current Position (Start as sphere)
+                        this.setSpherePos();
+
+                        // Target Position (For Morphing)
+                        this.tx = this.x;
+                        this.ty = this.y;
+                        this.tz = this.z;
+
+                        this.color = colors[Math.floor(Math.random() * colors.length)];
+
+                        // Base dimensions
+                        this.baseLength = 10 + Math.random() * 20;
+                        this.baseWidth = 2 + Math.random() * 2;
+                        this.length = this.baseLength;
+                        this.width = this.baseWidth;
+
+                        this.floatOffset = Math.random() * 100;
+                        this.floatSpeed = 0.02 + Math.random() * 0.02;
+
+                        this.pulseSpeed = 0.03 + Math.random() * 0.05;
+                        this.pulseOffset = Math.random() * Math.PI * 2;
+
+                        // Random orientation (always rotating)
+                        this.theta = Math.random() * Math.PI * 2;
+                    }
+
+                    // --- SHAPE GENERATORS (Target Setters) ---
+
+                    setSpherePos() {
+                        let theta = Math.random() * Math.PI * 2;
+                        let phi = Math.acos((Math.random() * 2) - 1);
+                        let r = sphereRadius + (Math.random() * 50 - 25);
+                        this.x = r * Math.sin(phi) * Math.cos(theta);
+                        this.y = r * Math.sin(phi) * Math.sin(theta);
+                        this.z = r * Math.cos(phi);
+                    }
+
+                    setTargetSphere() {
+                        let theta = Math.random() * Math.PI * 2;
+                        let phi = Math.acos((Math.random() * 2) - 1);
+                        let r = sphereRadius;
+                        this.tx = r * Math.sin(phi) * Math.cos(theta);
+                        this.ty = r * Math.sin(phi) * Math.sin(theta);
+                        this.tz = r * Math.cos(phi);
+                    }
+
+                    setTargetCube() {
+                        // Random point on cube surface or volume
+                        const size = 800; // Increased from 300 to 800 (Huge cube)
+                        this.tx = (Math.random() - 0.5) * size * 2;
+                        this.ty = (Math.random() - 0.5) * size * 2;
+                        this.tz = (Math.random() - 0.5) * size * 2;
+                    }
+
+                    setTargetCloud() {
+                        // Scattered "Galaxy" or loose cloud - "Sin limites"
+                        // Spreads 1.5x width/height to go off-screen
+                        this.tx = (Math.random() - 0.5) * width * 1.5;
+                        this.ty = (Math.random() - 0.5) * height * 1.5;
+                        this.tz = (Math.random() - 0.5) * 800; // Deeper Z-depth
+                    }
+
+                    updateMorph() {
+                        // Lerp towards target (0.05 factor = smooth transition)
+                        this.x += (this.tx - this.x) * 0.05;
+                        this.y += (this.ty - this.y) * 0.05;
+                        this.z += (this.tz - this.z) * 0.05;
+                    }
+
+                    rotate(rotX, rotY) {
+                        let cosY = Math.cos(rotY);
+                        let sinY = Math.sin(rotY);
+                        let x1 = this.x * cosY - this.z * sinY;
+                        let z1 = this.z * cosY + this.x * sinY;
+
+                        let cosX = Math.cos(rotX);
+                        let sinX = Math.sin(rotX);
+                        let y1 = this.y * cosX - z1 * sinX;
+                        let z2 = z1 * cosX + this.y * sinX;
+
+                        this.x = x1;
+                        this.y = y1;
+                        this.z = z2;
+                    }
+
+                    draw(time) {
+                        // 1. Morph Position Update
+                        this.updateMorph();
+
+                        // 2. Pulse & Float
+                        let breath = Math.sin(time * this.floatSpeed + this.floatOffset) * 20;
+                        let currentZ = this.z + breath;
+
+                        let sineVal = Math.sin(time * this.pulseSpeed + this.pulseOffset);
+                        let scaleMult = 0.5 + (sineVal + 1) / 2 * 0.8;
+                        let fade = 0.2 + (sineVal + 1) / 2 * 0.8;
+
+                        let scale = perspective / (perspective + currentZ + sphereRadius + 200);
+
+                        // 3. Draw at Fixed Center (Parallax effect comes from Rotation only)
+                        let x2d = (this.x * scale) + centerFixed.x;
+                        let y2d = (this.y * scale) + centerFixed.y;
+
+                        // 4. INTERACTION: Magnetic Repulsion (Mouse Push)
+                        // Calculate distance to mouse in 2D space
+                        let dx = mouseX - x2d;
+                        let dy = mouseY - y2d;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        const radius = 150; // Interaction radius
+
+                        if (dist < radius) {
+                            let force = (radius - dist) / radius; // 1 at center, 0 at edge
+                            let angle = Math.atan2(dy, dx);
+                            // Push away
+                            let push = force * 60; // Strength
+                            x2d -= Math.cos(angle) * push;
+                            y2d -= Math.sin(angle) * push;
+                        }
+
+                        let alpha = Math.min(1, Math.max(0.1, scale));
+                        let finalAlpha = alpha * fade;
+
+                        ctx.save();
+                        ctx.translate(x2d, y2d);
+                        ctx.rotate(this.theta + time * 0.01);
+
+                        ctx.globalAlpha = finalAlpha;
+                        ctx.fillStyle = this.color;
+
+                        let l = this.baseLength * scaleMult;
+                        let w = this.baseWidth * scaleMult;
+
+                        ctx.beginPath();
+                        ctx.rect(-l * scale / 2, -w * scale / 2, l * scale, w * scale);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+
+                function initDashes() {
+                    dashes = [];
+                    for (let i = 0; i < numDashes; i++) {
+                        dashes.push(new Dash());
+                    }
+                }
+
+                let time = 0;
+                function animateDashes() {
+                    ctx.clearRect(0, 0, width, height);
+                    time += 1;
+
+                    // AUTO-SHAPE CHANGE
+                    if (time % morphInterval === 0) {
+                        const shapes = ['sphere', 'cube', 'cloud'];
+                        const nextShape = shapes[(shapes.indexOf(currentShape) + 1) % shapes.length];
+                        currentShape = nextShape;
+
+                        dashes.forEach(d => {
+                            if (nextShape === 'sphere') d.setTargetSphere();
+                            if (nextShape === 'cube') d.setTargetCube();
+                            if (nextShape === 'cloud') d.setTargetCloud();
+                        });
+                    }
+
+                    rotationSpeed.x += (targetSpeed.x - rotationSpeed.x) * 0.05;
+                    rotationSpeed.y += (targetSpeed.y - rotationSpeed.y) * 0.05;
+                    // Fixed center used in Dash.draw()
+
+                    dashes.sort((a, b) => b.z - a.z);
+                    dashes.forEach(dash => {
+                        dash.rotate(rotationSpeed.x, rotationSpeed.y);
+                        dash.draw(time);
+                    });
+                    requestAnimationFrame(animateDashes);
+                }
+
+                initDashes();
+                animateDashes();
+            }
+
+            // 2. TEXT ANIMATION (Typewriter)
+            // Primero el texto: "Nuestras soluciones"
+            const headline = document.querySelector(".hero-headline");
+            // GSAP Timeline principal - Inicio inmediato
+            const masterTl = gsap.timeline({ delay: 0.1 });
+
+            // Paso 1: Escribir el título
+            // El plugin 'text' requiere TextPlugin registrado
+            masterTl.to(headline, {
+                text: {
+                    value: "Impulsa Tu Presencia Digital",
+                    delimiter: ""
+                },
+
+                duration: 1.5,
+                ease: "none",
+                onComplete: () => headline.classList.add("typing-done") // Stop cursor
+            });
+
+            // NEW: Reveal Particle Cloud (Cosmic Expansion) AFTER text
+            // Start hidden
+            gsap.set(canvas, { opacity: 0, scale: 0.8, transformOrigin: "center center" });
+
+            // Animate In
+            masterTl.to(canvas, {
+                opacity: 1,
+                scale: 1,
+                duration: 2.5,
+                ease: "power3.out"
+            }, 0); // Start simultaneously with headline (duration 1.5s)
+
+            // NEW: Unified Animation for Logo & Subtext (Fade Up) to match
+            const logo = document.querySelector(".amadeus-logo");
+            const subtext = document.querySelector(".hero-subtext");
+
+            // Prepare initial state (Hidden + Moved Down)
+            gsap.set([logo, subtext], { opacity: 0, y: 30 });
+
+            // Animate Logo (Concurrent with Particles)
+            masterTl.to(logo, {
+                opacity: 1,
+                y: 0,
+                duration: 1.0,
+                ease: "power2.out"
+            }, 1.6);
+
+            // Animate Subtext (Started after logo)
+            masterTl.to(subtext, {
+                opacity: 1,
+                y: 0,
+                duration: 1.0,
+                ease: "power2.out"
+            }, 2.1);
+
+            // ------------------------------------------------
+            // 2. BACKGROUND ANIMATION: ANTIGRAVITY CLOUD (3D SPHERE)
+            // ------------------------------------------------
+            // [DUPLICATE CODE REMOVED TO FIX SYNTAX ERROR]
+            /* ZOMBIE CODE NEUTRALIZED */
+            /* let width, height; */
+            /* let dashes = []; */
+            // Configuración
+            const numDashes = 350;
+            const sphereRadius = 400;
+            const perspective = 800;
+
+            // Colores "Google Antigravity"
+            const colors = ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#663399'];
+
+            // Mouse interaction state
+            let rotationSpeed = { x: 0, y: 0 };
+            let targetSpeed = { x: 0.001, y: 0.002 };
+
+            // Position Tracking (Center of the sphere)
+            // Starts at center of screen
+            let currentCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+            let targetCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                // Update target center if mouse is not interrupting, or just re-center logic
+                if (!mouseActive) {
+                    targetCenter.x = width / 2;
+                    targetCenter.y = height / 2;
+                }
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            let mouseActive = false;
+
+            // Seguimiento del mouse (Velocidad Rotación + Posición Centro)
+            // (Cleaned up old event listeners)
+
+            /* ZOMBIE TAIL REMOVED */
+
+
+            // ... (script content preserved) ...
+            // End of Particle Script
+        });
+    </script>
+
+    <!-- Video Section (Restored) -->
+    <div class="video-section-wrapper">
+        <div class="video-box-final">
+            <video id="hero-video"
+                src="https://raw.githubusercontent.com/Amadeusguitarte/Video666/main/Sequence%2007.mp4" loop muted
+                playsinline preload="auto">
+            </video>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const videoBox = document.querySelector(".video-box-final");
+            const v = document.getElementById("hero-video");
+
+            // SCROLL ANIMATION: Video Expand + PLAY ON SCROLL
+            if (videoBox && v && typeof ScrollTrigger !== 'undefined') {
+                // Set initial state
+                gsap.set(videoBox, { width: "60%", borderRadius: "50px" });
+
+                gsap.to(videoBox, {
+                    width: "90%",
+                    borderRadius: "20px",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: ".video-section-wrapper",
+                        start: "top 80%", // Trigger slightly earlier for playback visibility
+                        end: "center 50%",
+                        scrub: 1,
+                        // Play video when it enters viewport
+                        onEnter: () => v.play().catch(e => console.log("Play failed", e)),
+                        onEnterBack: () => v.play().catch(e => console.log("Play failed", e)),
+                        // Optional: Pause when it leaves to save resources? User only asked for start on scroll.
+                        // onLeave: () => v.pause(),
+                        // onLeaveBack: () => v.pause()
+                    }
+                });
+            }
+        });
+    </script>
+    </div>
+
+    <!-- Title Section (Restored) -->
+    <div style="padding: 60px 20px; text-align: left; max-width: 1100px; margin: 0 auto;">
+        <h1 style="font-size: clamp(3rem, 5.5vw, 6rem); font-weight: 700;">Especialidades</h1>
+
+    </div>
+
+    <div class="services-list">
+
+        <div class="service-item">
+            <div class="line-container">
+                <svg>
+                    <path d="M0,50 Q500,50 1000,50" class="elastic-path" />
+                </svg>
+            </div>
+
+            <div class="service-content">
+                <div class="service-label">Desarrollo Web y Apps</div>
+                <div class="service-info">
+                    <div class="service-desc">
+                        Creamos ecosistemas digitales de alto rendimiento que transforman usuarios en clientes mediante
+                        experiencias interactivas y escalables.
+                    </div>
+                    <a href="javascript:void(0)" class="btn"
+                        onclick="event.preventDefault(); openServicePanel('Desarrollo Web y Apps', 'No solo escribimos código; construimos soluciones de negocio. Desde sitios web corporativos y e-commerce hasta aplicaciones móviles personalizadas, nos enfocamos en la arquitectura de software robusta, tiempos de carga optimizados (SEO-friendly) y un diseño de interfaz (UI/UX) que garantiza una navegación fluida.<br><br>Utilizamos las últimas tecnologías para asegurar que tu plataforma sea segura, intuitiva y capaz de crecer junto con tu empresa.', 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80')">Leer
+                        más</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="line-container">
+                <svg>
+                    <path d="M0,50 Q500,50 1000,50" class="elastic-path" />
+                </svg>
+            </div>
+
+            <div class="service-content">
+                <div class="service-label">Branding</div>
+                <div class="service-info">
+                    <div class="service-desc">
+                        Diseñamos identidades visuales con propósito que conectan emocionalmente con tu audiencia y
+                        posicionan tu marca en el mercado
+                    </div>
+                    <a href="javascript:void(0)" class="btn"
+                        onclick="event.preventDefault(); openServicePanel('Branding', 'El branding va más allá de un logotipo. Desarrollamos el ADN de tu marca: desde la estrategia conceptual y la psicología del color hasta la tipografía y el tono de voz. Creamos un sistema visual coherente que transmite los valores de tu negocio, permitiéndote diferenciarte de la competencia y generar la confianza necesaria para fidelizar a tu público objetivo en cada punto de contacto.', 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=800&q=80')">Leer
+                        más</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="service-item">
+            <div class="line-container">
+                <svg>
+                    <path d="M0,50 Q500,50 1000,50" class="elastic-path" />
+                </svg>
+            </div>
+
+            <div class="service-content">
+                <div class="service-label">Contenido Audiovisual</div>
+                <div class="service-info">
+                    <div class="service-desc">
+                        Elevamos tu narrativa visual mediante edición de video profesional, motion graphics y
+                        animaciones en 2D y 3D impulsadas por IA.
+                    </div>
+                    <a href="javascript:void(0)" class="btn"
+                        onclick="event.preventDefault(); openServicePanel('Contenido Audiovisual', 'En la era del contenido dinámico, ayudamos a que tu marca destaque con producciones de alta fidelidad. Combinamos técnicas tradicionales de edición y animación con el poder de la Inteligencia Artificial para optimizar procesos y lograr acabados hiperrealistas. Ya sea un video corporativo, comerciales para redes sociales o entornos 3D complejos, transformamos ideas en piezas visuales de alto impacto que retienen la atención y comunican mensajes complejos de forma sencilla.', 'https://images.unsplash.com/photo-1492691523567-627a58b6fd7a?auto=format&fit=crop&w=800&q=80')">Leer
+                        más</a>
+                </div>
+            </div>
+            <div class="service-item">
+                <div class="line-container">
+                    <svg>
+                        <path d="M0,50 Q500,50 1000,50" class="elastic-path" />
+                    </svg>
+                </div>
+
+                <div class="service-content">
+                    <div class="service-label">Marketing Digital</div>
+                    <div class="service-info">
+                        <div class="service-desc">
+                            Estrategias orientadas a resultados que aumentan tu visibilidad, atraen tráfico cualificado
+                            y maximizan tu retorno de inversión (ROI).
+                        </div>
+                        <a href="javascript:void(0)" class="btn"
+                            onclick="event.preventDefault(); openServicePanel('Marketing Digital', 'Diseñamos planes de marketing integrales que cubren todo el embudo de conversión. A través de la gestión de pauta digital (Ads), optimización de motores de búsqueda (SEO) y estrategias de contenido en redes sociales, nos aseguramos de que tu marca esté frente a las personas adecuadas en el momento preciso. Analizamos datos en tiempo real para ajustar tácticas y garantizar que cada esfuerzo publicitario se traduzca en crecimiento real y ventas para tu negocio.', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80')">Leer
+                            más</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <script>
+            const containers = document.querySelectorAll('.line-container');
+
+            containers.forEach(container => {
+                const path = container.querySelector('.elastic-path');
+                let width = container.offsetWidth;
+                const startY = 50; // Altura fija de la línea dentro del SVG
+
+                const resetLine = () => {
+                    width = container.offsetWidth;
+                    gsap.to(path, {
+                        attr: { d: `M0,${startY} Q${width / 2},${startY} ${width},${startY}` },
+                        duration: 1.5,
+                        ease: "elastic.out(1, 0.2)"
+                    });
+                };
+
+                container.addEventListener('mousemove', (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    // Animación rápida al mover
+                    gsap.to(path, {
+                        attr: { d: `M0,${startY} Q${x},${y} ${width},${startY}` },
+                        duration: 0.1,
+                        ease: "power2.out"
+                    });
+                });
+
+                container.addEventListener('mouseleave', resetLine);
+                resetLine();
+            });
+
+            window.addEventListener('resize', () => {
+                containers.forEach(container => {
+                    const path = container.querySelector('.elastic-path');
+                    const width = container.offsetWidth;
+                    const startY = 50;
+                    gsap.set(path, { attr: { d: `M0,${startY} Q${width / 2},${startY} ${width},${startY}` } });
+                });
+            });
+        </script>
+
+        <!-- SERVICE DETAIL PANEL -->
+        <div id="panel-overlay" class="panel-overlay" onclick="closeServicePanel()"></div>
+        <div id="service-panel" class="service-panel">
+            <button class="close-panel-btn" onclick="closeServicePanel()">×</button>
+            <div class="panel-content">
+                <div class="panel-image-container">
+                    <img id="panel-img" src="" alt="">
+                </div>
+                <div class="panel-text-content">
+                    <h2 id="panel-title"></h2>
+                    <div id="panel-desc"></div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* PANEL STYLES */
+            .panel-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(5px);
+                z-index: 9998;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.4s ease, visibility 0.4s ease;
+            }
+
+            .panel-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .service-panel {
+                position: fixed;
+                top: 0;
+                right: -55%;
+                width: 50%;
+                height: 100vh;
+                background: #fff;
+                z-index: 9999;
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+                transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .service-panel.active {
+                right: 0;
+            }
+
+            .close-panel-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: none;
+                border: none;
+                font-size: 2.5rem;
+                color: #333;
+                cursor: pointer;
+                z-index: 10;
+                line-height: 1;
+                transition: transform 0.3s ease;
+            }
+
+            .close-panel-btn:hover {
+                transform: rotate(90deg);
+                color: #000;
+            }
+
+            .panel-content {
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .panel-image-container {
+                width: 100%;
+                height: 40vh;
+                overflow: hidden;
+                flex-shrink: 0;
+            }
+
+            .panel-image-container img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .panel-text-content {
+                padding: 40px 50px;
+                flex-grow: 1;
+                background: #fff;
+            }
+
+            .panel-text-content h2 {
+                font-family: 'Manrope', sans-serif;
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: #111;
+                margin-bottom: 25px;
+                letter-spacing: -1px;
+            }
+
+            .panel-text-content p {
+                font-family: 'Manrope', sans-serif;
+                font-size: 1.1rem;
+                line-height: 1.7;
+                color: #555;
+                margin-bottom: 20px;
+            }
+
+            @media (max-width: 900px) {
+                .service-panel {
+                    width: 100%;
+                    right: -100%;
+                }
+
+                .panel-text-content {
+                    padding: 30px 25px;
+                }
+
+                .panel-image-container {
+                    height: 35vh;
+                }
+            }
+        </style>
+
+        <script>
+            function openServicePanel(title, description, imageUrl) {
+                document.getElementById('panel-title').innerText = title;
+                document.getElementById('panel-desc').innerHTML = description;
+                document.getElementById('panel-img').src = imageUrl;
+                document.getElementById('panel-img').alt = title;
+
+                document.getElementById('service-panel').classList.add('active');
+                document.getElementById('panel-overlay').classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling bg
+
+                // Hide Nav
+                const nav = document.querySelector('nav');
+                if (nav) nav.classList.add('nav-hidden');
+            }
+
+            function closeServicePanel() {
+                document.getElementById('service-panel').classList.remove('active');
+                document.getElementById('panel-overlay').classList.remove('active');
+                document.body.style.overflow = '';
+
+                // Show Nav
+                const nav = document.querySelector('nav');
+                if (nav) nav.classList.remove('nav-hidden');
+            }
+
+            // LÓGICA DE NAVEGACIÓN STICKY (Sincronizada con Nosotros)
+            (function () {
+                let lastScrollY = window.scrollY;
+                const nav = document.querySelector('nav');
+                window.addEventListener('scroll', () => {
+                    // Si el panel lateral está abierto, no hacer nada (se maneja en open/close)
+                    if (document.getElementById('service-panel').classList.contains('active')) return;
+
+                    const currentScrollY = window.scrollY;
+                    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                        nav.classList.add('nav-hidden');
+                    } else {
+                        nav.classList.remove('nav-hidden');
+                    }
+                    lastScrollY = currentScrollY;
+                });
+            })();
+        </script>
+</body>
+
+</html>
