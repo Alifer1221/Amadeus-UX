@@ -16,7 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
     <style>
         :root {
-            --bg: #0c0c0c;
+            --bg: #f1f1f1;
             --serif: 'DM Serif Display', serif;
             --sans: 'Inter', sans-serif;
             --manrope: 'Manrope', sans-serif;
@@ -32,7 +32,7 @@
         body {
             font-family: var(--sans);
             background-color: var(--bg);
-            color: #fff;
+            color: #000;
             overflow-x: hidden;
         }
 
@@ -44,10 +44,10 @@
             transform: translateX(-50%);
             width: fit-content;
             max-width: 95vw;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 100px;
             padding: 10px 30px;
             display: flex;
@@ -55,7 +55,7 @@
             justify-content: space-between;
             gap: 40px;
             z-index: 9999;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
@@ -70,7 +70,7 @@
             font-weight: 700;
             font-size: 1.1rem;
             text-decoration: none;
-            color: #fff;
+            color: #333;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
@@ -86,7 +86,7 @@
         .nav-menu a {
             font-family: var(--manrope);
             text-decoration: none;
-            color: #ccc;
+            color: #666;
             font-size: 0.9rem;
             font-weight: 500;
             transition: color 0.3s ease;
@@ -95,7 +95,7 @@
         }
 
         .nav-menu a:hover {
-            color: #fff;
+            color: #000;
         }
 
         .nav-cta {
@@ -199,7 +199,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-weight: 600;
-            color: #fff;
+            color: #000;
         }
 
         .service-info {
@@ -212,23 +212,23 @@
             font-weight: 400;
             max-width: 800px;
             margin-bottom: 40px;
-            color: #ccc;
+            color: #000;
         }
 
         .btn {
             display: inline-block;
             padding: 20px 60px;
-            border: 1px solid #fff;
+            border: 1px solid #000;
             border-radius: 100px;
             text-decoration: none;
-            color: #fff;
+            color: #000;
             font-size: 1.1rem;
             transition: all 0.3s ease;
         }
 
         .btn:hover {
-            background: #fff;
-            color: #000;
+            background: #000;
+            color: #fff;
         }
 
 
@@ -314,11 +314,11 @@
 
         /* --- PREMIUM FOOTER --- */
         .amadeus-footer {
-            background-color: #0c0c0c;
+            background-color: var(--bg);
             padding: 100px 5% 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
             font-family: 'Manrope', sans-serif;
-            color: #fff;
+            color: #000;
             margin-top: 0;
         }
 
@@ -334,7 +334,7 @@
             font-size: 1.8rem;
             font-weight: 700;
             text-decoration: none;
-            color: #fff;
+            color: #000;
             margin-bottom: 25px;
             display: flex;
             align-items: center;
@@ -342,7 +342,7 @@
         }
 
         .footer-tagline {
-            color: #888;
+            color: #555;
             max-width: 320px;
             line-height: 1.7;
             font-size: 1rem;
@@ -357,7 +357,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 600;
-            color: #ffffff66;
+            color: #00000066;
         }
 
         .footer-links ul {
@@ -371,7 +371,7 @@
         }
 
         .footer-links a {
-            color: #ccc;
+            color: #333;
             text-decoration: none;
             font-size: 0.95rem;
             transition: color 0.3s ease, transform 0.3s ease;
@@ -379,12 +379,12 @@
         }
 
         .footer-links a:hover {
-            color: #fff;
+            color: #000;
             transform: translateX(5px);
         }
 
         .footer-contact p {
-            color: #ccc;
+            color: #333;
             margin-bottom: 20px;
             font-size: 0.95rem;
             font-family: 'Montserrat', sans-serif;
@@ -413,24 +413,24 @@
         .footer-email {
             display: block;
             margin-top: 25px !important;
-            color: #888 !important;
+            color: #666 !important;
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.3s ease;
         }
 
         .footer-email:hover {
-            color: #fff !important;
+            color: #000 !important;
         }
 
         .footer-bottom {
             margin-top: 100px;
             padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #555;
+            color: #777;
             font-size: 0.8rem;
             font-family: 'Montserrat', sans-serif;
         }
@@ -537,7 +537,7 @@
             font-size: clamp(2.375rem, 5.5vw, 4.95rem);
             /* Reducido 5% adicional y ajustado para centrado */
             font-weight: 700;
-            color: #fff;
+            color: #111;
             margin-bottom: 40px;
             min-height: 1.2em;
             letter-spacing: -0.03em;
@@ -587,7 +587,7 @@
         .amadeus-logo {
             font-size: 2.5rem;
             font-family: 'Manrope', sans-serif;
-            color: #fff;
+            color: #333;
             opacity: 0;
             /* Inicia invisible */
         }
@@ -1274,7 +1274,7 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <a href="index.html" class="footer-logo">
-                        <span>Amadeus</span> <span style="color: #8A2BE2;">UX</span>
+                        <span style="font-weight: 500;">Amadeus</span> <span style="color: #8A2BE2;">UX</span>
                     </a>
                     <p class="footer-tagline">Transformamos la complejidad técnica en experiencias digitales fluidas,
                         elevando la autoridad de tu marca.</p>
