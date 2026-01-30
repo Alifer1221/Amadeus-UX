@@ -753,34 +753,6 @@
             /* Slightly larger for email as per design */
         }
 
-        /* Footer Styles Copy */
-        .next-section {
-            position: relative;
-            z-index: 16;
-            background-color: #000;
-            color: #fff;
-            padding: 100px 60px;
-            min-height: 50vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-top: 1px solid #222;
-        }
-
-        .next-section h2 {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .next-section a {
-            color: #fff;
-            font-size: 1.5rem;
-            text-decoration: underline;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -2098,368 +2070,361 @@
             </div>
         </div>
     </div>
-    < !-- FOOTER -->
-        <footer class="next-section">
+    <!-- FOOTER -->
+    <!-- OCEAN SLIDER SCRIPT -->
+
+    <script>document.addEventListener("DOMContentLoaded", function () {
+            var video = document.getElementById("video-fast-vignette");
+
+            if (video) {
+                video.playbackRate = 1.25;
+            }
+        });
+
+    </script><!-- TESTIMONIALS SCRIPT -->
+    <script>document.addEventListener("DOMContentLoaded", function () {
+
+            // TESTIMONIAL DATA
+            const testimonials = [{
+                name: "Juan Vivas",
+                role: "CEO Staffna Tech Sales",
+                image: "assets/juan_vivas.png",
+                text: "Amadeus UX aportó un dinamismo excepcional al diseño y la funcionalidad de nuestra plataforma de cursos de ventas. Su capacidad para fusionar un diseño intuitivo con una experiencia de aprendizaje estructurada le dio a Staffna una identidad fresca y atractiva. Más allá de la estética, Amadeus UX gestionó la estructura del programa educativo a través de la plataforma, asegurando que la entrega de contenido no solo fuera fluida sino también motivadora para nuestros usuarios. Gracias a su visión, nuestra plataforma se convirtió en un entorno de aprendizaje vibrante que empodera a los profesionales de ventas para crecer."
+            }, {
+                name: "Richard Carbo",
+                role: "Head of IZZY",
+                image: "assets/richard_carbo.png",
+                text: "Trabajar con Amadeus UX en la plataforma de Izzy fue un cambio radical. Capturó la esencia de nuestro modelo innovador —conectar marcas emergentes con influencers— a través de un diseño que se siente moderno y confiable. Amadeus UX logró traducir una propuesta de valor compleja en una experiencia clara y atractiva en nuestra página de comercio electrónico, facilitando que marcas e influencers conecten sin problemas. Su visión le dio a Izzy una identidad profesional pero dinámica."
+            }
+
+                ,
+            {
+                name: "Juan Hernandez",
+                role: "Head of DeskShare Company",
+                image: "assets/juan_hernandez.png",
+                text: "Trabajar con Amadeus UX en el desarrollo de la propuesta de DeskShare fue una experiencia transformadora. Amadeus UX no solo aportó soluciones estéticas, sino que también anticipó necesidades técnicas y comerciales, asegurando que el diseño fuera realmente funcional. Su enfoque creativo y orientado al detalle ayudó a DeskShare a evolucionar de una idea a un producto con una identidad sólida y escalable. Recomiendo totalmente su trabajo como diseñador."
+            }];
+
+
+            let currentIndex = 0;
+            let isAnimating = false;
+
+            // DOM Elements
+            const card1 = document.getElementById("card-1");
+            const card2 = document.getElementById("card-2");
+            const avatar1 = document.getElementById("t-avatar-1");
+            const name1 = document.getElementById("t-name-1");
+            const role1 = document.getElementById("t-role-1");
+            const text1 = document.getElementById("t-text-1");
+            const avatar2 = document.getElementById("t-avatar-2");
+            const name2 = document.getElementById("t-name-2");
+            const role2 = document.getElementById("t-role-2");
+            const text2 = document.getElementById("t-text-2");
+            const section = document.getElementById("testimonial-section");
+
+            // INITIAL SETUP: Cursor & Structural Prep
+            const cursor = document.getElementById("testimonial-cursor");
+
+            // Mouse Move Logic (Global or Section specific)
+            // We use fixed position, so clientX/Y works perfectly.
+            document.addEventListener("mousemove", (e) => {
+                gsap.to(cursor, {
+                    x: e.clientX,
+                    y: e.clientY,
+                    duration: 0.1,
+                    ease: "power2.out"
+                });
+            });
+
+            [card1, card2].forEach(card => {
+                // Hover Effects for Cursor
+                card.addEventListener("mouseenter", () => {
+                    gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out" });
+                });
+                card.addEventListener("mouseleave", () => {
+                    gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2 });
+                });
+            });
+
+            // --- RENDER FUNCTION ---
+            function updateCardContentDOM(cardNum, index) {
+                const data = testimonials[index % testimonials.length];
+                const avatar = cardNum === 1 ? avatar1 : avatar2;
+                const name = cardNum === 1 ? name1 : name2;
+                const role = cardNum === 1 ? role1 : role2;
+                const text = cardNum === 1 ? text1 : text2;
+
+                avatar.src = data.image;
+
+                // For Typewriter: PRE-SET empty or full. 
+                // If we animate IN, we start empty.
+                name.textContent = "";
+                role.textContent = "";
+
+                // For Blinds: text content set, but we transform it out of view initially if animating in.
+                // We'll handle visual state in the animate function.
+                // Here just set data.
+                text.textContent = data.text;
+
+                // Store Key Data for Typewriter
+                name.dataset.final = data.name;
+                role.dataset.final = data.role;
+            }
+
+            // Initial Render (Static, no animation)
+            updateCardContentDOM(1, 0);
+            name1.textContent = testimonials[0].name;
+            role1.textContent = testimonials[0].role;
+
+            updateCardContentDOM(2, 1);
+            name2.textContent = testimonials[1].name;
+            role2.textContent = testimonials[1].role;
+
+            // --- ANIMATION SEQUENCE ---
+            function animateTransition() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 1. EXIT ANIMATION (Fade Out / Slide Up)
+                gsap.to([card1.children, card2.children], {
+
+                    opacity: 0,
+                    y: -20,
+                    duration: 0.4,
+                    ease: "power2.in",
+                    onComplete: () => {
+                        // 2. DATA UPDATE
+                        currentIndex = (currentIndex + 2) % testimonials.length;
+                        updateCardContentDOM(1, currentIndex);
+                        updateCardContentDOM(2, currentIndex + 1);
+
+                        // RESET POSITIONS FOR ENTRY
+                        // Reset opacity/y for wrapper containers
+                        gsap.set([card1.children, card2.children], {
+                            y: 0, opacity: 1
+                        });
+
+                        // HIDE SPECIFIC ELEMENTS FOR EFFECT
+                        // Avatar: Zoom In
+                        gsap.set([avatar1, avatar2], {
+                            scale: 0, opacity: 0
+                        });
+
+                        // Text: Blinds Down (Hidden)
+                        // We achieve Blinds Up by: 
+                        // clipping it from bottom? Or translating Y?
+                        // "Perciana hacia arriba" -> Content reveals upwards.
+                        gsap.set([text1, text2], {
+                            y: "100%", opacity: 0
+                        });
+                        // Note: text-blind-wrapper needs overflow hidden in CSS for this to look like blinds.
+
+                        // 3. ENTER ANIMATION
+                        const tl = gsap.timeline({
+                            onComplete: () => {
+                                isAnimating = false;
+                            }
+                        });
+
+                        // A. Avatars Pop In
+                        tl.to([avatar1, avatar2], {
+                            scale: 1,
+                            opacity: 1,
+                            duration: 0.5,
+                            ease: "back.out(1.7)"
+                        });
+
+                        // B. Typewriter Name & Role
+                        // We use TextPlugin logic manually or Tween
+                        [name1, role1, name2, role2].forEach(el => {
+                            tl.to(el, {
+                                text: el.dataset.final,
+                                duration: 0.8,
+                                ease: "none"
+                            }
+
+                                , "<0.1"); // Start slightly after avatar
+                        });
+
+                        // C. Blinds Up Text
+                        // Animate Y from 100% to 0%
+                        tl.to([text1, text2], {
+                            y: "0%",
+                            opacity: 1,
+                            duration: 0.8,
+                            ease: "power3.out",
+                            stagger: 0.1
+                        }
+
+                            , "<0.4"); // Overlap
+                    }
+                });
+            }
+
+            // CLICK LISTENER
+            section.addEventListener("click", animateTransition);
+
+            // HOVER EFFECT FOR BADGE
+            // CSS handles badge visibility usually, but we can enhance.
+        });
+    </script>
+    < !-- HERO CANVAS SCRIPT -->
+        <script>const canvas = document.getElementById('mobileCanvas');
+            const ctx = canvas.getContext('2d');
+            const heroSection = document.getElementById('hero-section');
+
+            let width,
+                height,
+                lines = [],
+                animationFrameId;
+
+            const config = {
+                lineCount: 40,
+                baseAmplitude: 25,
+                baseGap: 8,
+                baseFrequency: 0.003,
+                speed: 0.0008,
+                currentAmplitude: 0,
+                currentGap: 0
+            }
+
+                ;
+
+            function initLines() {
+                lines = [];
+                const totalHeight = config.lineCount * config.currentGap;
+                const startY = (height / 2) + (totalHeight * 0.15);
+
+                for (let i = 0; i < config.lineCount; i++) {
+                    lines.push({
+                        y: startY + (i * config.currentGap), phase: i * 0.2
+                    });
+                }
+            }
+
+            function resize() {
+                width = canvas.width = heroSection.clientWidth;
+                height = canvas.height = heroSection.clientHeight;
+
+                let scaleFactor = width / 450;
+                scaleFactor = Math.min(Math.max(scaleFactor, 0.5), 1.0);
+
+                config.currentAmplitude = config.baseAmplitude * scaleFactor;
+                config.currentGap = config.baseGap * scaleFactor;
+
+                initLines();
+            }
+
+            function draw() {
+                if (window.getComputedStyle(document.querySelector('.mobile-wrapper')).display === 'none') {
+                    animationFrameId = requestAnimationFrame(draw);
+                    return;
+                }
+
+                // --- CAMBIO AQUÍ: FONDO CON DEGRADADO PARA MÓVIL ---
+                // Creamos un gradiente lineal vertical (de arriba hacia abajo)
+                // Coordenadas: (x0, y0) -> (0, 0) a (x1, y1) -> (0, height)
+                const gradientBg = ctx.createLinearGradient(0, 0, 0, height);
+
+                // Definimos los colores del gradiente
+                gradientBg.addColorStop(0, '#000000'); // Inicio (Arriba): Negro puro
+                gradientBg.addColorStop(1, '#151515'); // Final (Abajo): El gris oscuro solicitado
+
+                // Aplicamos el gradiente como estilo de relleno
+                ctx.fillStyle = gradientBg;
+                // Rellenamos todo el canvas con el gradiente en cada frame
+                ctx.fillRect(0, 0, width, height);
+                // ----------------------------------------------------
+
+                const time = Date.now() * config.speed;
+
+                lines.forEach((line, index) => {
+                    ctx.beginPath();
+                    const alpha = 1 - (index / config.lineCount);
+                    const saturation = 50 + index;
+
+                    ctx.strokeStyle = `hsla(260, ${saturation}%, 70%, ${alpha})`;
+                    ctx.lineWidth = 1.5;
+
+                    for (let x = 0; x <= width; x += 2) {
+                        const dist = Math.abs(width / 2 - x);
+                        const scale = Math.max(0, 1 - Math.pow(dist / (width * 0.6), 2));
+
+                        const wave1 = Math.sin(x * config.baseFrequency + time + line.phase);
+                        const wave2 = Math.cos(x * (config.baseFrequency * 0.5) - time);
+
+                        const combinedWave = (wave1 + wave2 * 0.3) * config.currentAmplitude * scale;
+                        ctx.lineTo(x, line.y + combinedWave);
+                    }
+
+                    ctx.stroke();
+                });
+
+                animationFrameId = requestAnimationFrame(draw);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            draw();
+        </script>
+        <script>
+            // --- VIDEO OPTIMIZATION: Intersection Observer ---
+            // Ensures videos play only when visible to save resources and prevent freezing
+            document.addEventListener("DOMContentLoaded", function () {
+                const videoObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const video = entry.target;
+                        if (entry.isIntersecting) {
+                            // Small delay to ensure resources are ready
+                            setTimeout(() => {
+                                video.play().catch(e => console.log("Auto-play prevented on scroll:", e));
+                            }, 100);
+                        } else {
+                            video.pause();
+                        }
+                    });
+                }, {
+                    threshold: 0.1 // Play when at least 10% is visible
+                });
+
+                // Target all videos in the main page (Warp Speed and Vignette)
+                const mainVideos = document.querySelectorAll('.video-box-final video, #video-fast-vignette');
+                mainVideos.forEach(v => videoObserver.observe(v));
+            });
+        </script>
+
+        <footer class="amadeus-footer">
             <div class="footer-content">
-                <h2>¿Trabajamos juntos?</h2><a
-                    href="mailto:cesarjimenez@amadeusux.com">cesarjimenez@amadeusux.com</a><br><br>
-                <p style="opacity: 0.5;">© 2026 AMADEUS UX</p>
+                <div class="footer-brand">
+                    <a href="index.html" class="footer-logo">
+                        <span>Amadeus</span> <span style="color: #8A2BE2;">UX</span>
+                    </a>
+                    <p class="footer-tagline">Transformamos la complejidad técnica en experiencias digitales
+                        fluidas,
+                        elevando la autoridad de tu marca.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Explorar</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="portafolio.html">Portafolio</a></li>
+                        <li><a href="servicios.html">Servicios</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <p>¿Listo para llevar tu proyecto al siguiente nivel?</p>
+                    <a href="https://wa.me/573246649104" target="_blank" class="footer-cta-btn">Hablemos
+                        ahora</a>
+                    <a href="mailto:hola@amadeusux.com" class="footer-email">hola@amadeusux.com</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amadeus UX. Todos los derechos reservados.</p>
+                <p>Diseño & Estrategia · High Performance Core</p>
             </div>
         </footer>
-        < !-- OCEAN SLIDER SCRIPT -->
-
-            <script>document.addEventListener("DOMContentLoaded", function () {
-                    var video = document.getElementById("video-fast-vignette");
-
-                    if (video) {
-                        video.playbackRate = 1.25;
-                    }
-                });
-
-            </script><!-- TESTIMONIALS SCRIPT -->
-            <script>document.addEventListener("DOMContentLoaded", function () {
-
-                    // TESTIMONIAL DATA
-                    const testimonials = [{
-                        name: "Juan Vivas",
-                        role: "CEO Staffna Tech Sales",
-                        image: "assets/juan_vivas.png",
-                        text: "Amadeus UX aportó un dinamismo excepcional al diseño y la funcionalidad de nuestra plataforma de cursos de ventas. Su capacidad para fusionar un diseño intuitivo con una experiencia de aprendizaje estructurada le dio a Staffna una identidad fresca y atractiva. Más allá de la estética, Amadeus UX gestionó la estructura del programa educativo a través de la plataforma, asegurando que la entrega de contenido no solo fuera fluida sino también motivadora para nuestros usuarios. Gracias a su visión, nuestra plataforma se convirtió en un entorno de aprendizaje vibrante que empodera a los profesionales de ventas para crecer."
-                    }, {
-                        name: "Richard Carbo",
-                        role: "Head of IZZY",
-                        image: "assets/richard_carbo.png",
-                        text: "Trabajar con Amadeus UX en la plataforma de Izzy fue un cambio radical. Capturó la esencia de nuestro modelo innovador —conectar marcas emergentes con influencers— a través de un diseño que se siente moderno y confiable. Amadeus UX logró traducir una propuesta de valor compleja en una experiencia clara y atractiva en nuestra página de comercio electrónico, facilitando que marcas e influencers conecten sin problemas. Su visión le dio a Izzy una identidad profesional pero dinámica."
-                    }
-
-                        ,
-                    {
-                        name: "Juan Hernandez",
-                        role: "Head of DeskShare Company",
-                        image: "assets/juan_hernandez.png",
-                        text: "Trabajar con Amadeus UX en el desarrollo de la propuesta de DeskShare fue una experiencia transformadora. Amadeus UX no solo aportó soluciones estéticas, sino que también anticipó necesidades técnicas y comerciales, asegurando que el diseño fuera realmente funcional. Su enfoque creativo y orientado al detalle ayudó a DeskShare a evolucionar de una idea a un producto con una identidad sólida y escalable. Recomiendo totalmente su trabajo como diseñador."
-                    }];
-
-
-                    let currentIndex = 0;
-                    let isAnimating = false;
-
-                    // DOM Elements
-                    const card1 = document.getElementById("card-1");
-                    const card2 = document.getElementById("card-2");
-                    const avatar1 = document.getElementById("t-avatar-1");
-                    const name1 = document.getElementById("t-name-1");
-                    const role1 = document.getElementById("t-role-1");
-                    const text1 = document.getElementById("t-text-1");
-                    const avatar2 = document.getElementById("t-avatar-2");
-                    const name2 = document.getElementById("t-name-2");
-                    const role2 = document.getElementById("t-role-2");
-                    const text2 = document.getElementById("t-text-2");
-                    const section = document.getElementById("testimonial-section");
-
-                    // INITIAL SETUP: Cursor & Structural Prep
-                    const cursor = document.getElementById("testimonial-cursor");
-
-                    // Mouse Move Logic (Global or Section specific)
-                    // We use fixed position, so clientX/Y works perfectly.
-                    document.addEventListener("mousemove", (e) => {
-                        gsap.to(cursor, {
-                            x: e.clientX,
-                            y: e.clientY,
-                            duration: 0.1,
-                            ease: "power2.out"
-                        });
-                    });
-
-                    [card1, card2].forEach(card => {
-                        // Hover Effects for Cursor
-                        card.addEventListener("mouseenter", () => {
-                            gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out" });
-                        });
-                        card.addEventListener("mouseleave", () => {
-                            gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2 });
-                        });
-                    });
-
-                    // --- RENDER FUNCTION ---
-                    function updateCardContentDOM(cardNum, index) {
-                        const data = testimonials[index % testimonials.length];
-                        const avatar = cardNum === 1 ? avatar1 : avatar2;
-                        const name = cardNum === 1 ? name1 : name2;
-                        const role = cardNum === 1 ? role1 : role2;
-                        const text = cardNum === 1 ? text1 : text2;
-
-                        avatar.src = data.image;
-
-                        // For Typewriter: PRE-SET empty or full. 
-                        // If we animate IN, we start empty.
-                        name.textContent = "";
-                        role.textContent = "";
-
-                        // For Blinds: text content set, but we transform it out of view initially if animating in.
-                        // We'll handle visual state in the animate function.
-                        // Here just set data.
-                        text.textContent = data.text;
-
-                        // Store Key Data for Typewriter
-                        name.dataset.final = data.name;
-                        role.dataset.final = data.role;
-                    }
-
-                    // Initial Render (Static, no animation)
-                    updateCardContentDOM(1, 0);
-                    name1.textContent = testimonials[0].name;
-                    role1.textContent = testimonials[0].role;
-
-                    updateCardContentDOM(2, 1);
-                    name2.textContent = testimonials[1].name;
-                    role2.textContent = testimonials[1].role;
-
-                    // --- ANIMATION SEQUENCE ---
-                    function animateTransition() {
-                        if (isAnimating) return;
-                        isAnimating = true;
-
-                        // 1. EXIT ANIMATION (Fade Out / Slide Up)
-                        gsap.to([card1.children, card2.children], {
-
-                            opacity: 0,
-                            y: -20,
-                            duration: 0.4,
-                            ease: "power2.in",
-                            onComplete: () => {
-                                // 2. DATA UPDATE
-                                currentIndex = (currentIndex + 2) % testimonials.length;
-                                updateCardContentDOM(1, currentIndex);
-                                updateCardContentDOM(2, currentIndex + 1);
-
-                                // RESET POSITIONS FOR ENTRY
-                                // Reset opacity/y for wrapper containers
-                                gsap.set([card1.children, card2.children], {
-                                    y: 0, opacity: 1
-                                });
-
-                                // HIDE SPECIFIC ELEMENTS FOR EFFECT
-                                // Avatar: Zoom In
-                                gsap.set([avatar1, avatar2], {
-                                    scale: 0, opacity: 0
-                                });
-
-                                // Text: Blinds Down (Hidden)
-                                // We achieve Blinds Up by: 
-                                // clipping it from bottom? Or translating Y?
-                                // "Perciana hacia arriba" -> Content reveals upwards.
-                                gsap.set([text1, text2], {
-                                    y: "100%", opacity: 0
-                                });
-                                // Note: text-blind-wrapper needs overflow hidden in CSS for this to look like blinds.
-
-                                // 3. ENTER ANIMATION
-                                const tl = gsap.timeline({
-                                    onComplete: () => {
-                                        isAnimating = false;
-                                    }
-                                });
-
-                                // A. Avatars Pop In
-                                tl.to([avatar1, avatar2], {
-                                    scale: 1,
-                                    opacity: 1,
-                                    duration: 0.5,
-                                    ease: "back.out(1.7)"
-                                });
-
-                                // B. Typewriter Name & Role
-                                // We use TextPlugin logic manually or Tween
-                                [name1, role1, name2, role2].forEach(el => {
-                                    tl.to(el, {
-                                        text: el.dataset.final,
-                                        duration: 0.8,
-                                        ease: "none"
-                                    }
-
-                                        , "<0.1"); // Start slightly after avatar
-                                });
-
-                                // C. Blinds Up Text
-                                // Animate Y from 100% to 0%
-                                tl.to([text1, text2], {
-                                    y: "0%",
-                                    opacity: 1,
-                                    duration: 0.8,
-                                    ease: "power3.out",
-                                    stagger: 0.1
-                                }
-
-                                    , "<0.4"); // Overlap
-                            }
-                        });
-                    }
-
-                    // CLICK LISTENER
-                    section.addEventListener("click", animateTransition);
-
-                    // HOVER EFFECT FOR BADGE
-                    // CSS handles badge visibility usually, but we can enhance.
-                });
-            </script>
-            < !-- HERO CANVAS SCRIPT -->
-                <script>const canvas = document.getElementById('mobileCanvas');
-                    const ctx = canvas.getContext('2d');
-                    const heroSection = document.getElementById('hero-section');
-
-                    let width,
-                        height,
-                        lines = [],
-                        animationFrameId;
-
-                    const config = {
-                        lineCount: 40,
-                        baseAmplitude: 25,
-                        baseGap: 8,
-                        baseFrequency: 0.003,
-                        speed: 0.0008,
-                        currentAmplitude: 0,
-                        currentGap: 0
-                    }
-
-                        ;
-
-                    function initLines() {
-                        lines = [];
-                        const totalHeight = config.lineCount * config.currentGap;
-                        const startY = (height / 2) + (totalHeight * 0.15);
-
-                        for (let i = 0; i < config.lineCount; i++) {
-                            lines.push({
-                                y: startY + (i * config.currentGap), phase: i * 0.2
-                            });
-                        }
-                    }
-
-                    function resize() {
-                        width = canvas.width = heroSection.clientWidth;
-                        height = canvas.height = heroSection.clientHeight;
-
-                        let scaleFactor = width / 450;
-                        scaleFactor = Math.min(Math.max(scaleFactor, 0.5), 1.0);
-
-                        config.currentAmplitude = config.baseAmplitude * scaleFactor;
-                        config.currentGap = config.baseGap * scaleFactor;
-
-                        initLines();
-                    }
-
-                    function draw() {
-                        if (window.getComputedStyle(document.querySelector('.mobile-wrapper')).display === 'none') {
-                            animationFrameId = requestAnimationFrame(draw);
-                            return;
-                        }
-
-                        // --- CAMBIO AQUÍ: FONDO CON DEGRADADO PARA MÓVIL ---
-                        // Creamos un gradiente lineal vertical (de arriba hacia abajo)
-                        // Coordenadas: (x0, y0) -> (0, 0) a (x1, y1) -> (0, height)
-                        const gradientBg = ctx.createLinearGradient(0, 0, 0, height);
-
-                        // Definimos los colores del gradiente
-                        gradientBg.addColorStop(0, '#000000'); // Inicio (Arriba): Negro puro
-                        gradientBg.addColorStop(1, '#151515'); // Final (Abajo): El gris oscuro solicitado
-
-                        // Aplicamos el gradiente como estilo de relleno
-                        ctx.fillStyle = gradientBg;
-                        // Rellenamos todo el canvas con el gradiente en cada frame
-                        ctx.fillRect(0, 0, width, height);
-                        // ----------------------------------------------------
-
-                        const time = Date.now() * config.speed;
-
-                        lines.forEach((line, index) => {
-                            ctx.beginPath();
-                            const alpha = 1 - (index / config.lineCount);
-                            const saturation = 50 + index;
-
-                            ctx.strokeStyle = `hsla(260, ${saturation}%, 70%, ${alpha})`;
-                            ctx.lineWidth = 1.5;
-
-                            for (let x = 0; x <= width; x += 2) {
-                                const dist = Math.abs(width / 2 - x);
-                                const scale = Math.max(0, 1 - Math.pow(dist / (width * 0.6), 2));
-
-                                const wave1 = Math.sin(x * config.baseFrequency + time + line.phase);
-                                const wave2 = Math.cos(x * (config.baseFrequency * 0.5) - time);
-
-                                const combinedWave = (wave1 + wave2 * 0.3) * config.currentAmplitude * scale;
-                                ctx.lineTo(x, line.y + combinedWave);
-                            }
-
-                            ctx.stroke();
-                        });
-
-                        animationFrameId = requestAnimationFrame(draw);
-                    }
-
-                    window.addEventListener('resize', resize);
-                    resize();
-                    draw();
-                </script>
-                <script>
-                    // --- VIDEO OPTIMIZATION: Intersection Observer ---
-                    // Ensures videos play only when visible to save resources and prevent freezing
-                    document.addEventListener("DOMContentLoaded", function () {
-                        const videoObserver = new IntersectionObserver((entries) => {
-                            entries.forEach(entry => {
-                                const video = entry.target;
-                                if (entry.isIntersecting) {
-                                    // Small delay to ensure resources are ready
-                                    setTimeout(() => {
-                                        video.play().catch(e => console.log("Auto-play prevented on scroll:", e));
-                                    }, 100);
-                                } else {
-                                    video.pause();
-                                }
-                            });
-                        }, {
-                            threshold: 0.1 // Play when at least 10% is visible
-                        });
-
-                        // Target all videos in the main page (Warp Speed and Vignette)
-                        const mainVideos = document.querySelectorAll('.video-box-final video, #video-fast-vignette');
-                        mainVideos.forEach(v => videoObserver.observe(v));
-                    });
-                </script>
-
-                <footer class="amadeus-footer">
-                    <div class="footer-content">
-                        <div class="footer-brand">
-                            <a href="index.html" class="footer-logo">
-                                <span>Amadeus</span> <span style="color: #8A2BE2;">UX</span>
-                            </a>
-                            <p class="footer-tagline">Transformamos la complejidad técnica en experiencias digitales
-                                fluidas,
-                                elevando la autoridad de tu marca.</p>
-                        </div>
-                        <div class="footer-links">
-                            <h4>Explorar</h4>
-                            <ul>
-                                <li><a href="index.html">Inicio</a></li>
-                                <li><a href="portafolio.html">Portafolio</a></li>
-                                <li><a href="servicios.html">Servicios</a></li>
-                                <li><a href="nosotros.html">Nosotros</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-contact">
-                            <h4>Contacto</h4>
-                            <p>¿Listo para llevar tu proyecto al siguiente nivel?</p>
-                            <a href="https://wa.me/573246649104" target="_blank" class="footer-cta-btn">Hablemos
-                                ahora</a>
-                            <a href="mailto:hola@amadeusux.com" class="footer-email">hola@amadeusux.com</a>
-                        </div>
-                    </div>
-                    <div class="footer-bottom">
-                        <p>&copy; 2026 Amadeus UX. Todos los derechos reservados.</p>
-                        <p>Diseño & Estrategia · High Performance Core</p>
-                    </div>
-                </footer>
 </body>
 
 </html>
