@@ -472,7 +472,7 @@
         /* --- MOBILE ADJUSTMENTS FOR 3D SECTION --- */
         @media (max-width: 768px) {
             #info-side {
-                top: 72% !important;
+                top: 75% !important;
                 width: 90% !important;
                 left: 5% !important;
                 right: 5% !important;
@@ -494,8 +494,13 @@
             }
 
             #rotation-indicator {
-                bottom: 80px !important;
+                top: 20% !important;
+                bottom: auto !important;
                 left: 50% !important;
+            }
+
+            #imac-nav-arrows {
+                bottom: 20px !important;
             }
 
             .nav-btn {
@@ -1042,7 +1047,7 @@
             </svg>
         </div>
 
-        <div
+        <div id="imac-nav-arrows"
             style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 1000;">
             <div id="btn-prev" class="nav-btn"
                 style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
@@ -1483,7 +1488,7 @@
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (isMobile) {
-                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '72%', width: '90%' });
+                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '75%', width: '90%' });
             } else {
                 if (imacOnLeft) {
                     gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
