@@ -472,7 +472,7 @@
         /* --- MOBILE ADJUSTMENTS FOR 3D SECTION --- */
         @media (max-width: 768px) {
             #info-side {
-                top: 65% !important;
+                top: 68% !important;
                 width: 90% !important;
                 left: 5% !important;
                 right: 5% !important;
@@ -503,6 +503,7 @@
                 height: 45px !important;
             }
         }
+
 
         /* --- PROYECTOS AUDIOVISUALES STYLES --- */
         /* 1. CONTENEDOR PRINCIPAL */
@@ -1393,14 +1394,15 @@
             });
 
             // ESCALA ADAPTATIVA
-            const scale = isMobile ? 0.05 : 0.072;
+            // ESCALA ADAPTATIVA (Reducida para móvil)
+            const scale = isMobile ? 0.04 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
 
             // POSICIÓN ADAPTATIVA (Más arriba en móvil para dejar espacio al texto)
-            const posY = isMobile ? (-box.min.y + 0.2) : (-box.min.y - 0.4);
+            const posY = isMobile ? (-box.min.y + 0.3) : (-box.min.y - 0.4);
             model.position.set(-center.x, posY, -center.z);
 
             mouseRotationGroup.add(model);
@@ -1480,10 +1482,14 @@
             gsap.to(lensShift, { x: targetX, duration: 1.5, ease: "power2.inOut", onUpdate: applyLensShift, overwrite: true });
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
-            if (imacOnLeft) {
-                gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
+            if (isMobile) {
+                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '68%', width: '90%' });
             } else {
-                gsap.set(infoSide, { right: 'auto', left: '4%', textAlign: 'left', top: '30%', width: '28%' });
+                if (imacOnLeft) {
+                    gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
+                } else {
+                    gsap.set(infoSide, { right: 'auto', left: '4%', textAlign: 'left', top: '30%', width: '28%' });
+                }
             }
 
             videoEl.src = slides[currentIdx].video;
