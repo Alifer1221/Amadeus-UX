@@ -16,7 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
     <style>
         :root {
-            --bg: #f1f1f1;
+            --bg: #0c0c0c;
             --serif: 'DM Serif Display', serif;
             --sans: 'Inter', sans-serif;
             --manrope: 'Manrope', sans-serif;
@@ -32,9 +32,8 @@
         body {
             font-family: var(--sans);
             background-color: var(--bg);
-            color: #000;
+            color: #fff;
             overflow-x: hidden;
-            padding-bottom: 100px;
         }
 
         /* --- NAVIGATION STYLES (Floating Pill) --- */
@@ -45,10 +44,10 @@
             transform: translateX(-50%);
             width: fit-content;
             max-width: 95vw;
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 100px;
             padding: 10px 30px;
             display: flex;
@@ -56,7 +55,7 @@
             justify-content: space-between;
             gap: 40px;
             z-index: 9999;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
@@ -71,7 +70,7 @@
             font-weight: 700;
             font-size: 1.1rem;
             text-decoration: none;
-            color: #333;
+            color: #fff;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
@@ -87,7 +86,7 @@
         .nav-menu a {
             font-family: var(--manrope);
             text-decoration: none;
-            color: #666;
+            color: #ccc;
             font-size: 0.9rem;
             font-weight: 500;
             transition: color 0.3s ease;
@@ -96,7 +95,7 @@
         }
 
         .nav-menu a:hover {
-            color: #000;
+            color: #fff;
         }
 
         .nav-cta {
@@ -200,6 +199,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-weight: 600;
+            color: #fff;
         }
 
         .service-info {
@@ -212,22 +212,23 @@
             font-weight: 400;
             max-width: 800px;
             margin-bottom: 40px;
+            color: #ccc;
         }
 
         .btn {
             display: inline-block;
             padding: 20px 60px;
-            border: 1px solid #000;
+            border: 1px solid #fff;
             border-radius: 100px;
             text-decoration: none;
-            color: #000;
+            color: #fff;
             font-size: 1.1rem;
             transition: all 0.3s ease;
         }
 
         .btn:hover {
-            background: #000;
-            color: #fff;
+            background: #fff;
+            color: #000;
         }
 
 
@@ -264,14 +265,10 @@
         /* CAPA 1: EL FONDO (CONTENEDOR PADRE) */
         /* CAPA 1: FONDO CLARO */
         .video-section-wrapper {
-            background-color: #f1f1f1 !important;
-            /* Mismo color de fondo */
+            background-color: var(--bg) !important;
             width: 100%;
-
-            /* Mismo espaciado exacto */
             padding-top: 0;
             padding-bottom: 40px;
-
             display: flex;
             justify-content: center;
             align-items: center;
@@ -282,17 +279,12 @@
         .video-box-final {
             width: 82%;
             max-width: 1335px;
-
             border-radius: 20px;
             overflow: hidden;
-
-            /* Sin sombra negra */
             box-shadow: none;
-
             line-height: 0;
             position: relative;
-            background: #f1f1f1;
-
+            background: var(--bg);
             transition: width 0.3s ease, max-width 0.3s ease;
         }
 
@@ -304,10 +296,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-
-            /* Sombra interna para fundir los bordes con el fondo */
-            box-shadow: inset 0 0 100px 60px #f1f1f1;
-
+            box-shadow: inset 0 0 100px 60px var(--bg);
             border-radius: 20px;
             z-index: 2;
             pointer-events: none;
@@ -330,7 +319,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             font-family: 'Manrope', sans-serif;
             color: #fff;
-            margin-top: 80px;
+            margin-top: 0;
         }
 
         .footer-content {
@@ -513,9 +502,7 @@
             position: relative;
             width: 100%;
             height: 100vh;
-            background-color: #f1f1f1;
-            /* overflow: hidden; */
-            /* Permitir scroll si es necesario, pero idealmente hidden para el efecto header */
+            background-color: var(--bg);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -550,7 +537,7 @@
             font-size: clamp(2.375rem, 5.5vw, 4.95rem);
             /* Reducido 5% adicional y ajustado para centrado */
             font-weight: 700;
-            color: #111;
+            color: #fff;
             margin-bottom: 40px;
             min-height: 1.2em;
             letter-spacing: -0.03em;
@@ -600,6 +587,7 @@
         .amadeus-logo {
             font-size: 2.5rem;
             font-family: 'Manrope', sans-serif;
+            color: #fff;
             opacity: 0;
             /* Inicia invisible */
         }
@@ -925,50 +913,6 @@
             }, 2.1);
 
             // ------------------------------------------------
-            // 2. BACKGROUND ANIMATION: ANTIGRAVITY CLOUD (3D SPHERE)
-            // ------------------------------------------------
-            // [DUPLICATE CODE REMOVED TO FIX SYNTAX ERROR]
-            /* ZOMBIE CODE NEUTRALIZED */
-            /* let width, height; */
-            /* let dashes = []; */
-            // Configuración
-            const numDashes = 350;
-            const sphereRadius = 400;
-            const perspective = 800;
-
-            // Colores "Google Antigravity"
-            const colors = ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#663399'];
-
-            // Mouse interaction state
-            let rotationSpeed = { x: 0, y: 0 };
-            let targetSpeed = { x: 0.001, y: 0.002 };
-
-            // Position Tracking (Center of the sphere)
-            // Starts at center of screen
-            let currentCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-            let targetCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-                // Update target center if mouse is not interrupting, or just re-center logic
-                if (!mouseActive) {
-                    targetCenter.x = width / 2;
-                    targetCenter.y = height / 2;
-                }
-            }
-            window.addEventListener('resize', resize);
-            resize();
-
-            let mouseActive = false;
-
-            // Seguimiento del mouse (Velocidad Rotación + Posición Centro)
-            // (Cleaned up old event listeners)
-
-            /* ZOMBIE TAIL REMOVED */
-
-
-            // ... (script content preserved) ...
             // End of Particle Script
         });
     </script>
@@ -1005,15 +949,11 @@
                         // Play video when it enters viewport
                         onEnter: () => v.play().catch(e => console.log("Play failed", e)),
                         onEnterBack: () => v.play().catch(e => console.log("Play failed", e)),
-                        // Optional: Pause when it leaves to save resources? User only asked for start on scroll.
-                        // onLeave: () => v.pause(),
-                        // onLeaveBack: () => v.pause()
                     }
                 });
             }
         });
     </script>
-    </div>
 
     <!-- Title Section (Restored) -->
     <div style="padding: 60px 20px; text-align: left; max-width: 1100px; margin: 0 auto;">
@@ -1084,27 +1024,27 @@
                         más</a>
                 </div>
             </div>
-            <div class="service-item">
-                <div class="line-container">
-                    <svg>
-                        <path d="M0,50 Q500,50 1000,50" class="elastic-path" />
-                    </svg>
-                </div>
+        </div>
 
-                <div class="service-content">
-                    <div class="service-label">Marketing Digital</div>
-                    <div class="service-info">
-                        <div class="service-desc">
-                            Estrategias orientadas a resultados que aumentan tu visibilidad, atraen tráfico cualificado
-                            y maximizan tu retorno de inversión (ROI).
-                        </div>
-                        <a href="javascript:void(0)" class="btn"
-                            onclick="event.preventDefault(); openServicePanel('Marketing Digital', 'Diseñamos planes de marketing integrales que cubren todo el embudo de conversión. A través de la gestión de pauta digital (Ads), optimización de motores de búsqueda (SEO) y estrategias de contenido en redes sociales, nos aseguramos de que tu marca esté frente a las personas adecuadas en el momento preciso. Analizamos datos en tiempo real para ajustar tácticas y garantizar que cada esfuerzo publicitario se traduzca en crecimiento real y ventas para tu negocio.', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80')">Leer
-                            más</a>
-                    </div>
-                </div>
+        <div class="service-item">
+            <div class="line-container">
+                <svg>
+                    <path d="M0,50 Q500,50 1000,50" class="elastic-path" />
+                </svg>
             </div>
 
+            <div class="service-content">
+                <div class="service-label">Marketing Digital</div>
+                <div class="service-info">
+                    <div class="service-desc">
+                        Estrategias orientadas a resultados que aumentan tu visibilidad, atraen tráfico cualificado
+                        y maximizan tu retorno de inversión (ROI).
+                    </div>
+                    <a href="javascript:void(0)" class="btn"
+                        onclick="event.preventDefault(); openServicePanel('Marketing Digital', 'Diseñamos planes de marketing integrales que cubren todo el embudo de conversión. A través de la gestión de pauta digital (Ads), optimización de motores de búsqueda (SEO) y estrategias de contenido en redes sociales, nos aseguramos de que tu marca esté frente a las personas adecuadas en el momento preciso. Analizamos datos en tiempo real para ajustar tácticas y garantizar que cada esfuerzo publicitario se traduzca en crecimiento real y ventas para tu negocio.', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80')">Leer
+                        más</a>
+                </div>
+            </div>
         </div>
 
 
