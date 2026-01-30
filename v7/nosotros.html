@@ -855,6 +855,12 @@
             transform: scale(1.05);
         }
 
+        /* Ajuste visual para el logo de la Javeriana */
+        .logo-javeriana-adjust {
+            height: 60px !important;
+            /* Más alto para compensar su proporción */
+        }
+
         .modal-right-bio-team {
             width: 55%;
             height: 100%;
@@ -1269,7 +1275,7 @@
 
                 // Logo Javeriana
                 logosContainer.innerHTML = `
-                    <img src="https://raw.githubusercontent.com/Alifer1221/logosuniver/main/logo%20javeriana.png" alt="Universidad Javeriana">
+                    <img src="https://raw.githubusercontent.com/Alifer1221/logosuniver/main/logo%20javeriana.png" alt="Universidad Javeriana" class="logo-javeriana-adjust">
                 `;
             }
             document.getElementById('modalOverlayTeam').classList.add('active');
