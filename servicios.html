@@ -326,7 +326,7 @@
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
             gap: 80px;
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
@@ -1106,200 +1106,201 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <style>
-            /* PANEL STYLES */
-            .panel-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.6);
-                backdrop-filter: blur(5px);
-                z-index: 9998;
-                opacity: 0;
-                visibility: hidden;
-                transition: opacity 0.4s ease, visibility 0.4s ease;
-            }
+    <style>
+        /* PANEL STYLES */
+        .panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
 
-            .panel-overlay.active {
-                opacity: 1;
-                visibility: visible;
-            }
+        .panel-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
+        .service-panel {
+            position: fixed;
+            top: 0;
+            right: -55%;
+            width: 50%;
+            height: 100vh;
+            background: #fff;
+            z-index: 9999;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+            transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-panel.active {
+            right: 0;
+        }
+
+        .close-panel-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: #333;
+            cursor: pointer;
+            z-index: 10;
+            line-height: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .close-panel-btn:hover {
+            transform: rotate(90deg);
+            color: #000;
+        }
+
+        .panel-content {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .panel-image-container {
+            width: 100%;
+            height: 40vh;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .panel-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .panel-text-content {
+            padding: 40px 50px;
+            flex-grow: 1;
+            background: #fff;
+        }
+
+        .panel-text-content h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+
+        .panel-text-content p {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
             .service-panel {
-                position: fixed;
-                top: 0;
-                right: -55%;
-                width: 50%;
-                height: 100vh;
-                background: #fff;
-                z-index: 9999;
-                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
-                transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .service-panel.active {
-                right: 0;
-            }
-
-            .close-panel-btn {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                background: none;
-                border: none;
-                font-size: 2.5rem;
-                color: #333;
-                cursor: pointer;
-                z-index: 10;
-                line-height: 1;
-                transition: transform 0.3s ease;
-            }
-
-            .close-panel-btn:hover {
-                transform: rotate(90deg);
-                color: #000;
-            }
-
-            .panel-content {
-                padding: 0;
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-            }
-
-            .panel-image-container {
                 width: 100%;
-                height: 40vh;
-                overflow: hidden;
-                flex-shrink: 0;
-            }
-
-            .panel-image-container img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+                right: -100%;
             }
 
             .panel-text-content {
-                padding: 40px 50px;
-                flex-grow: 1;
-                background: #fff;
+                padding: 30px 25px;
             }
 
-            .panel-text-content h2 {
-                font-family: 'Manrope', sans-serif;
-                font-size: 2.2rem;
-                font-weight: 700;
-                color: #111;
-                margin-bottom: 25px;
-                letter-spacing: -1px;
+            .panel-image-container {
+                height: 35vh;
             }
+        }
+    </style>
 
-            .panel-text-content p {
-                font-family: 'Manrope', sans-serif;
-                font-size: 1.1rem;
-                line-height: 1.7;
-                color: #555;
-                margin-bottom: 20px;
-            }
+    <script>
+        function openServicePanel(title, description, imageUrl) {
+            document.getElementById('panel-title').innerText = title;
+            document.getElementById('panel-desc').innerHTML = description;
+            document.getElementById('panel-img').src = imageUrl;
+            document.getElementById('panel-img').alt = title;
 
-            @media (max-width: 900px) {
-                .service-panel {
-                    width: 100%;
-                    right: -100%;
+            document.getElementById('service-panel').classList.add('active');
+            document.getElementById('panel-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling bg
+
+            // Hide Nav
+            const nav = document.querySelector('nav');
+            if (nav) nav.classList.add('nav-hidden');
+        }
+
+        function closeServicePanel() {
+            document.getElementById('service-panel').classList.remove('active');
+            document.getElementById('panel-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Show Nav
+            const nav = document.querySelector('nav');
+            if (nav) nav.classList.remove('nav-hidden');
+        }
+
+        // LÓGICA DE NAVEGACIÓN STICKY (Sincronizada con Nosotros)
+        (function () {
+            let lastScrollY = window.scrollY;
+            const nav = document.querySelector('nav');
+            window.addEventListener('scroll', () => {
+                // Si el panel lateral está abierto, no hacer nada (se maneja en open/close)
+                if (document.getElementById('service-panel').classList.contains('active')) return;
+
+                const currentScrollY = window.scrollY;
+                if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                    nav.classList.add('nav-hidden');
+                } else {
+                    nav.classList.remove('nav-hidden');
                 }
+                lastScrollY = currentScrollY;
+            });
+        })();
+    </script>
 
-                .panel-text-content {
-                    padding: 30px 25px;
-                }
-
-                .panel-image-container {
-                    height: 35vh;
-                }
-            }
-        </style>
-
-        <script>
-            function openServicePanel(title, description, imageUrl) {
-                document.getElementById('panel-title').innerText = title;
-                document.getElementById('panel-desc').innerHTML = description;
-                document.getElementById('panel-img').src = imageUrl;
-                document.getElementById('panel-img').alt = title;
-
-                document.getElementById('service-panel').classList.add('active');
-                document.getElementById('panel-overlay').classList.add('active');
-                document.body.style.overflow = 'hidden'; // Prevent scrolling bg
-
-                // Hide Nav
-                const nav = document.querySelector('nav');
-                if (nav) nav.classList.add('nav-hidden');
-            }
-
-            function closeServicePanel() {
-                document.getElementById('service-panel').classList.remove('active');
-                document.getElementById('panel-overlay').classList.remove('active');
-                document.body.style.overflow = '';
-
-                // Show Nav
-                const nav = document.querySelector('nav');
-                if (nav) nav.classList.remove('nav-hidden');
-            }
-
-            // LÓGICA DE NAVEGACIÓN STICKY (Sincronizada con Nosotros)
-            (function () {
-                let lastScrollY = window.scrollY;
-                const nav = document.querySelector('nav');
-                window.addEventListener('scroll', () => {
-                    // Si el panel lateral está abierto, no hacer nada (se maneja en open/close)
-                    if (document.getElementById('service-panel').classList.contains('active')) return;
-
-                    const currentScrollY = window.scrollY;
-                    if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                        nav.classList.add('nav-hidden');
-                    } else {
-                        nav.classList.remove('nav-hidden');
-                    }
-                    lastScrollY = currentScrollY;
-                });
-            })();
-        </script>
-
-        <footer class="amadeus-footer">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <a href="index.html" class="footer-logo">
-                        <span style="font-weight: 500;">Amadeus</span> <span style="color: #8A2BE2;">UX</span>
-                    </a>
-                    <p class="footer-tagline">Transformamos la complejidad técnica en experiencias digitales fluidas,
-                        elevando la autoridad de tu marca.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Explorar</h4>
-                    <ul>
-                        <li><a href="index.html">Inicio</a></li>
-                        <li><a href="portafolio.html">Portafolio</a></li>
-                        <li><a href="servicios.html">Servicios</a></li>
-                        <li><a href="nosotros.html">Nosotros</a></li>
-                    </ul>
-                </div>
-                <div class="footer-contact">
-                    <h4>Contacto</h4>
-                    <p>¿Listo para llevar tu proyecto al siguiente nivel?</p>
-                    <a href="https://wa.me/573246649104" target="_blank" class="footer-cta-btn">Hablemos ahora</a>
-                    <a href="mailto:hola@amadeusux.com" class="footer-email">hola@amadeusux.com</a>
-                </div>
+    <footer class="amadeus-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="footer-logo">
+                    <span style="font-weight: 500;">Amadeus</span> <span style="color: #8A2BE2;">UX</span>
+                </a>
+                <p class="footer-tagline">Transformamos la complejidad técnica en experiencias digitales fluidas,
+                    elevando la autoridad de tu marca.</p>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Amadeus UX. Todos los derechos reservados.</p>
-                <p>Diseño & Estrategia · High Performance Core</p>
+            <div class="footer-links">
+                <h4>Explorar</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="portafolio.html">Portafolio</a></li>
+                    <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="nosotros.html">Nosotros</a></li>
+                </ul>
             </div>
-        </footer>
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <p>¿Listo para llevar tu proyecto al siguiente nivel?</p>
+                <a href="https://wa.me/573246649104" target="_blank" class="footer-cta-btn">Hablemos ahora</a>
+                <a href="mailto:hola@amadeusux.com" class="footer-email">hola@amadeusux.com</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Amadeus UX. Todos los derechos reservados.</p>
+            <p>Diseño & Estrategia · High Performance Core</p>
+        </div>
+    </footer>
 </body>
 
 </html>
