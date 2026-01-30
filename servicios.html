@@ -4,12 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio - ItsIzzy</title>
+    <title>Servicios - Amadeus UX</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;700&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
     <style>
-        /* --- ESTILOS BÁSICOS --- */
+        :root {
+            --bg: #f1f1f1;
+            --serif: 'DM Serif Display', serif;
+            --sans: 'Inter', sans-serif;
+            --manrope: 'Manrope', sans-serif;
+            --accent-color: #8A2BE2;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -17,8 +30,8 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f1f1f1;
+            font-family: var(--sans);
+            background-color: var(--bg);
             color: #000;
             overflow-x: hidden;
             padding-bottom: 100px;
@@ -32,11 +45,10 @@
             transform: translateX(-50%);
             width: fit-content;
             max-width: 95vw;
-            background: rgba(255, 255, 255, 0.05);
-            /* 5% White Glass */
+            background: rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 100px;
             padding: 10px 30px;
             display: flex;
@@ -44,15 +56,22 @@
             justify-content: space-between;
             gap: 40px;
             z-index: 9999;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .nav-hidden {
+            transform: translate(-50%, -100px) !important;
+            opacity: 0;
+            pointer-events: none;
         }
 
         .nav-logo {
-            font-family: 'Manrope', sans-serif;
+            font-family: var(--manrope);
             font-weight: 700;
             font-size: 1.1rem;
             text-decoration: none;
-            color: #fff;
+            color: #333;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
@@ -66,9 +85,9 @@
         }
 
         .nav-menu a {
-            font-family: 'Manrope', sans-serif;
+            font-family: var(--manrope);
             text-decoration: none;
-            color: #ccc;
+            color: #666;
             font-size: 0.9rem;
             font-weight: 500;
             transition: color 0.3s ease;
@@ -77,7 +96,7 @@
         }
 
         .nav-menu a:hover {
-            color: #fff;
+            color: #000;
         }
 
         .nav-cta {
@@ -86,7 +105,7 @@
             padding: 10px 24px;
             border-radius: 50px;
             text-decoration: none;
-            font-family: 'Manrope', sans-serif;
+            font-family: var(--manrope);
             font-size: 0.85rem;
             font-weight: 700;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -1131,12 +1150,20 @@
                 document.getElementById('service-panel').classList.add('active');
                 document.getElementById('panel-overlay').classList.add('active');
                 document.body.style.overflow = 'hidden'; // Prevent scrolling bg
+
+                // Hide Nav
+                const nav = document.querySelector('nav');
+                if (nav) nav.classList.add('nav-hidden');
             }
 
             function closeServicePanel() {
                 document.getElementById('service-panel').classList.remove('active');
                 document.getElementById('panel-overlay').classList.remove('active');
                 document.body.style.overflow = '';
+
+                // Show Nav
+                const nav = document.querySelector('nav');
+                if (nav) nav.classList.remove('nav-hidden');
             }
         </script>
 </body>
