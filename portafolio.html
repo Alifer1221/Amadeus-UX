@@ -315,6 +315,25 @@
                 margin: 0 40px;
             }
         }
+
+        /* --- GALAXY BACKGROUND STYLES --- */
+        #galaxy-background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -9999;
+            background-color: #151515;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #galaxy-canvas-bg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
     </style>
     <script>
         // SCRIPT CRÍTICO: Previene el flash blanco al recargar
@@ -832,6 +851,9 @@
     </style>
 
 <body>
+    <div id="galaxy-background-wrapper">
+        <canvas id="galaxy-canvas-bg"></canvas>
+    </div>
     <!-- NAVIGATION -->
     <nav>
         <a href="index.html" class="nav-logo">
@@ -1543,6 +1565,75 @@
                 <p>Diseño & Estrategia · High Performance Core</p>
             </div>
         </footer>
+
+        <script>
+            // GALAXY BACKGROUND ANIMATION (IIFE)
+            (function () {
+                const canvas = document.getElementById('galaxy-canvas-bg');
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                let w, h;
+                let particles = [];
+                const colors = ['#6366f1', '#8b5cf6', '#3b82f6', '#c084fc', '#ffffff'];
+
+                function resize() {
+                    w = canvas.width = window.innerWidth;
+                    h = canvas.height = window.innerHeight;
+                    initParticles();
+                }
+
+                window.addEventListener('resize', resize);
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * w;
+                        this.y = Math.random() * h;
+                        this.color = colors[Math.floor(Math.random() * colors.length)];
+                        this.isFast = Math.random() < 0.10;
+                        if (this.isFast) {
+                            this.speedX = (Math.random() - 0.5) * 4;
+                            this.speedY = (Math.random() - 0.5) * 4;
+                            this.size = Math.random() * 2 + 1.5;
+                            this.opacity = Math.random() * 0.5 + 0.5;
+                        } else {
+                            this.speedX = (Math.random() - 0.5) * 0.2;
+                            this.speedY = (Math.random() - 0.5) * 0.2;
+                            this.size = Math.random() * 1.5 + 0.5;
+                            this.opacity = Math.random() * 0.4 + 0.1;
+                        }
+                    }
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        if (this.x < 0) this.x = w;
+                        if (this.x > w) this.x = 0;
+                        if (this.y < 0) this.y = h;
+                        if (this.y > h) this.y = 0;
+                    }
+                    draw() {
+                        ctx.globalAlpha = this.opacity;
+                        ctx.fillStyle = this.color;
+                        ctx.fillRect(this.x, this.y, this.size, this.size);
+                    }
+                }
+
+                function initParticles() {
+                    particles = [];
+                    const count = Math.floor((w * h) / 4000);
+                    for (let i = 0; i < count; i++) particles.push(new Particle());
+                }
+
+                function animateGalaxy() {
+                    ctx.clearRect(0, 0, w, h);
+                    particles.forEach(p => { p.update(); p.draw(); });
+                    requestAnimationFrame(animateGalaxy);
+                }
+
+                resize();
+                animateGalaxy();
+            })();
+        </script>
 </body>
 
 </html>
