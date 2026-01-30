@@ -1483,7 +1483,7 @@
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (isMobile) {
-                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '68%', width: '90%' });
+                gsap.set(infoSide, { left: '5%', right: '5%', textAlign: 'center', top: '72%', width: '90%' });
             } else {
                 if (imacOnLeft) {
                     gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
@@ -1509,6 +1509,8 @@
         document.getElementById('btn-next').addEventListener('click', () => move('next'));
 
         let isDragging = false, previousMouseX = 0;
+
+        // Mouse Events
         renderer.domElement.addEventListener('mousedown', (e) => {
             isDragging = true;
             previousMouseX = e.clientX;
@@ -1521,6 +1523,26 @@
                 previousMouseX = e.clientX;
             }
         });
+
+        // Touch Events
+        renderer.domElement.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            previousMouseX = e.touches[0].clientX;
+            hideHintImmediately();
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                const touchX = e.touches[0].clientX;
+                const deltaX = touchX - previousMouseX;
+                mouseRotationGroup.rotation.y += deltaX * 0.008;
+                previousMouseX = touchX;
+            }
+        }, { passive: true });
 
         function animate() {
             requestAnimationFrame(animate);
