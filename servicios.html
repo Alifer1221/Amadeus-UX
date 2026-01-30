@@ -1165,6 +1165,24 @@
                 const nav = document.querySelector('nav');
                 if (nav) nav.classList.remove('nav-hidden');
             }
+
+            // LÓGICA DE NAVEGACIÓN STICKY (Sincronizada con Nosotros)
+            (function () {
+                let lastScrollY = window.scrollY;
+                const nav = document.querySelector('nav');
+                window.addEventListener('scroll', () => {
+                    // Si el panel lateral está abierto, no hacer nada (se maneja en open/close)
+                    if (document.getElementById('service-panel').classList.contains('active')) return;
+
+                    const currentScrollY = window.scrollY;
+                    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                        nav.classList.add('nav-hidden');
+                    } else {
+                        nav.classList.remove('nav-hidden');
+                    }
+                    lastScrollY = currentScrollY;
+                });
+            })();
         </script>
 </body>
 
