@@ -469,6 +469,41 @@
             animation: spin3D 3s linear infinite;
         }
 
+        /* --- MOBILE ADJUSTMENTS FOR 3D SECTION --- */
+        @media (max-width: 768px) {
+            #info-side {
+                top: 65% !important;
+                width: 90% !important;
+                left: 5% !important;
+                right: 5% !important;
+                text-align: center !important;
+                padding: 0 !important;
+            }
+
+            #info-side h1 {
+                font-size: 2.2rem !important;
+            }
+
+            #info-side hr {
+                margin: 15px 0 !important;
+            }
+
+            #info-side p {
+                font-size: 0.95rem !important;
+                margin-bottom: 20px !important;
+            }
+
+            #rotation-indicator {
+                bottom: 80px !important;
+                left: 50% !important;
+            }
+
+            .nav-btn {
+                width: 45px !important;
+                height: 45px !important;
+            }
+        }
+
         /* --- PROYECTOS AUDIOVISUALES STYLES --- */
         /* 1. CONTENEDOR PRINCIPAL */
         .amadeus-portfolio-wrapper {
@@ -1304,6 +1339,7 @@
             { title: "Portafolio Arq", desc: "Arquitectura Computacional e IA. Exploración del diseño paramétrico y flujos de trabajo avanzados como 'RE BIM' con visualización inmersiva.", video: 'https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1a7145c6f790ceee27b3_Recording%202025-09-29%20001607_5.mp4', link: "https://amadeusarteaga.webflow.io/" }
         ];
 
+        const isMobile = window.innerWidth <= 768;
         let currentIdx = 0;
         let imacOnLeft = false;
         let eraseTimeout, writeTimeout;
@@ -1339,7 +1375,8 @@
         let lensShift = { x: -0.18 };
 
         function applyLensShift() {
-            camera.setViewOffset(wrapper.clientWidth, wrapper.clientHeight, wrapper.clientWidth * lensShift.x, 0, wrapper.clientWidth, wrapper.clientHeight);
+            const shiftX = isMobile ? 0 : lensShift.x; // No lateral shift on mobile
+            camera.setViewOffset(wrapper.clientWidth, wrapper.clientHeight, wrapper.clientWidth * shiftX, 0, wrapper.clientWidth, wrapper.clientHeight);
             camera.updateProjectionMatrix();
         }
 
@@ -1355,14 +1392,16 @@
                 }
             });
 
-            // ESCALA PUNTO MEDIO (0.072)
-            model.scale.set(0.072, 0.072, 0.072);
+            // ESCALA ADAPTATIVA
+            const scale = isMobile ? 0.05 : 0.072;
+            model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
 
-            // POSICIÓN PUNTO MEDIO (-0.4)
-            model.position.set(-center.x, -box.min.y - 0.4, -center.z);
+            // POSICIÓN ADAPTATIVA (Más arriba en móvil para dejar espacio al texto)
+            const posY = isMobile ? (-box.min.y + 0.2) : (-box.min.y - 0.4);
+            model.position.set(-center.x, posY, -center.z);
 
             mouseRotationGroup.add(model);
             mouseRotationGroup.rotation.y = -(Math.PI / 2) - 0.25;
