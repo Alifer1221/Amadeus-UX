@@ -1467,8 +1467,8 @@
                 }
             });
 
-            // ESCALA MASIVA (Aumentada a 0.085 para impacto visual XL)
-            const scale = isMobile ? 0.085 : 0.072;
+            // ESCALA GIGANTE FORZADA (0.15 para asegurar que el cambio sea visible)
+            const scale = isMobile ? 0.15 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
