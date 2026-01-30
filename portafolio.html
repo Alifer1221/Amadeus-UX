@@ -472,7 +472,7 @@
         /* --- MOBILE ADJUSTMENTS FOR 3D SECTION --- */
         @media (max-width: 768px) {
             #info-side {
-                top: 68% !important;
+                top: 72% !important;
                 width: 90% !important;
                 left: 5% !important;
                 right: 5% !important;
@@ -1393,15 +1393,15 @@
                 }
             });
 
-            // ESCALA ADAPTATIVA (Reducida un 20% adicional para móvil)
-            const scale = isMobile ? 0.032 : 0.072;
+            // ESCALA ADAPTATIVA (Reducción drástica para móvil para asegurar que el cambio sea visible)
+            const scale = isMobile ? 0.025 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
 
-            // POSICIÓN ADAPTATIVA (Ajustada para compensar el tamaño reducido en móvil)
-            const posY = isMobile ? (-box.min.y + 0.35) : (-box.min.y - 0.4);
+            // POSICIÓN ADAPTATIVA (Subir el modelo un poco más en móvil)
+            const posY = isMobile ? (-box.min.y + 0.45) : (-box.min.y - 0.4);
             model.position.set(-center.x, posY, -center.z);
 
             mouseRotationGroup.add(model);
@@ -1412,8 +1412,9 @@
                 model.add(pGltf.scene);
             });
 
-            // ZOOM DE CÁMARA EQUILIBRADO (0.8)
-            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * 0.8);
+            // ZOOM DE CÁMARA ADAPTATIVO (Más alejado en móvil: factor 1.1 en vez de 0.8)
+            const zoomFactor = isMobile ? 1.1 : 0.8;
+            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * zoomFactor);
             camera.lookAt(0, box.getSize(new THREE.Vector3()).y / 2, 0);
             applyLensShift();
 
