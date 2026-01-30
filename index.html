@@ -2257,6 +2257,31 @@
                     resize();
                     draw();
                 </script>
+                <script>
+                    // --- VIDEO OPTIMIZATION: Intersection Observer ---
+                    // Ensures videos play only when visible to save resources and prevent freezing
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const videoObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                const video = entry.target;
+                                if (entry.isIntersecting) {
+                                    // Small delay to ensure resources are ready
+                                    setTimeout(() => {
+                                        video.play().catch(e => console.log("Auto-play prevented on scroll:", e));
+                                    }, 100);
+                                } else {
+                                    video.pause();
+                                }
+                            });
+                        }, {
+                            threshold: 0.1 // Play when at least 10% is visible
+                        });
+
+                        // Target all videos in the main page (Warp Speed and Vignette)
+                        const mainVideos = document.querySelectorAll('.video-box-final video, #video-fast-vignette');
+                        mainVideos.forEach(v => videoObserver.observe(v));
+                    });
+                </script>
 </body>
 
 </html>
