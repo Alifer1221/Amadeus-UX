@@ -1608,12 +1608,20 @@
             gap: 20px;
         }
 
+        #ocean-component .nav-btn:hover {
+            background: rgba(138, 43, 226, 0.8) !important;
+            /* Purple marker */
+            border-color: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+
         #ocean-component .nav-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(138, 43, 226, 0.3) !important;
+            /* Subtle purple background to mark update */
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1646,21 +1654,28 @@
                 padding-bottom: 80px;
             }
 
-            #ocean-component .card-group.active {
-                position: relative !important;
-                opacity: 1 !important;
-                display: flex;
-                visibility: visible !important;
-            }
-
             #ocean-component .card-group {
+                display: none !important;
+                /* Hide all by default on mobile */
+                position: relative !important;
                 flex-direction: column;
                 justify-content: center;
                 gap: 30px;
-                padding-bottom: 40px;
-                /* Balanced space since controls are now relative */
                 padding-top: 150px;
-                /* INCREASED: More space for original title size */
+                padding-bottom: 40px;
+                opacity: 1 !important;
+                transform: none !important;
+                /* Let's be safe and simplify on mobile */
+                width: 95% !important;
+                margin: 0 auto;
+            }
+
+            #ocean-component .card-group.active {
+                display: flex !important;
+                /* Only active slide shown */
+                position: relative !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
             }
 
             #ocean-component .visual-box {

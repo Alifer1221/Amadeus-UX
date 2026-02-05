@@ -1469,21 +1469,27 @@
                 padding-bottom: 80px;
             }
 
-            #ocean-component .card-group.active {
-                position: relative !important;
-                opacity: 1 !important;
-                display: flex;
-                visibility: visible !important;
-            }
-
             #ocean-component .card-group {
+                display: none !important;
+                /* Hide all by default on mobile */
+                position: relative !important;
                 flex-direction: column;
                 justify-content: center;
                 gap: 30px;
-                padding-bottom: 40px;
-                /* Balanced space since controls are now relative */
                 padding-top: 150px;
-                /* INCREASED: More space for original title size */
+                padding-bottom: 40px;
+                opacity: 1 !important;
+                transform: none !important;
+                width: 95% !important;
+                margin: 0 auto;
+            }
+
+            #ocean-component .card-group.active {
+                display: flex !important;
+                /* Only active slide shown */
+                position: relative !important;
+                visibility: visible !important;
+                pointer-events: auto !important;
             }
 
             #ocean-component .visual-box {
