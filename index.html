@@ -1864,7 +1864,7 @@
                 const visualPart = group.querySelector('.visual-box').offsetHeight;
                 const textPart = group.querySelector('.text-box').offsetHeight;
                 const paddingTop = 150; // CSS padding-top
-                const paddingBottom = 220; // Increased buffer to prevent arrow overlap
+                const paddingBottom = 80; // Reduced buffer significantly as arrows are now inline
                 const gap = 30;
 
                 const totalHeight = visualPart + textPart + paddingTop + paddingBottom + gap;
