@@ -1550,9 +1550,9 @@
                         de contenido verificados para impulsar ventas en retail, Amazon y canales directos. Se
                         especializa en campañas "Buy & Try" impulsadas por datos reales y tecnología IA para generar
                         contenido auténtico y medible.</p>
-                    <div class="nav-controls-mobile">
-                        <button class="nav-btn-mobile prev-btn"><i class="ri-arrow-left-line"></i></button>
-                        <button class="nav-btn-mobile next-btn"><i class="ri-arrow-right-line"></i></button>
+                    <div class="nav-controls-inline">
+                        <button class="nav-btn prev-btn-inline"><i class="ri-arrow-left-line"></i></button>
+                        <button class="nav-btn next-btn-inline"><i class="ri-arrow-right-line"></i></button>
                     </div>
                 </div>
             </div>
@@ -1573,9 +1573,9 @@
                         clínicas de alta calidad en Colombia. Facilita el acceso a cirugías plásticas, odontología y
                         tratamientos especializados con un modelo "Todo Incluido" (viaje, cirugía y recuperación),
                         garantizando seguridad, acreditación internacional y ahorros significativos.</p>
-                    <div class="nav-controls-mobile">
-                        <button class="nav-btn-mobile prev-btn"><i class="ri-arrow-left-line"></i></button>
-                        <button class="nav-btn-mobile next-btn"><i class="ri-arrow-right-line"></i></button>
+                    <div class="nav-controls-inline">
+                        <button class="nav-btn prev-btn-inline"><i class="ri-arrow-left-line"></i></button>
+                        <button class="nav-btn next-btn-inline"><i class="ri-arrow-right-line"></i></button>
                     </div>
                 </div>
             </div>
@@ -1598,9 +1598,9 @@
                         acceso remoto (para renderizado, gaming o diseño complejo), o monetizar sus propios equipos
                         inactivos. Una solución escalable que elimina las barreras de hardware para profesionales
                         creativos.</p>
-                    <div class="nav-controls-mobile">
-                        <button class="nav-btn-mobile prev-btn"><i class="ri-arrow-left-line"></i></button>
-                        <button class="nav-btn-mobile next-btn"><i class="ri-arrow-right-line"></i></button>
+                    <div class="nav-controls-inline">
+                        <button class="nav-btn prev-btn-inline"><i class="ri-arrow-left-line"></i></button>
+                        <button class="nav-btn next-btn-inline"><i class="ri-arrow-right-line"></i></button>
                     </div>
                 </div>
             </div>
@@ -1622,9 +1622,9 @@
                         de "Riesgo Cero": los estudiantes solo pagan su matrícula una vez consiguen empleo. El sitio
                         integra un flujo de aplicación optimizado, presentación clara del currículo de 12 semanas y
                         testimonios sociales para generar confianza en un modelo de pago basado en resultados.</p>
-                    <div class="nav-controls-mobile">
-                        <button class="nav-btn-mobile prev-btn"><i class="ri-arrow-left-line"></i></button>
-                        <button class="nav-btn-mobile next-btn"><i class="ri-arrow-right-line"></i></button>
+                    <div class="nav-controls-inline">
+                        <button class="nav-btn prev-btn-inline"><i class="ri-arrow-left-line"></i></button>
+                        <button class="nav-btn next-btn-inline"><i class="ri-arrow-right-line"></i></button>
                     </div>
                 </div>
             </div>
@@ -1647,9 +1647,9 @@
                         ecosistemas
                         urbanos especulativos, demostrando una capacidad única para fusionar rigor técnico con
                         visualización inmersiva.</p>
-                    <div class="nav-controls-mobile">
-                        <button class="nav-btn-mobile prev-btn"><i class="ri-arrow-left-line"></i></button>
-                        <button class="nav-btn-mobile next-btn"><i class="ri-arrow-right-line"></i></button>
+                    <div class="nav-controls-inline">
+                        <button class="nav-btn prev-btn-inline"><i class="ri-arrow-left-line"></i></button>
+                        <button class="nav-btn next-btn-inline"><i class="ri-arrow-right-line"></i></button>
                     </div>
                 </div>
             </div>
@@ -1836,6 +1836,29 @@
                 } else {
                     changeSlide(totalSlides - 1, "prev");
                 }
+            });
+
+            // Mobile Inline Controls Logic
+            container.querySelectorAll('.nav-btn-mobile.prev-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    resetAutoPlay();
+                    if (currentSlide > 0) {
+                        changeSlide(currentSlide - 1, "prev");
+                    } else {
+                        changeSlide(totalSlides - 1, "prev");
+                    }
+                });
+            });
+
+            container.querySelectorAll('.nav-btn-mobile.next-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    resetAutoPlay();
+                    if (currentSlide < totalSlides - 1) {
+                        changeSlide(currentSlide + 1, "next");
+                    } else {
+                        changeSlide(0, "next");
+                    }
+                });
             });
 
             // --- SWIPE LOGIC FOR MOBILE ---
