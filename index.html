@@ -2017,7 +2017,7 @@
             });
 
             // Mobile Inline Controls Logic
-            container.querySelectorAll('.nav-btn-mobile.prev-btn').forEach(btn => {
+            container.querySelectorAll('.nav-btn.prev-btn-inline').forEach(btn => {
                 btn.addEventListener('click', () => {
                     resetAutoPlay();
                     if (currentSlide > 0) {
@@ -2028,7 +2028,7 @@
                 });
             });
 
-            container.querySelectorAll('.nav-btn-mobile.next-btn').forEach(btn => {
+            container.querySelectorAll('.nav-btn.next-btn-inline').forEach(btn => {
                 btn.addEventListener('click', () => {
                     resetAutoPlay();
                     if (currentSlide < totalSlides - 1) {
