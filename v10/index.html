@@ -1455,10 +1455,25 @@
 
         /* RESPONSIVE */
         @media (max-width: 1024px) {
-            #ocean-component {
-                height: auto;
+
+            #ocean-component,
+            #ocean-component .ocean-stage {
+                height: auto !important;
                 min-height: 100vh;
-                padding-top: 80px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #ocean-component {
+                padding-top: 100px;
+                padding-bottom: 80px;
+            }
+
+            #ocean-component .card-group.active {
+                position: relative !important;
+                opacity: 1 !important;
+                display: flex;
+                visibility: visible !important;
             }
 
             #ocean-component .card-group {
@@ -1499,8 +1514,15 @@
                 text-align: center;
             }
 
-            #ocean-component .title-wrapper {
-                justify-content: flex-start;
+            #ocean-component .nav-controls {
+                position: relative !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+                margin: 40px auto 0 auto;
+                justify-content: center;
+                width: 100%;
+                z-index: 100;
             }
         }
     </style>
