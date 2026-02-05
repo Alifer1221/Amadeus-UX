@@ -1442,8 +1442,10 @@
 
             #ocean-component,
             #ocean-component .ocean-stage {
-                height: auto !important;
-                min-height: 100vh;
+                height: auto;
+                /* Remove !important to allow JS to control height */
+                min-height: 0;
+                /* Remove 100vh forcing */
                 display: flex;
                 flex-direction: column;
             }
