@@ -1825,7 +1825,7 @@
                 const visualPart = group.querySelector('.visual-box').offsetHeight;
                 const textPart = group.querySelector('.text-box').offsetHeight;
                 const paddingTop = 150; // CSS padding-top
-                const paddingBottom = 120; // Extra buffer for controls
+                const paddingBottom = 220; // Increased buffer to prevent arrow overlap
                 const gap = 30;
 
                 const totalHeight = visualPart + textPart + paddingTop + paddingBottom + gap;
@@ -1844,6 +1844,11 @@
                 playVideo(slides[0]);
                 updateContainerHeight(slides[0]); // Initial height set
                 startAutoPlay();
+
+                // Ensure height is correct after assets load
+                window.addEventListener('load', () => {
+                    updateContainerHeight(slides[currentSlide]);
+                });
 
                 window.addEventListener('resize', () => {
                     updateContainerHeight(slides[currentSlide]);
