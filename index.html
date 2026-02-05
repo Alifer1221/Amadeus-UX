@@ -1622,6 +1622,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
+            position: relative;
+            /* Ensure z-index works */
+            z-index: 100;
+            /* Boost visibility above other layers */
         }
 
         #ocean-component .nav-btn:hover {
@@ -1706,6 +1710,10 @@
                 justify-content: center;
                 /* Center buttons horizontally */
                 width: 100%;
+                position: relative;
+                /* Ensure z-index works */
+                z-index: 100;
+                /* Boost container visibility */
             }
 
             .nav-btn-mobile {
