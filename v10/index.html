@@ -1452,14 +1452,16 @@
 
             #ocean-component {
                 padding-top: 100px;
-                padding-bottom: 80px;
+                padding-bottom: 20px;
+                /* Aggressively reduced from 80px */
             }
 
             #ocean-component .card-group {
                 flex-direction: column;
                 justify-content: center;
                 gap: 30px;
-                padding-bottom: 40px;
+                padding-bottom: 20px;
+                /* Reduced from 40px */
                 padding-top: 150px;
                 opacity: 0;
             }
@@ -1689,7 +1691,7 @@
                 const visualPart = group.querySelector('.visual-box').offsetHeight;
                 const textPart = group.querySelector('.text-box').offsetHeight;
                 const paddingTop = 150; // CSS padding-top
-                const paddingBottom = 80; // Reduced buffer significantly as arrows are now inline
+                const paddingBottom = 40; // Aggressively reduced buffer
                 const gap = 30;
 
                 const totalHeight = visualPart + textPart + paddingTop + paddingBottom + gap;
