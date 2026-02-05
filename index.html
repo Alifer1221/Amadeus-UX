@@ -729,7 +729,8 @@
 
         @media (max-width: 900px) {
             .contact-section {
-                padding: 60px 20px;
+                padding: 60px 30px;
+                /* Increased side padding */
                 width: 100%;
                 box-sizing: border-box;
                 /* Ensure padding doesn't add to width */
@@ -753,9 +754,11 @@
             }
 
             .contact-info h1 {
-                font-size: 3.5rem;
-                padding-right: 10px;
-                /* Slight buffer if needed */
+                font-size: 2.8rem;
+                /* Reduced from 3.5rem to fit mobile */
+                padding-right: 0;
+                word-wrap: break-word;
+                /* Ensure clear wrapping */
             }
 
             .features-grid {
