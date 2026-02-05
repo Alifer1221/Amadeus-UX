@@ -1468,6 +1468,12 @@
                 /* Remove 100vh forcing */
                 display: flex;
                 flex-direction: column;
+                position: relative;
+                /* Create stacking context */
+                z-index: 50;
+                /* Ensure it stays above next section */
+                overflow: visible;
+                /* Prevent clipping of arrows */
             }
 
             #ocean-component {
@@ -1715,7 +1721,7 @@
                 const visualPart = group.querySelector('.visual-box').offsetHeight;
                 const textPart = group.querySelector('.text-box').offsetHeight;
                 const paddingTop = 20; // Reduced to match new CSS
-                const paddingBottom = 40; // Aggressively reduced buffer
+                const paddingBottom = 60; // Increased buffer slightly to prevent overlap
                 const gap = 30;
 
                 const totalHeight = visualPart + textPart + paddingTop + paddingBottom + gap;
