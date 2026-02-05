@@ -1411,8 +1411,8 @@
     <!-- VIDEO SECTION (WARP SPEED) -->
     <div class="video-section-wrapper">
         <div class="video-box-final"><video
-                src="https://github.com/Amadeusguitarte/Video-3/raw/main/Sequence%2009_6.mp4" autoplay loop muted
-                playsinline></video></div>
+                src="https://github.com/Amadeusguitarte/herovideo/raw/main/Sequence%2012_4.mp4" autoplay loop muted
+                playsinline preload="auto" disablePictureInPicture></video></div>
     </div>
     <!-- INFO SECTION VIGNETTE -->
     <section id="info-section-vignette">
@@ -1632,11 +1632,33 @@
 
         /* RESPONSIVE */
         @media (max-width: 1024px) {
+
+            #ocean-component,
+            #ocean-component .ocean-stage {
+                height: auto !important;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #ocean-component {
+                padding-top: 100px;
+                padding-bottom: 80px;
+            }
+
+            #ocean-component .card-group.active {
+                position: relative !important;
+                opacity: 1 !important;
+                display: flex;
+                visibility: visible !important;
+            }
+
             #ocean-component .card-group {
                 flex-direction: column;
                 justify-content: center;
                 gap: 30px;
-                padding-bottom: 120px;
+                padding-bottom: 40px;
+                /* Balanced space since controls are now relative */
                 padding-top: 150px;
                 /* INCREASED: More space for original title size */
             }
@@ -1669,8 +1691,15 @@
                 text-align: center;
             }
 
-            #ocean-component .title-wrapper {
-                justify-content: flex-start;
+            #ocean-component .nav-controls {
+                position: relative !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+                margin: 40px auto 0 auto;
+                justify-content: center;
+                width: 100%;
+                z-index: 100;
             }
         }
     </style>
