@@ -890,7 +890,15 @@
             }
 
             #imac-nav-arrows {
-                margin-top: 20px !important;
+                position: absolute !important;
+                bottom: auto !important;
+                top: 0 !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 100% !important;
+                justify-content: space-between !important;
+                padding: 0 20px !important;
+                pointer-events: auto !important;
             }
 
             #tw-title {
@@ -1744,11 +1752,8 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            // Only apply scroll tilt effect on desktop, skip on mobile
-            if (!isMobile) {
-                const rect = wrapper.getBoundingClientRect();
-                scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * 0.0008;
-            }
+            const rect = wrapper.getBoundingClientRect();
+            scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * 0.0008;
             renderer.render(scene, camera);
         }
         animate();
