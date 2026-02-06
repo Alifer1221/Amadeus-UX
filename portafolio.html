@@ -1445,11 +1445,11 @@
 
         function updateRendererSize() {
             const w = wrapper.clientWidth;
-            const h = isMobile ? (window.innerHeight * 0.75) : wrapper.clientHeight;
+            const h = isMobile ? (window.innerHeight * 0.60) : wrapper.clientHeight;
             renderer.setSize(w, h);
             camera.aspect = w / h;
 
-            // ZOOM EXTREMO: Ajustado para perspectiva natural en móviles
+            // ZOOM EXTREMO: Ajustado para que no sea ni muy grande ni muy pequeño
             if (isMobile) {
                 camera.fov = 45;
             } else {
@@ -1523,8 +1523,8 @@
                 model.add(pGltf.scene);
             });
 
-            // ZOOM DE CÁMARA ADAPTATIVO (Más alejado en móvil: factor 1.3)
-            const zoomFactor = isMobile ? 0.85 : 0.8;
+            // ZOOM DE CÁMARA ADAPTATIVO (Intermedio: factor 1.1)
+            const zoomFactor = isMobile ? 1.1 : 0.8;
             camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * zoomFactor);
             camera.lookAt(0, box.getSize(new THREE.Vector3()).y / 2, 0);
             applyLensShift();
@@ -1755,25 +1755,25 @@
 
             // Show/Hide sections
             // Show/Hide sections
+            // Show/Hide sections (NUCLEAR OPTION via setProperty)
             if (category === 'all') {
-                imacSection.style.display = 'block';
-                avSection.style.display = 'block';
+                imacSection.style.setProperty('display', 'block', 'important');
+                avSection.style.setProperty('display', 'block', 'important');
                 imacSection.classList.remove('section-hidden');
                 avSection.classList.remove('section-hidden');
             } else if (category === 'web') {
-                imacSection.style.display = 'block';
-                avSection.style.display = 'none';
+                imacSection.style.setProperty('display', 'block', 'important');
+                avSection.style.setProperty('display', 'none', 'important');
                 imacSection.classList.remove('section-hidden');
                 avSection.classList.add('section-hidden');
             } else if (category === 'av') {
-                imacSection.style.display = 'none';
-                avSection.style.display = 'block';
+                imacSection.style.setProperty('display', 'none', 'important');
+                avSection.style.setProperty('display', 'block', 'important');
                 imacSection.classList.add('section-hidden');
                 avSection.classList.remove('section-hidden');
             } else if (category === 'branding') {
-                // For now, hide both or handle branding
-                imacSection.style.display = 'none';
-                avSection.style.display = 'none';
+                imacSection.style.setProperty('display', 'none', 'important');
+                avSection.style.setProperty('display', 'none', 'important');
                 imacSection.classList.add('section-hidden');
                 avSection.classList.add('section-hidden');
             }
