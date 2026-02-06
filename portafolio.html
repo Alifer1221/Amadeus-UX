@@ -22,6 +22,12 @@
 
     <!-- Styles from Index.html -->
     <style>
+        html {
+            background-color: #000;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             background-color: #000;
             color: #fff;
@@ -389,7 +395,11 @@
         }
     </style>
     <script>
-        // SCRIPT CRÍTICO: Previene el flash blanco al recargar
+        // SCRIPT CRÍTICO: Previene el flash blanco y fuerza inicio desde 0
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
         window.onbeforeunload = function () {
             document.body.style.opacity = "0";
             window.scrollTo(0, 0);
