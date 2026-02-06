@@ -1065,7 +1065,7 @@
 
     <!-- IMAC 3D SHOWCASE SECTION -->
     <div id="imac-3d-wrapper"
-        style="width: 100%; height: 100vh; position: relative; background-color: transparent; overflow: hidden; font-family: 'Manrope', sans-serif;">
+        style="width: 100%; height: 90vh; position: relative; background-color: transparent; overflow: hidden; font-family: 'Manrope', sans-serif; margin-top: -50px;">
 
         <div id="info-side"
             style="position: absolute; top: 30%; width: 28%; color: white; z-index: 5; padding: 0 5%; pointer-events: none;">
@@ -1079,37 +1079,39 @@
                 style="font-family: 'Manrope', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #ccc; transition: opacity 0.3s; font-weight: 300; margin-bottom: 30px;">
             </p>
 
-            <!-- Bloque de Acciones: Botón + Flechas -->
-            <div id="imac-actions-block"
-                style="margin-top: 30px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; pointer-events: auto;">
-                <a id="visit-btn" href="#" target="_blank">
+            <!-- Bloque de Acciones: SOLO EL BOTÓN -->
+            <div id="imac-actions-block" style="margin-top: 30px; display: block; pointer-events: auto;">
+                <a id="visit-btn" href="#" target="_blank" style="display: inline-block;">
                     Visitar sitio web
                 </a>
-
-                <div id="imac-nav-arrows" style="display: flex; gap: 20px; justify-content: flex-start;">
-                    <div id="btn-prev" class="nav-btn"
-                        style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </div>
-                    <div id="btn-next" class="nav-btn"
-                        style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <div id="rotation-indicator" class="active-spin"
-            style="position: absolute; bottom: 120px; left: 70%; transform: translateX(-50%) perspective(500px) rotateX(60deg); opacity: 1; pointer-events: none; z-index: 50; filter: drop-shadow(0px 15px 10px rgba(0,0,0,0.6)); transition: opacity 1.5s ease-in-out;">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3" />
-            </svg>
+        <!-- FLECHAS MOVIDAS AL FONDO Y CENTRADAS -->
+        <div id="imac-nav-arrows"
+            style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; z-index: 50; pointer-events: auto;">
+            <div id="btn-prev" class="nav-btn"
+                style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+            </div>
+            <div id="btn-next" class="nav-btn"
+                style="width: 55px; height: 55px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </div>
         </div>
+    </div>
+
+    <div id="rotation-indicator" class="active-spin"
+        style="position: absolute; bottom: 120px; left: 70%; transform: translateX(-50%) perspective(500px) rotateX(60deg); opacity: 1; pointer-events: none; z-index: 50; filter: drop-shadow(0px 15px 10px rgba(0,0,0,0.6)); transition: opacity 1.5s ease-in-out;">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3" />
+        </svg>
+    </div>
 
     </div>
 
