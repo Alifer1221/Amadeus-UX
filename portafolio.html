@@ -1481,8 +1481,10 @@
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
         // NUCLEAR RESET: Expose to global scope for filterPortfolio
+        // Uses window.innerWidth directly to avoid scope issues with module variables
         window.resetMobileStyles = function () {
-            if (!isMobile) return;
+            const checkMobile = window.innerWidth <= 900;
+            if (!checkMobile) return;
             const infoSide = document.getElementById('info-side');
             if (infoSide) {
                 // Kill all inline styles (GSAP residue)
