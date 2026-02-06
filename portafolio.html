@@ -761,15 +761,19 @@
         #info-side {
             position: absolute;
             top: 30%;
-            width: 28%;
+            width: 38%;
             color: white;
             z-index: 5;
-            padding: 0 5%;
+            padding: 0 4%;
             pointer-events: none;
             /* Initial Desktop State */
             left: 4%;
             right: auto;
             text-align: left;
+        }
+
+        #info-side h1 {
+            text-align: inherit;
         }
 
         @media (max-width: 1024px) {
@@ -1706,9 +1710,9 @@
                 // CSS media query handles all positioning via !important rules.
             } else {
                 if (imacOnLeft) {
-                    gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%', bottom: 'auto' });
+                    gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '38%', bottom: 'auto' });
                 } else {
-                    gsap.set(infoSide, { right: 'auto', left: '4%', textAlign: 'left', top: '30%', width: '28%', bottom: 'auto' });
+                    gsap.set(infoSide, { right: 'auto', left: '4%', textAlign: 'left', top: '30%', width: '38%', bottom: 'auto' });
                 }
             }
 
