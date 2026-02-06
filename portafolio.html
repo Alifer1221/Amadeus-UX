@@ -848,9 +848,10 @@
             }
 
             .portfolio-filter-menu {
-                gap: 25px;
+                gap: 40px;
                 flex-wrap: wrap;
                 justify-content: center;
+                width: 100%;
             }
 
             .filter-item {
@@ -1437,13 +1438,13 @@
 
         function updateRendererSize() {
             const w = wrapper.clientWidth;
-            const h = isMobile ? (window.innerHeight * 0.55) : wrapper.clientHeight;
+            const h = isMobile ? (window.innerHeight * 0.65) : wrapper.clientHeight;
             renderer.setSize(w, h);
             camera.aspect = w / h;
 
-            // ZOOM EXTREMO: Reducir FOV en móviles para que el objeto se vea MASIVO sin distorsión
+            // ZOOM EXTREMO: Ajustado para perspectiva natural en móviles
             if (isMobile) {
-                camera.fov = 28;
+                camera.fov = 45;
             } else {
                 camera.fov = 35;
             }
