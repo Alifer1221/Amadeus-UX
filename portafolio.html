@@ -1602,8 +1602,8 @@
                 }
             });
 
-            // ESCALA GIGANTE DEFINITIVA (0.15 para impacto total)
-            const scale = isMobile ? 0.15 : 0.072;
+            // ESCALA GIGANTE DEFINITIVA (0.165 = +10% más grande en móvil)
+            const scale = isMobile ? 0.165 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
@@ -1770,7 +1770,9 @@
         function animate() {
             requestAnimationFrame(animate);
             const rect = wrapper.getBoundingClientRect();
-            scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * 0.0008;
+            // Reduce scroll tilt on mobile to prevent width deformation from perspective
+            const tiltFactor = isMobile ? 0.0002 : 0.0008;
+            scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * tiltFactor;
             renderer.render(scene, camera);
         }
         animate();
