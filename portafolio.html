@@ -1589,7 +1589,7 @@
             isMobile = window.innerWidth <= 900;
             updateRendererSize();
             applyLensShift();
-            resetMobileStyles();
+            window.resetMobileStyles();
         });
 
         function typeEffect(index) {
@@ -1818,13 +1818,13 @@
                 avSection.style.setProperty('display', 'block', 'important');
                 imacSection.classList.remove('section-hidden');
                 avSection.classList.remove('section-hidden');
-                resetMobileStyles();
+                if (typeof window.resetMobileStyles === 'function') window.resetMobileStyles();
             } else if (category === 'web') {
                 imacSection.style.setProperty('display', 'block', 'important');
                 avSection.style.setProperty('display', 'none', 'important');
                 imacSection.classList.remove('section-hidden');
                 avSection.classList.add('section-hidden');
-                resetMobileStyles();
+                if (typeof window.resetMobileStyles === 'function') window.resetMobileStyles();
             } else if (category === 'av') {
                 imacSection.style.setProperty('display', 'none', 'important');
                 avSection.style.setProperty('display', 'block', 'important');
