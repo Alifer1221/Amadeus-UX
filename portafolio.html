@@ -1455,7 +1455,7 @@
             { title: "Portafolio Arq", desc: "Arquitectura Computacional e IA. Exploración del diseño paramétrico y flujos de trabajo avanzados como 'RE BIM' con visualización inmersiva.", video: 'https://raw.githubusercontent.com/Amadeusguitarte/Videos-paginas/main/68da1a7145c6f790ceee27b3_Recording%202025-09-29%20001607_5.mp4', link: "https://amadeusarteaga.webflow.io/" }
         ];
 
-        const isMobile = window.innerWidth <= 768;
+        let isMobile = window.innerWidth <= 900;
         let currentIdx = 0;
         let imacOnLeft = false;
         let eraseTimeout, writeTimeout;
@@ -1563,6 +1563,7 @@
         });
 
         window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 900;
             updateRendererSize();
             applyLensShift();
         });
@@ -1625,12 +1626,20 @@
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (isMobile) {
-                // En móvil el layout es estático, no necesitamos mover el infoSide lateralmente
+                // FORCE RESET MOBILE STYLES to prevent desktop overrides
+                gsap.set(infoSide, {
+                    top: 'auto',
+                    bottom: '140px',
+                    left: '0',
+                    right: 'auto',
+                    width: '100%',
+                    textAlign: 'center'
+                });
             } else {
                 if (imacOnLeft) {
-                    gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%' });
+                    gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%', bottom: 'auto' });
                 } else {
-                    gsap.set(infoSide, { right: 'auto', left: '4%', textAlign: 'left', top: '30%', width: '28%' });
+                    gsap.set(infoSide, { right: 'auto', left: '4%', textAlign: 'left', top: '30%', width: '28%', bottom: 'auto' });
                 }
             }
 
