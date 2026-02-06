@@ -1689,15 +1689,8 @@
             gsap.to(mouseRotationGroup.rotation, { y: targetRot, duration: 1.5, ease: "power2.inOut", overwrite: true });
 
             if (isMobile) {
-                // FORCE RESET MOBILE STYLES to prevent desktop overrides
-                gsap.set(infoSide, {
-                    top: 'auto',
-                    bottom: '140px',
-                    left: '0',
-                    right: 'auto',
-                    width: '100%',
-                    textAlign: 'center'
-                });
+                // On mobile, DO NOT touch infoSide with GSAP at all.
+                // CSS media query handles all positioning via !important rules.
             } else {
                 if (imacOnLeft) {
                     gsap.set(infoSide, { left: 'auto', right: '4%', textAlign: 'right', top: '30%', width: '28%', bottom: 'auto' });
@@ -1863,7 +1856,7 @@
                 avSection.style.setProperty('display', 'none', 'important');
                 imacSection.classList.remove('section-hidden');
                 avSection.classList.add('section-hidden');
-                if (typeof window.resetMobileStyles === 'function') window.resetMobileStyles();
+                // Removed resetMobileStyles call - CSS handles mobile layout
             } else if (category === 'av') {
                 imacSection.style.setProperty('display', 'none', 'important');
                 avSection.style.setProperty('display', 'block', 'important');
