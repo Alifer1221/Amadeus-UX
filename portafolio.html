@@ -1602,8 +1602,8 @@
                 }
             });
 
-            // ESCALA GIGANTE DEFINITIVA (0.165 = +10% más grande en móvil)
-            const scale = isMobile ? 0.165 : 0.072;
+            // ESCALA GIGANTE DEFINITIVA (0.18 = +20% más grande en móvil)
+            const scale = isMobile ? 0.18 : 0.072;
             model.scale.set(scale, scale, scale);
 
             const box = new THREE.Box3().setFromObject(model);
@@ -1770,9 +1770,7 @@
         function animate() {
             requestAnimationFrame(animate);
             const rect = wrapper.getBoundingClientRect();
-            // Reduce scroll tilt on mobile to prevent width deformation from perspective
-            const tiltFactor = isMobile ? 0.0002 : 0.0008;
-            scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * tiltFactor;
+            scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * 0.0008;
             renderer.render(scene, camera);
         }
         animate();
