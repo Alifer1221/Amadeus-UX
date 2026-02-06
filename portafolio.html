@@ -1163,27 +1163,29 @@
     <div id="imac-3d-wrapper">
 
         <div id="info-side">
-            <!-- TITLE ROW WITH ARROWS -->
-            <div id="title-row"
-                style="display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%;">
-                <div id="btn-prev-mobile" class="nav-btn mobile-only"
-                    style="width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: none; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; pointer-events: auto;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="m15 18-6-6 6-6" />
-                    </svg>
-                </div>
-                <h1
-                    style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; margin: 0; display: inline-block; font-weight: 400;">
-                    <span id="tw-title">Izzy</span><span id="cursor"
-                        style="color: #a855f7; animation: blink 0.8s infinite;">_</span>
-                </h1>
-                <div id="btn-next-mobile" class="nav-btn mobile-only"
-                    style="width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: none; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; pointer-events: auto;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="m9 18 6-6-6-6" />
-                    </svg>
-                </div>
+            <!-- LEFT ARROW - FIXED AT LEFT EDGE -->
+            <div id="btn-prev-mobile" class="nav-btn mobile-only"
+                style="position: absolute; left: 10px; top: 0; width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: none; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; pointer-events: auto; z-index: 10;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
             </div>
+
+            <!-- RIGHT ARROW - FIXED AT RIGHT EDGE -->
+            <div id="btn-next-mobile" class="nav-btn mobile-only"
+                style="position: absolute; right: 10px; top: 0; width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: none; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; pointer-events: auto; z-index: 10;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </div>
+
+            <!-- TITLE -->
+            <h1
+                style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; margin: 0; display: inline-block; font-weight: 400; text-align: center; width: 100%;">
+                <span id="tw-title">Izzy</span><span id="cursor"
+                    style="color: #a855f7; animation: blink 0.8s infinite;">_</span>
+            </h1>
+
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 25px 0;">
             <p id="tw-desc"
                 style="font-family: 'Manrope', sans-serif; font-size: 1.1rem; line-height: 1.6; color: #ccc; transition: opacity 0.3s; font-weight: 300; margin-bottom: 30px;">
