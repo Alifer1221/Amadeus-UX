@@ -770,7 +770,7 @@
             background-color: transparent;
             overflow: hidden;
             font-family: 'Manrope', sans-serif;
-            margin-top: -160px;
+            margin-top: -130px;
         }
 
         #info-side {
@@ -1480,6 +1480,18 @@
         import * as THREE from 'three';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+        // NUCLEAR RESET: Expose to global scope for filterPortfolio
+        window.resetMobileStyles = function () {
+            if (!isMobile) return;
+            const infoSide = document.getElementById('info-side');
+            if (infoSide) {
+                // Kill all inline styles (GSAP residue)
+                infoSide.removeAttribute('style');
+                // Enforce via class
+                infoSide.classList.add('mobile-force-layout');
+            }
+        };
+
         const wrapper = document.getElementById('imac-3d-wrapper');
         const titleEl = document.getElementById('tw-title');
         const descEl = document.getElementById('tw-desc');
@@ -1557,7 +1569,12 @@
             camera.updateProjectionMatrix();
         }
 
-        const loader = new GLTFLoader();
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 900;
+            updateRendererSize();
+            applyLensShift();
+            if (typeof window.resetMobileStyles === 'function') window.resetMobileStyles();
+        });
         loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/scene.gltf', (gltf) => {
             const model = gltf.scene;
             model.traverse(child => {
