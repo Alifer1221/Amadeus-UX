@@ -510,8 +510,8 @@
 
             #imac-3d-wrapper canvas {
                 position: relative !important;
-                height: 65vh !important;
-                /* Altura sincronizada con JS */
+                height: 500px !important;
+                max-height: 65vh !important;
                 width: 100% !important;
                 order: 1;
             }
@@ -1536,7 +1536,8 @@
 
         function updateRendererSize() {
             const w = wrapper.clientWidth;
-            const h = isMobile ? (window.innerHeight * 0.60) : wrapper.clientHeight;
+            // Fixed height on mobile to prevent resize when address bar hides/shows
+            const h = isMobile ? 500 : wrapper.clientHeight;
             renderer.setSize(w, h);
             camera.aspect = w / h;
 
