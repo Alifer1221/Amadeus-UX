@@ -1575,6 +1575,8 @@
             applyLensShift();
             if (typeof window.resetMobileStyles === 'function') window.resetMobileStyles();
         });
+
+        const loader = new GLTFLoader();
         loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/scene.gltf', (gltf) => {
             const model = gltf.scene;
             model.traverse(child => {
