@@ -777,16 +777,6 @@
             text-align: inherit;
         }
 
-        /* Hide mobile arrows on desktop */
-        .mobile-only {
-            display: none !important;
-        }
-
-        /* Hide bottom nav arrows on desktop (redundant) */
-        #imac-nav-arrows {
-            display: none !important;
-        }
-
         @media (max-width: 1024px) {
             .amadeus-layout {
                 grid-template-columns: 1fr;
@@ -1178,6 +1168,22 @@
     <div id="imac-3d-wrapper">
 
         <div id="info-side">
+            <!-- LEFT ARROW - FIXED AT LEFT EDGE -->
+            <div id="btn-prev-mobile" class="nav-btn mobile-only"
+                style="position: absolute; left: 10px; top: 0; width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: none; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; pointer-events: auto; z-index: 10;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+            </div>
+
+            <!-- RIGHT ARROW - FIXED AT RIGHT EDGE -->
+            <div id="btn-next-mobile" class="nav-btn mobile-only"
+                style="position: absolute; right: 10px; top: 0; width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: none; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); transition: 0.3s; pointer-events: auto; z-index: 10;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </div>
+
             <!-- TITLE -->
             <h1
                 style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; margin: 0; display: block; font-weight: 400;">
@@ -1726,6 +1732,10 @@
 
         document.getElementById('btn-prev').addEventListener('click', () => move('prev'));
         document.getElementById('btn-next').addEventListener('click', () => move('next'));
+
+        // Mobile arrows (beside title)
+        document.getElementById('btn-prev-mobile').addEventListener('click', () => move('prev'));
+        document.getElementById('btn-next-mobile').addEventListener('click', () => move('next'));
 
         let isDragging = false, previousMouseX = 0;
 
