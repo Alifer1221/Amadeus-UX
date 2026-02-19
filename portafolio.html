@@ -1238,7 +1238,7 @@
 
             <div class="amadeus-video-section" id="amd-video-sec">
                 <div class="amadeus-frame-container">
-                    <div class="amadeus-overlay" id="amd-overlay"></div>
+                    <div class="amadeus-overlay visible" id="amd-overlay"></div>
                     <iframe id="amd-player"
                         src="https://player.vimeo.com/video/1158052015?title=0&byline=0&portrait=0&badge=0&autoplay=0"
                         allowfullscreen></iframe>
@@ -1785,6 +1785,15 @@
         (function () {
             const iframe = document.getElementById('amd-player');
             const player = new Vimeo.Player(iframe);
+
+            // FADE OUT INITIAL OVERLAY
+            player.ready().then(function () {
+                setTimeout(() => {
+                    const overlay = document.getElementById('amd-overlay');
+                    if (overlay) overlay.classList.remove('visible');
+                }, 800); // Small buffer to ensure iframe is fully rendered
+            });
+
             let isResetting = false; // Bandera para evitar loops infinitos
 
             // MONITOR DE TIEMPO REAL
