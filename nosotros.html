@@ -330,8 +330,8 @@
         /* --- MULTI-COLUMN SLIDER STYLES --- */
         .vertical-slider-container {
             width: 100%;
-            height: 350vh;
-            /* Reduced from 570vh to require less scrolling */
+            height: 400vh;
+            /* Increased from 350vh to allow enough scroll distance for all 4 items */
             background-color: var(--bg);
             position: relative;
             z-index: 3;
@@ -1426,9 +1426,9 @@
             }
         });
 
-        /* Adjusted Y values so the pictures travel less distance (faster) */
-        vTl.fromTo("#trackLeft", { y: "40vh" }, { y: "-180vh", ease: "none" }, 0)
-            .fromTo("#trackRight", { y: "40vh" }, { y: "-180vh", ease: "none" }, 0);
+        /* Adjusted Y values to ensure all 4 cards become visible during the scroll duration */
+        vTl.fromTo("#trackLeft", { y: "60vh" }, { y: "-220vh", ease: "none" }, 0)
+            .fromTo("#trackRight", { y: "60vh" }, { y: "-220vh", ease: "none" }, 0);
 
         function updateVState(progress) {
             let index = Math.floor(progress * 4);
