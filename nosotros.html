@@ -215,38 +215,40 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 95vw;
-            height: 90vh;
+            width: 100vw;
+            height: 100vh;
+            padding: 5vh 5vw;
+            box-sizing: border-box;
             pointer-events: none;
             z-index: 0;
             /* Behind the slider wrapper (z-index: 1) */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-family: var(--manrope);
-            font-size: clamp(15rem, 35vw, 45rem);
+            font-family: 'Manrope', sans-serif;
+            font-size: clamp(12rem, 28vw, 35rem);
             font-weight: 800;
-            line-height: 0.8;
-            opacity: 0.06;
-            /* Subtle watermark layout */
-            overflow: hidden;
+            line-height: 1;
+            /* Se restaura la opacidad por color directo */
+            overflow: visible;
         }
 
         .bg-letter-col {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            align-items: center;
             height: 100%;
         }
 
         .bg-letter {
-            color: #000;
+            color: #ebebeb;
+            /* Color gris claro sin opacidad reducida */
         }
 
         .bg-letter.brand {
             color: var(--accent-color);
-            opacity: 0.4;
-            /* Slightly more visible for the brand color */
+            /* Morado al 100% de opacidad */
         }
 
         .infinite-slider {
@@ -664,13 +666,13 @@
     <div class="infinite-slider">
         <!-- Floating Letters Background -->
         <div class="bg-letters">
-            <div class="bg-letter-col" style="align-items: flex-start; margin-left: -5vw;">
-                <span class="bg-letter">A</span>
-                <span class="bg-letter brand">U</span>
+            <div class="bg-letter-col">
+                <span class="bg-letter" style="transform: translateY(-5vh);">A</span>
+                <span class="bg-letter brand" style="transform: translateY(5vh);">U</span>
             </div>
-            <div class="bg-letter-col" style="align-items: flex-end; margin-right: -5vw;">
-                <span class="bg-letter" style="margin-top: -10vh;">M</span>
-                <span class="bg-letter brand" style="margin-bottom: -10vh;">X</span>
+            <div class="bg-letter-col">
+                <span class="bg-letter" style="transform: translateY(-5vh);">M</span>
+                <span class="bg-letter brand" style="transform: translateY(5vh);">X</span>
             </div>
         </div>
 
