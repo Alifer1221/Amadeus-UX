@@ -222,17 +222,18 @@
             font-family: 'Manrope', sans-serif;
             font-size: clamp(12rem, 24vw, 30rem);
             /* Slightly smaller so they don't clip vertically */
-            font-weight: 300;
-            /* Much thinner typography as requested */
+            font-weight: 400;
+            /* Adjusted to 400 per user request */
             line-height: 0.75;
             /* Tight bounding box for capital letters to prevent cutoff */
         }
 
         .bg-letter {
             position: absolute;
-            color: #000;
-            opacity: 0.03;
-            /* Make A and M very subtle (less opaque/solid) */
+            color: #ebebeb;
+            /* Light gray instead of black */
+            opacity: 1;
+            /* 100% opacity per user request */
         }
 
         .bg-letter.brand {
