@@ -657,10 +657,13 @@
     <div class="infinite-slider">
         <!-- Floating Letters Background -->
         <div class="bg-letters">
+            <!-- Left Side -->
             <span class="bg-letter" style="top: 2vh; left: 2vw;">A</span>
             <span class="bg-letter brand" style="bottom: 2vh; left: 2vw;">U</span>
-            <span class="bg-letter" style="top: 2vh; right: 2vw; text-align: right;">M</span>
-            <span class="bg-letter brand" style="bottom: 2vh; right: 2vw; text-align: right;">X</span>
+
+            <!-- Right Side (compensated alignment for font bounding boxes) -->
+            <span class="bg-letter" style="top: 2vh; right: 2vw;">M</span>
+            <span class="bg-letter brand" style="bottom: 2vh; right: 0vw;">X</span>
         </div>
 
         <div class="slider-wrapper" id="wrapper"></div>
