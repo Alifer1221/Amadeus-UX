@@ -209,6 +209,46 @@
             pointer-events: none;
         }
 
+        /* --- BACKGROUND LETTERS --- */
+        .bg-letters {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95vw;
+            height: 90vh;
+            pointer-events: none;
+            z-index: 0;
+            /* Behind the slider wrapper (z-index: 1) */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--manrope);
+            font-size: clamp(15rem, 35vw, 45rem);
+            font-weight: 800;
+            line-height: 0.8;
+            opacity: 0.06;
+            /* Subtle watermark layout */
+            overflow: hidden;
+        }
+
+        .bg-letter-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .bg-letter {
+            color: #000;
+        }
+
+        .bg-letter.brand {
+            color: var(--accent-color);
+            opacity: 0.4;
+            /* Slightly more visible for the brand color */
+        }
+
         .infinite-slider {
             position: relative;
             width: 100%;
@@ -225,10 +265,13 @@
             overflow: hidden;
         }
 
+        /* Make sure wrapper has a higher z-index to stay above letters */
         .slider-wrapper {
             display: flex;
             align-items: center;
             will-change: transform;
+            z-index: 2;
+            position: relative;
         }
 
         .card-container {
@@ -619,6 +662,18 @@
     <div class="background-logo"></div>
 
     <div class="infinite-slider">
+        <!-- Floating Letters Background -->
+        <div class="bg-letters">
+            <div class="bg-letter-col" style="align-items: flex-start; margin-left: -5vw;">
+                <span class="bg-letter">A</span>
+                <span class="bg-letter brand">U</span>
+            </div>
+            <div class="bg-letter-col" style="align-items: flex-end; margin-right: -5vw;">
+                <span class="bg-letter" style="margin-top: -10vh;">M</span>
+                <span class="bg-letter brand" style="margin-bottom: -10vh;">X</span>
+            </div>
+        </div>
+
         <div class="slider-wrapper" id="wrapper"></div>
     </div>
 
