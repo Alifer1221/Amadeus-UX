@@ -212,43 +212,33 @@
         /* --- BACKGROUND LETTERS --- */
         .bg-letters {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
             width: 100vw;
             height: 100vh;
-            padding: 5vh 5vw;
-            box-sizing: border-box;
             pointer-events: none;
             z-index: 0;
             /* Behind the slider wrapper (z-index: 1) */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             font-family: 'Manrope', sans-serif;
-            font-size: clamp(12rem, 28vw, 35rem);
-            font-weight: 800;
-            line-height: 1;
-            /* Se restaura la opacidad por color directo */
-            overflow: visible;
-        }
-
-        .bg-letter-col {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
+            font-size: clamp(12rem, 24vw, 30rem);
+            /* Slightly smaller so they don't clip vertically */
+            font-weight: 300;
+            /* Much thinner typography as requested */
+            line-height: 0.75;
+            /* Tight bounding box for capital letters to prevent cutoff */
         }
 
         .bg-letter {
-            color: #ebebeb;
-            /* Color gris claro sin opacidad reducida */
+            position: absolute;
+            color: #000;
+            opacity: 0.03;
+            /* Make A and M very subtle (less opaque/solid) */
         }
 
         .bg-letter.brand {
             color: var(--accent-color);
-            /* Morado al 100% de opacidad */
+            opacity: 1;
+            /* U and X full brand color */
         }
 
         .infinite-slider {
@@ -666,14 +656,10 @@
     <div class="infinite-slider">
         <!-- Floating Letters Background -->
         <div class="bg-letters">
-            <div class="bg-letter-col">
-                <span class="bg-letter" style="transform: translateY(-5vh);">A</span>
-                <span class="bg-letter brand" style="transform: translateY(5vh);">U</span>
-            </div>
-            <div class="bg-letter-col">
-                <span class="bg-letter" style="transform: translateY(-5vh);">M</span>
-                <span class="bg-letter brand" style="transform: translateY(5vh);">X</span>
-            </div>
+            <span class="bg-letter" style="top: 2vh; left: 1vw;">A</span>
+            <span class="bg-letter brand" style="bottom: 2vh; left: 1vw;">U</span>
+            <span class="bg-letter" style="top: 2vh; right: 1vw;">M</span>
+            <span class="bg-letter brand" style="bottom: 2vh; right: 1vw;">X</span>
         </div>
 
         <div class="slider-wrapper" id="wrapper"></div>
