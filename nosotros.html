@@ -216,6 +216,8 @@
             left: 0;
             width: 100vw;
             height: 100vh;
+            padding: 2vh 2vw;
+            box-sizing: border-box;
             pointer-events: none;
             z-index: 0;
             /* Behind the slider wrapper (z-index: 1) */
@@ -226,10 +228,27 @@
             /* Adjusted to 400 per user request */
             line-height: 0.75;
             /* Tight bounding box for capital letters to prevent cutoff */
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+        }
+
+        .bg-letter-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .bg-letter-col.left {
+            align-items: flex-start;
+        }
+
+        .bg-letter-col.right {
+            align-items: flex-end;
         }
 
         .bg-letter {
-            position: absolute;
             color: #222;
             /* Dark gray as requested */
             opacity: 1;
@@ -657,13 +676,14 @@
     <div class="infinite-slider">
         <!-- Floating Letters Background -->
         <div class="bg-letters">
-            <!-- Left Side -->
-            <span class="bg-letter" style="top: 2vh; left: 2vw;">A</span>
-            <span class="bg-letter brand" style="bottom: 2vh; left: 2vw;">U</span>
-
-            <!-- Right Side (compensated alignment for font bounding boxes) -->
-            <span class="bg-letter" style="top: 2vh; right: 2vw;">M</span>
-            <span class="bg-letter brand" style="bottom: 2vh; right: 0vw;">X</span>
+            <div class="bg-letter-col left">
+                <span class="bg-letter">A</span>
+                <span class="bg-letter brand">U</span>
+            </div>
+            <div class="bg-letter-col right">
+                <span class="bg-letter">M</span>
+                <span class="bg-letter brand">X</span>
+            </div>
         </div>
 
         <div class="slider-wrapper" id="wrapper"></div>
