@@ -216,49 +216,59 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            padding: 2vh 2vw;
-            box-sizing: border-box;
             pointer-events: none;
             z-index: 0;
-            /* Behind the slider wrapper (z-index: 1) */
             font-family: 'Manrope', sans-serif;
             font-size: clamp(12rem, 24vw, 30rem);
-            /* Slightly smaller so they don't clip vertically */
             font-weight: 400;
-            /* Adjusted to 400 per user request */
             line-height: 0.75;
-            /* Tight bounding box for capital letters to prevent cutoff */
-            display: flex;
-            justify-content: space-between;
-            align-items: stretch;
         }
 
-        .bg-letter-col {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
+        .invisible-box {
+            position: absolute;
+            top: 5vh;
+            bottom: 5vh;
+            width: 40vw;
+            /* Explicit invisible limit box */
         }
 
-        .bg-letter-col.left {
-            align-items: flex-start;
+        .invisible-box.left {
+            left: 2vw;
+            /* Match requested margin exactly */
         }
 
-        .bg-letter-col.right {
-            align-items: flex-end;
+        .invisible-box.right {
+            right: 2vw;
+            /* Match requested margin exactly */
         }
 
         .bg-letter {
+            position: absolute;
             color: #222;
-            /* Dark gray as requested */
+            /* Dark gray */
             opacity: 1;
-            /* 100% opacity per user request */
+            /* Full opacity */
         }
 
         .bg-letter.brand {
             color: var(--accent-color);
-            opacity: 1;
-            /* U and X full brand color */
+        }
+
+        .bg-letter.top {
+            top: 0;
+        }
+
+        .bg-letter.bottom {
+            bottom: 0;
+        }
+
+        /* Physical exact alignment to invisible box bounds */
+        .invisible-box.left .bg-letter {
+            left: 0;
+        }
+
+        .invisible-box.right .bg-letter {
+            right: 0;
         }
 
         .infinite-slider {
@@ -676,13 +686,13 @@
     <div class="infinite-slider">
         <!-- Floating Letters Background -->
         <div class="bg-letters">
-            <div class="bg-letter-col left">
-                <span class="bg-letter">A</span>
-                <span class="bg-letter brand">U</span>
+            <div class="invisible-box left">
+                <span class="bg-letter top">A</span>
+                <span class="bg-letter brand bottom">U</span>
             </div>
-            <div class="bg-letter-col right">
-                <span class="bg-letter">M</span>
-                <span class="bg-letter brand">X</span>
+            <div class="invisible-box right">
+                <span class="bg-letter top">M</span>
+                <span class="bg-letter brand bottom">X</span>
             </div>
         </div>
 
