@@ -506,36 +506,48 @@
 
             #trackLeft {
                 order: 1;
-                margin-bottom: 3rem;
+                margin-bottom: 2rem;
             }
 
             .titles-column {
                 order: 2;
                 height: auto;
-                padding: 1rem 0;
+                padding: 0;
             }
 
             #trackRight {
                 order: 3;
-                margin-top: 3rem;
+                margin-top: 2rem;
             }
 
             .spacer {
                 height: 100%;
-                width: 25vw;
-                /* Espaciador horizontal entre tarjetas */
+                width: 40vw;
+                /* exact match for GSAP interpolation */
+                flex-shrink: 0;
             }
 
             .card-slot {
                 height: auto;
-                width: 70vw;
-                /* Ancho de la tarjeta en móvil */
-                max-width: 300px;
-                padding: 0 15px;
+                width: 60vw;
+                /* exact match for GSAP interpolation */
+                padding: 0;
+                flex-shrink: 0;
             }
 
             .work-card {
                 transform: translateX(30px) scale(0.9);
+                width: 100%;
+                max-width: none;
+            }
+
+            .work-card img {
+                max-height: 25vh;
+            }
+
+            .card-meta p {
+                font-size: 0.85rem;
+                margin-bottom: 0;
             }
 
             .work-card.focus {
@@ -1640,8 +1652,8 @@
             });
 
             /* Horizontal X scroll for mobile (opposites) */
-            vTl.fromTo("#trackLeft", { x: "100vw", y: 0 }, { x: "-200vw", y: 0, ease: "none" }, 0)
-                .fromTo("#trackRight", { x: "-150vw", y: 0 }, { x: "80vw", y: 0, ease: "none" }, 0);
+            vTl.fromTo("#trackLeft", { x: "70vw", y: 0 }, { x: "-130vw", y: 0, ease: "none" }, 0)
+                .fromTo("#trackRight", { x: "80vw", y: 0 }, { x: "-120vw", y: 0, ease: "none" }, 0);
 
             return () => { vTl.kill(); };
         });
