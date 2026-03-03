@@ -644,6 +644,42 @@
         }
 
         @media (max-width: 900px) {
+
+            /* Desktop bg-letters are too massive for mobile, scale them down */
+            .bg-letters {
+                font-size: clamp(6.5rem, 30vw, 10rem);
+            }
+
+            .invisible-box {
+                width: 40vw;
+            }
+
+            /* Desktop cards are too tiny on mobile, scale them up */
+            .v-med {
+                width: 45vw;
+                height: 65vw;
+            }
+
+            .h-std {
+                width: 55vw;
+                height: 41vw;
+            }
+
+            .h-large {
+                width: 65vw;
+                height: 46vw;
+            }
+
+            .v-small {
+                width: 35vw;
+                height: 50vw;
+            }
+
+            .h-med {
+                width: 50vw;
+                height: 36vw;
+            }
+
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 60px;
