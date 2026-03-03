@@ -1536,74 +1536,74 @@
             }, 300);
         });
         // --- MULTI-COLUMN VERTICAL SLIDER LOGIC ---
-    const vTitles = document.querySelectorAll('.service-title');
-    const vCards = document.querySelectorAll('.work-card');
+        const vTitles = document.querySelectorAll('.service-title');
+        const vCards = document.querySelectorAll('.work-card');
 
-    let vTl = gsap.timeline({
-    scrollTrigger: {
-    trigger: ".vertical-slider-container",
-    start: "top top",
-    end: "bottom bottom",
-    scrub: 0.15,
-    onUpdate: (self) => updateVState(self.progress)
-    }
-    });
+        let vTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".vertical-slider-container",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0.15,
+                onUpdate: (self) => updateVState(self.progress)
+            }
+        });
 
-    /* Adjusted Y values to ensure all 4 cards become visible and synchronize with the 4 progress steps */
-    vTl.fromTo("#trackLeft", { y: "50vh" }, { y: "-280vh", ease: "none" }, 0)
-    .fromTo("#trackRight", { y: "50vh" }, { y: "-280vh", ease: "none" }, 0);
+        /* Adjusted Y values to ensure all 4 cards become visible and synchronize with the 4 progress steps */
+        vTl.fromTo("#trackLeft", { y: "50vh" }, { y: "-280vh", ease: "none" }, 0)
+            .fromTo("#trackRight", { y: "50vh" }, { y: "-280vh", ease: "none" }, 0);
 
-    function updateVState(progress) {
-    let index = Math.floor(progress * 4);
-    if (index > 3) index = 3;
+        function updateVState(progress) {
+            let index = Math.floor(progress * 4);
+            if (index > 3) index = 3;
 
-    vTitles.forEach((t, i) => {
-    if (i === index) t.classList.add('active');
-    else t.classList.remove('active');
-    });
+            vTitles.forEach((t, i) => {
+                if (i === index) t.classList.add('active');
+                else t.classList.remove('active');
+            });
 
-    vCards.forEach((c) => {
-    const step = parseInt(c.dataset.step);
-    if (step === index) c.classList.add('focus');
-    else c.classList.remove('focus');
-    });
-    }
+            vCards.forEach((c) => {
+                const step = parseInt(c.dataset.step);
+                if (step === index) c.classList.add('focus');
+                else c.classList.remove('focus');
+            });
+        }
 
-    // FUNCIONES MODAL EQUIPO
-    function openTeamModal(doc) {
-    const name = document.getElementById('modalNameTeam');
-    const img = document.getElementById('modalImgTeam');
-    const logosContainer = document.getElementById('modalLogosTeam');
-    logosContainer.innerHTML = '';
+        // FUNCIONES MODAL EQUIPO
+        function openTeamModal(doc) {
+            const name = document.getElementById('modalNameTeam');
+            const img = document.getElementById('modalImgTeam');
+            const logosContainer = document.getElementById('modalLogosTeam');
+            logosContainer.innerHTML = '';
 
-    if (doc === 'Louis') {
-    name.innerHTML = "Louis Amadeus Arteaga Benavides";
-    document.getElementById('modalCargoTeam').innerHTML = "Diseñador UX/UI";
-    document.getElementById('modalBioTeam').innerHTML = "Diseñador y arquitecto con una maestría en Columbia GSAPP,
+            if (doc === 'Louis') {
+                name.innerHTML = "Louis Amadeus Arteaga Benavides";
+                document.getElementById('modalCargoTeam').innerHTML = "Diseñador UX/UI";
+                document.getElementById('modalBioTeam').innerHTML = `Diseñador y arquitecto con una maestría en Columbia GSAPP,
     especializado en computación avanzada, diseño digital y flujos de trabajo impulsados por IA. Exploro soluciones
     inclusivas y sostenibles que conectan la tecnología, la experiencia humana y la innovación
     creativa.<br><br>Desarrollo sistemas adaptables y visionarios —plataformas digitales e interfaces interactivas— que
     mejoran la accesibilidad y la participación del usuario, integrando habilidades en diseño multimedia, modelado 3D,
     animación y motion graphics 2D, así como herramientas de inteligencia artificial. Combino arquitectura y diseño de
     producto para elevar la experiencia del usuario, convertir la complejidad en claridad y transformar ideas en
-    sistemas coherentes, deseables y escalables";
-    img.src =
-    "https://raw.githubusercontent.com/Alifer1221/fotoamagay/main/WhatsApp%20Image%202026-01-29%20at%203.53.41%20PM.jpeg";
-    document.getElementById('modalEmailTeam').innerHTML = "laa2210@columbia.edu";
-    document.getElementById('modalPhoneTeam').innerHTML = "(+57) 300 309 4084";
+    sistemas coherentes, deseables y escalables`;
+                img.src =
+                    "https://raw.githubusercontent.com/Alifer1221/fotoamagay/main/WhatsApp%20Image%202026-01-29%20at%203.53.41%20PM.jpeg";
+                document.getElementById('modalEmailTeam').innerHTML = "laa2210@columbia.edu";
+                document.getElementById('modalPhoneTeam').innerHTML = "(+57) 300 309 4084";
 
-    // Logos Columbia y Uniandes
-    logosContainer.innerHTML = `
+                // Logos Columbia y Uniandes
+                logosContainer.innerHTML = `
     <img src="https://raw.githubusercontent.com/Alifer1221/logosuniver/main/logo%20columbia.png"
         alt="Columbia University">
     <img src="https://raw.githubusercontent.com/Alifer1221/logosuniver/main/Logo%20uniandes.png"
         alt="Universidad de los Andes">
     `;
 
-    } else if (doc === 'Cesar') {
-    name.innerHTML = "César Fernando Jiménez Reyes";
-    document.getElementById('modalCargoTeam').innerHTML = "Estratega Digital";
-    document.getElementById('modalBioTeam').innerHTML = "Administrador de Empresas y Estratega Digital con una visión
+            } else if (doc === 'Cesar') {
+                name.innerHTML = "César Fernando Jiménez Reyes";
+                document.getElementById('modalCargoTeam').innerHTML = "Estratega Digital";
+                document.getElementById('modalBioTeam').innerHTML = `Administrador de Empresas y Estratega Digital con una visión
     orientada a transformar el impacto de las dinámicas globales en oportunidades de crecimiento organizacional. Mi
     perfil se distingue por una sólida rigurosidad académica y una capacidad analítica avanzada para descifrar entornos
     complejos. En la multinacional Takeda, apliqué este enfoque para la optimización de la cadena de suministro,
@@ -1614,30 +1614,30 @@
     personas. Este recorrido profesional está respaldado por un liderazgo natural forjado desde la academia como
     fundador del Semillero de Investigación y monitor en la Universidad Javeriana. Estos roles me permitieron integrar
     la investigación profunda con la gestión de equipos, consolidando la visión estratégica y la proactividad que hoy
-    aplico para impulsar la competitividad en el entorno digital.";
-    img.src =
-    "https://raw.githubusercontent.com/Alifer1221/pickcesar/main/WhatsApp%20Image%202026-01-29%20at%205.35.50%20PM.jpeg";
-    document.getElementById('modalEmailTeam').innerHTML = "cesarjimenez@amadeusux.com";
-    document.getElementById('modalPhoneTeam').innerHTML = "(+57) 324 664 9104";
+    aplico para impulsar la competitividad en el entorno digital.`;
+                img.src =
+                    "https://raw.githubusercontent.com/Alifer1221/pickcesar/main/WhatsApp%20Image%202026-01-29%20at%205.35.50%20PM.jpeg";
+                document.getElementById('modalEmailTeam').innerHTML = "cesarjimenez@amadeusux.com";
+                document.getElementById('modalPhoneTeam').innerHTML = "(+57) 324 664 9104";
 
-    // Logo Javeriana
-    logosContainer.innerHTML = `
+                // Logo Javeriana
+                logosContainer.innerHTML = `
     <img src="https://raw.githubusercontent.com/Alifer1221/logosuniver/main/logo%20javeriana.png"
         alt="Universidad Javeriana" class="logo-javeriana-adjust">
     `;
-    }
-    document.getElementById('modalOverlayTeam').classList.add('active');
-    document.documentElement.classList.add('no-scroll');
-    document.querySelector('nav').classList.add('nav-hidden');
-    if (typeof lenis !== 'undefined') lenis.stop();
-    }
-    function closeTeamModal() {
-    document.getElementById('modalOverlayTeam').classList.remove('active');
-    document.documentElement.classList.remove('no-scroll');
-    // La navegación se recuperará sola al hacer scroll o si queremos mostrarla ya:
-    document.querySelector('nav').classList.remove('nav-hidden');
-    if (typeof lenis !== 'undefined') lenis.start();
-    }
+            }
+            document.getElementById('modalOverlayTeam').classList.add('active');
+            document.documentElement.classList.add('no-scroll');
+            document.querySelector('nav').classList.add('nav-hidden');
+            if (typeof lenis !== 'undefined') lenis.stop();
+        }
+        function closeTeamModal() {
+            document.getElementById('modalOverlayTeam').classList.remove('active');
+            document.documentElement.classList.remove('no-scroll');
+            // La navegación se recuperará sola al hacer scroll o si queremos mostrarla ya:
+            document.querySelector('nav').classList.remove('nav-hidden');
+            if (typeof lenis !== 'undefined') lenis.start();
+        }
     </script>
 
     <footer class="amadeus-footer">
