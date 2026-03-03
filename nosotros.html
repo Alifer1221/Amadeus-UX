@@ -500,13 +500,14 @@
                 flex-direction: row;
                 width: max-content;
                 align-items: center;
+                align-self: flex-start;
                 will-change: transform;
                 padding: 0;
             }
 
             #trackLeft {
                 order: 1;
-                margin-bottom: 2rem;
+                margin-bottom: 2vh;
             }
 
             .titles-column {
@@ -517,32 +518,36 @@
 
             #trackRight {
                 order: 3;
-                margin-top: 2rem;
+                margin-top: 2vh;
+                flex-direction: row-reverse;
             }
 
             .spacer {
                 height: 100%;
-                width: 40vw;
-                /* exact match for GSAP interpolation */
+                width: 100vw;
                 flex-shrink: 0;
             }
 
             .card-slot {
                 height: auto;
-                width: 60vw;
-                /* exact match for GSAP interpolation */
+                width: 100vw;
                 padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 flex-shrink: 0;
             }
 
             .work-card {
-                transform: translateX(30px) scale(0.9);
+                transform: translateX(0) scale(0.9);
                 width: 100%;
-                max-width: none;
+                max-width: 55vw;
+                opacity: 0;
+                transition: all 0.5s ease;
             }
 
             .work-card img {
-                max-height: 25vh;
+                max-height: 18vh;
             }
 
             .card-meta p {
@@ -552,6 +557,7 @@
 
             .work-card.focus {
                 transform: translateX(0) scale(1);
+                opacity: 1;
             }
         }
 
@@ -1651,9 +1657,9 @@
                 }
             });
 
-            /* Horizontal X scroll for mobile (opposites) */
-            vTl.fromTo("#trackLeft", { x: "70vw", y: 0 }, { x: "-130vw", y: 0, ease: "none" }, 0)
-                .fromTo("#trackRight", { x: "80vw", y: 0 }, { x: "-120vw", y: 0, ease: "none" }, 0);
+            /* Horizontal X scroll for mobile (opposites) perfectly matching 100vw jumps */
+            vTl.fromTo("#trackLeft", { x: "0vw", y: 0 }, { x: "-300vw", y: 0, ease: "none" }, 0)
+                .fromTo("#trackRight", { x: "-300vw", y: 0 }, { x: "0vw", y: 0, ease: "none" }, 0);
 
             return () => { vTl.kill(); };
         });
