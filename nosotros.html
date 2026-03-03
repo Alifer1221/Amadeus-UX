@@ -489,11 +489,57 @@
 
         @media (max-width: 1024px) {
             .sticky-viewport {
-                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
             }
 
             .track-column {
-                display: none;
+                display: flex;
+                flex-direction: row;
+                width: max-content;
+                align-items: center;
+                will-change: transform;
+                padding: 0;
+            }
+
+            #trackLeft {
+                order: 1;
+                margin-bottom: 3rem;
+            }
+
+            .titles-column {
+                order: 2;
+                height: auto;
+                padding: 1rem 0;
+            }
+
+            #trackRight {
+                order: 3;
+                margin-top: 3rem;
+            }
+
+            .spacer {
+                height: 100%;
+                width: 25vw;
+                /* Espaciador horizontal entre tarjetas */
+            }
+
+            .card-slot {
+                height: auto;
+                width: 70vw;
+                /* Ancho de la tarjeta en móvil */
+                max-width: 300px;
+                padding: 0 15px;
+            }
+
+            .work-card {
+                transform: translateX(30px) scale(0.9);
+            }
+
+            .work-card.focus {
+                transform: translateX(0) scale(1);
             }
         }
 
@@ -1546,20 +1592,6 @@
         const vTitles = document.querySelectorAll('.service-title');
         const vCards = document.querySelectorAll('.work-card');
 
-        let vTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: ".vertical-slider-container",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 0.15,
-                onUpdate: (self) => updateVState(self.progress)
-            }
-        });
-
-        /* Adjusted Y values to ensure all 4 cards become visible and synchronize with the 4 progress steps */
-        vTl.fromTo("#trackLeft", { y: "50vh" }, { y: "-280vh", ease: "none" }, 0)
-            .fromTo("#trackRight", { y: "50vh" }, { y: "-280vh", ease: "none" }, 0);
-
         function updateVState(progress) {
             let index = Math.floor(progress * 4);
             if (index > 3) index = 3;
@@ -1575,6 +1607,44 @@
                 else c.classList.remove('focus');
             });
         }
+
+        let mm = gsap.matchMedia();
+
+        mm.add("(min-width: 1025px)", () => {
+            let vTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: ".vertical-slider-container",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 0.15,
+                    onUpdate: (self) => updateVState(self.progress)
+                }
+            });
+
+            /* Vertical Y scroll for desktop */
+            vTl.fromTo("#trackLeft", { y: "50vh", x: 0 }, { y: "-280vh", x: 0, ease: "none" }, 0)
+                .fromTo("#trackRight", { y: "50vh", x: 0 }, { y: "-280vh", x: 0, ease: "none" }, 0);
+
+            return () => { vTl.kill(); };
+        });
+
+        mm.add("(max-width: 1024px)", () => {
+            let vTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: ".vertical-slider-container",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 0.15,
+                    onUpdate: (self) => updateVState(self.progress)
+                }
+            });
+
+            /* Horizontal X scroll for mobile (opposites) */
+            vTl.fromTo("#trackLeft", { x: "100vw", y: 0 }, { x: "-200vw", y: 0, ease: "none" }, 0)
+                .fromTo("#trackRight", { x: "-150vw", y: 0 }, { x: "80vw", y: 0, ease: "none" }, 0);
+
+            return () => { vTl.kill(); };
+        });
 
         // FUNCIONES MODAL EQUIPO
         function openTeamModal(doc) {
