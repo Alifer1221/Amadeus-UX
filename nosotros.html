@@ -254,21 +254,15 @@
             color: var(--accent-color);
         }
 
-        .bg-letter.top {
-            top: 0;
+        /* Desktop Positioning Anchors */
+        .top-anchor {
+            position: absolute;
+            top: 5vh;
         }
 
-        .bg-letter.bottom {
-            bottom: 0;
-        }
-
-        /* Physical exact alignment to invisible box bounds */
-        .invisible-box.left .bg-letter {
-            left: 0;
-        }
-
-        .invisible-box.right .bg-letter {
-            right: 0;
+        .bottom-anchor {
+            position: absolute;
+            bottom: 5vh;
         }
 
         .infinite-slider {
@@ -650,9 +644,12 @@
                 font-size: clamp(4rem, 20vw, 7rem) !important;
             }
 
-            .invisible-box {
-                width: 40vw;
+            /* Push letters inward dramatically towards the center on mobile */
+            .top-anchor {
                 top: 25vh !important;
+            }
+
+            .bottom-anchor {
                 bottom: 25vh !important;
             }
 
@@ -725,12 +722,12 @@
         <!-- Floating Letters Background -->
         <div class="bg-letters">
             <!-- Left Side: A is normal. U is nudged left to optically match A's left edge -->
-            <span class="bg-letter" style="top: 5vh; left: 2vw;">A</span>
-            <span class="bg-letter brand" style="bottom: 5vh; left: 0.5vw;">U</span>
+            <span class="bg-letter top-anchor" style="left: 2vw;">A</span>
+            <span class="bg-letter brand bottom-anchor" style="left: 0.5vw;">U</span>
 
             <!-- Right Side: M is normal. X is nudged left (higher right) to optically match M's right edge -->
-            <span class="bg-letter" style="top: 5vh; right: 2vw;">M</span>
-            <span class="bg-letter brand" style="bottom: 5vh; right: 3.5vw;">X</span>
+            <span class="bg-letter top-anchor" style="right: 2vw;">M</span>
+            <span class="bg-letter brand bottom-anchor" style="right: 3.5vw;">X</span>
         </div>
 
         <div class="slider-wrapper" id="wrapper"></div>
