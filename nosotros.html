@@ -877,52 +877,75 @@
             100% { transform: translateX(220%); width: 45%; }
         }
 
-        /* --- FLOATING BOTTOM-LEFT LANGUAGE SWITCHER --- */
+        /* --- FLOATING BOTTOM-LEFT LANGUAGE SWITCHER (iOS Single-Tap Toggle) --- */
         .lang-switch-floating {
             position: fixed;
             bottom: 24px;
             left: 24px;
             z-index: 9998;
-            display: inline-flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             align-items: center;
-            background: rgba(15, 15, 20, 0.78);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 88px;
+            height: 38px;
+            background: rgba(15, 15, 20, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 50px;
             padding: 4px;
-            gap: 2px;
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
             user-select: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
         .lang-switch-floating:hover {
-            box-shadow: 0 12px 32px rgba(106, 17, 203, 0.3);
+            box-shadow: 0 12px 32px rgba(106, 17, 203, 0.35);
+            border-color: rgba(255, 255, 255, 0.28);
+        }
+
+        .lang-switch-floating:active {
+            transform: scale(0.93);
+        }
+
+        .lang-switch-thumb {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            border-radius: 50px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 2px 10px rgba(106, 17, 203, 0.5);
+            transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .lang-switch-floating[data-active-lang="en"] .lang-switch-thumb {
+            transform: translateX(100%);
         }
 
         .lang-btn {
-            background: transparent;
-            border: none;
-            color: #aaa;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
             font-family: var(--manrope);
             font-size: 0.75rem;
-            font-weight: 700;
-            padding: 7px 13px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.25s ease;
+            font-weight: 800;
             line-height: 1;
             letter-spacing: 0.5px;
+            transition: color 0.25s ease;
+            pointer-events: none;
         }
 
         .lang-btn.active {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #fff;
-            box-shadow: 0 2px 10px rgba(106, 17, 203, 0.45);
-        }
-
-        .lang-btn:hover:not(.active) {
             color: #fff;
         }
 
@@ -930,12 +953,20 @@
             .lang-switch-floating {
                 bottom: 18px;
                 left: 16px;
+                width: 80px;
+                height: 34px;
                 padding: 3px;
+            }
+
+            .lang-switch-thumb {
+                top: 3px;
+                left: 3px;
+                width: calc(50% - 3px);
+                height: calc(100% - 6px);
             }
 
             .lang-btn {
                 font-size: 0.68rem;
-                padding: 6px 11px;
             }
         }
     </style>
@@ -960,11 +991,12 @@
         </div>
     </div>
 
-    <!-- FLOATING BOTTOM-LEFT LANGUAGE SWITCHER -->
-    <div class="lang-switch-floating" role="group" aria-label="Language selector">
-        <button type="button" class="lang-btn active" data-lang-btn="es" onclick="window.setAmadeusLang('es', true)">ES</button>
-        <button type="button" class="lang-btn" data-lang-btn="en" onclick="window.setAmadeusLang('en', true)">EN</button>
-    </div>
+    <!-- FLOATING BOTTOM-LEFT LANGUAGE SWITCHER (Single-tap iOS Toggle) -->
+    <button type="button" class="lang-switch-floating" data-active-lang="es" onclick="window.toggleAmadeusLang()" aria-label="Cambiar idioma ES / EN">
+        <span class="lang-switch-thumb"></span>
+        <span class="lang-btn active" data-lang-btn="es">ES</span>
+        <span class="lang-btn" data-lang-btn="en">EN</span>
+    </button>
 
     <nav>
         <a href="index.html" class="nav-logo">
@@ -2128,6 +2160,10 @@
                     btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
                 });
 
+                document.querySelectorAll('.lang-switch-floating').forEach(sw => {
+                    sw.setAttribute('data-active-lang', lang);
+                });
+
                 if (isManualSwitch && typeof window.reinitAboutReveals === 'function') {
                     window.reinitAboutReveals();
                     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
@@ -2137,6 +2173,11 @@
                     window.refreshTeamModalLang();
                 }
             }
+
+            window.toggleAmadeusLang = function () {
+                const nextLang = (window.currentAmadeusLang === 'en') ? 'es' : 'en';
+                window.setAmadeusLang(nextLang, true);
+            };
 
             const HISPANIC_COUNTRIES = new Set([
                 'ES', 'MX', 'CO', 'AR', 'PE', 'VE', 'CL', 'EC', 'GT', 'CU',
