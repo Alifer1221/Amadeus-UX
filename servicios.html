@@ -639,33 +639,38 @@
             100% { transform: translateX(220%); width: 45%; }
         }
 
-        /* --- LANGUAGE SWITCHER PILL (LIGHT THEME) --- */
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .lang-switch {
+        /* --- FLOATING BOTTOM-LEFT LANGUAGE SWITCHER --- */
+        .lang-switch-floating {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 9997;
             display: inline-flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(0, 0, 0, 0.12);
+            background: rgba(15, 15, 20, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50px;
-            padding: 3px;
+            padding: 4px;
             gap: 2px;
-            cursor: pointer;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
             user-select: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .lang-switch-floating:hover {
+            box-shadow: 0 12px 32px rgba(106, 17, 203, 0.3);
         }
 
         .lang-btn {
             background: transparent;
             border: none;
-            color: #666;
+            color: #aaa;
             font-family: var(--manrope);
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            padding: 5px 10px;
+            padding: 7px 13px;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.25s ease;
@@ -676,26 +681,23 @@
         .lang-btn.active {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: #fff;
-            box-shadow: 0 2px 8px rgba(106, 17, 203, 0.3);
+            box-shadow: 0 2px 10px rgba(106, 17, 203, 0.45);
         }
 
         .lang-btn:hover:not(.active) {
-            color: #000;
+            color: #fff;
         }
 
         @media (max-width: 768px) {
-            .nav-actions {
-                gap: 5px;
-                flex-shrink: 0;
-            }
-
-            .lang-switch {
-                padding: 2px;
+            .lang-switch-floating {
+                bottom: 18px;
+                left: 16px;
+                padding: 3px;
             }
 
             .lang-btn {
-                font-size: 0.6rem;
-                padding: 5px 7px;
+                font-size: 0.68rem;
+                padding: 6px 11px;
             }
         }
     </style>
@@ -720,6 +722,12 @@
         </div>
     </div>
 
+    <!-- FLOATING BOTTOM-LEFT LANGUAGE SWITCHER -->
+    <div class="lang-switch-floating" role="group" aria-label="Language selector">
+        <button type="button" class="lang-btn active" data-lang-btn="es" onclick="window.setAmadeusLang('es', true)">ES</button>
+        <button type="button" class="lang-btn" data-lang-btn="en" onclick="window.setAmadeusLang('en', true)">EN</button>
+    </div>
+
     <nav>
         <a href="index.html" class="nav-logo">
             <span style="font-weight: 500;">Amadeus</span> <span style="font-weight: 400; color: #8A2BE2;">UX</span>
@@ -729,13 +737,7 @@
             <a href="servicios.html" data-i18n="nav_services">Servicios</a>
             <a href="nosotros.html" data-i18n="nav_about">Nosotros</a>
         </div>
-        <div class="nav-actions">
-            <div class="lang-switch" role="group" aria-label="Language selector">
-                <button type="button" class="lang-btn active" data-lang-btn="es" onclick="window.setAmadeusLang('es')">ES</button>
-                <button type="button" class="lang-btn" data-lang-btn="en" onclick="window.setAmadeusLang('en')">EN</button>
-            </div>
-            <a href="https://wa.me/573246649104" target="_blank" class="nav-cta" data-i18n="nav_cta">Hablemos</a>
-        </div>
+        <a href="https://wa.me/573246649104" target="_blank" class="nav-cta" data-i18n="nav_cta">Hablemos</a>
     </nav>
 
 
@@ -1765,17 +1767,79 @@
                 }
             }
 
+            const HISPANIC_COUNTRIES = new Set([
+                'ES', 'MX', 'CO', 'AR', 'PE', 'VE', 'CL', 'EC', 'GT', 'CU',
+                'BO', 'DO', 'HN', 'PY', 'SV', 'NI', 'CR', 'PA', 'UY', 'PR', 'GQ'
+            ]);
+
+            function detectLangByTimezoneAndLocale() {
+                try {
+                    const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+                    const hispanicTzKeywords = [
+                        'bogota', 'mexico', 'cancun', 'monterrey', 'tijuana', 'merida', 'chihuahua',
+                        'mazatlan', 'hermosillo', 'matamoros', 'ojinaga', 'bahia_banderas',
+                        'lima', 'santiago', 'argentina', 'buenos_aires', 'cordoba', 'mendoza',
+                        'caracas', 'guayaquil', 'galapagos', 'panama', 'costa_rica', 'santo_domingo',
+                        'guatemala', 'el_salvador', 'tegucigalpa', 'managua', 'la_paz', 'asuncion',
+                        'montevideo', 'havana', 'puerto_rico', 'madrid', 'canary'
+                    ];
+                    if (hispanicTzKeywords.some(k => tz.includes(k))) return 'es';
+
+                    const usOrEnglishTzKeywords = [
+                        'new_york', 'chicago', 'denver', 'los_angeles', 'phoenix', 'anchorage',
+                        'honolulu', 'detroit', 'indiana', 'kentucky', 'boise', 'juneau', 'sitka',
+                        'menominee', 'north_dakota', 'toronto', 'vancouver', 'edmonton', 'winnipeg',
+                        'halifax', 'london', 'dublin', 'sydney', 'melbourne', 'auckland'
+                    ];
+                    if (usOrEnglishTzKeywords.some(k => tz.includes(k))) return 'en';
+                } catch (e) {}
+
+                const navLang = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+                return navLang.startsWith('es') ? 'es' : 'en';
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
-            const initialLang = (urlParams.get('lang') === 'en' || urlParams.get('lang') === 'es')
-                ? urlParams.get('lang')
-                : (localStorage.getItem('amadeus_lang') || 'es');
+            const urlLang = urlParams.get('lang');
+            const manualLang = localStorage.getItem('amadeus_lang_manual');
+            const cachedGeoLang = sessionStorage.getItem('amadeus_geo_lang');
+
+            let initialLang = 'es';
+            if (urlLang === 'en' || urlLang === 'es') {
+                initialLang = urlLang;
+                localStorage.setItem('amadeus_lang_manual', urlLang);
+            } else if (manualLang === 'en' || manualLang === 'es') {
+                initialLang = manualLang;
+            } else if (cachedGeoLang === 'en' || cachedGeoLang === 'es') {
+                initialLang = cachedGeoLang;
+            } else {
+                initialLang = detectLangByTimezoneAndLocale();
+            }
 
             window.currentAmadeusLang = initialLang;
             localStorage.setItem('amadeus_lang', initialLang);
             applyDOMTranslations(initialLang, false);
 
-            window.setAmadeusLang = function (lang) {
+            if (!urlLang && !manualLang && !cachedGeoLang) {
+                fetch('https://api.country.is/', { cache: 'no-store' })
+                    .then(r => r.ok ? r.json() : Promise.reject())
+                    .then(data => {
+                        if (data && data.country) {
+                            const code = String(data.country).toUpperCase();
+                            const geoLang = HISPANIC_COUNTRIES.has(code) ? 'es' : 'en';
+                            sessionStorage.setItem('amadeus_geo_lang', geoLang);
+                            if (!localStorage.getItem('amadeus_lang_manual') && geoLang !== window.currentAmadeusLang) {
+                                window.setAmadeusLang(geoLang, false);
+                            }
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            window.setAmadeusLang = function (lang, isManual) {
                 if (lang !== 'es' && lang !== 'en') return;
+                if (isManual) {
+                    localStorage.setItem('amadeus_lang_manual', lang);
+                }
                 window.currentAmadeusLang = lang;
                 localStorage.setItem('amadeus_lang', lang);
                 applyDOMTranslations(lang, true);
