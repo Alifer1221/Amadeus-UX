@@ -833,19 +833,29 @@
         }
 
         .hero-headline {
-            font-size: clamp(2.375rem, 5.5vw, 4.95rem);
-            /* Reducido 5% adicional y ajustado para centrado */
+            font-size: clamp(2.1rem, 4.8vw, 4.95rem);
             font-weight: 700;
             color: #111;
             margin-bottom: 40px;
             min-height: 1.2em;
             letter-spacing: -0.03em;
-            line-height: 1.1;
-            white-space: nowrap;
+            line-height: 1.15;
+            white-space: normal;
+            overflow-wrap: break-word;
             width: 100%;
+            max-width: 100%;
             text-align: center;
             position: relative;
             /* For cursor positioning */
+        }
+
+        @media (max-width: 768px) {
+            .hero-headline {
+                font-size: clamp(1.75rem, 7.2vw, 2.35rem);
+                margin-bottom: 24px;
+                min-height: 2.3em;
+                padding: 0 8px;
+            }
         }
 
         /* Blinking Cursor Effect */
