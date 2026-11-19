@@ -1218,6 +1218,7 @@
 
             window.updateServicesHeroLang = function (lang) {
                 if (!headline) return;
+                if (typeof gsap !== 'undefined') gsap.killTweensOf(headline);
                 headline.classList.add("typing-done");
                 headline.textContent = (lang === 'en') ? "Boost Your Digital Presence" : "Impulsa Tu Presencia Digital";
             };
@@ -1823,7 +1824,7 @@
                 'BO', 'DO', 'HN', 'PY', 'SV', 'NI', 'CR', 'PA', 'UY', 'PR', 'GQ'
             ]);
 
-            function detectLangByTimezoneAndLocale() {
+            function detectLangByTimezone() {
                 try {
                     const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
                     const hispanicTzKeywords = [
@@ -1834,65 +1835,72 @@
                         'guatemala', 'el_salvador', 'tegucigalpa', 'managua', 'la_paz', 'asuncion',
                         'montevideo', 'havana', 'puerto_rico', 'madrid', 'canary'
                     ];
-                    if (hispanicTzKeywords.some(k => tz.includes(k))) return 'es';
-
-                    const usOrEnglishTzKeywords = [
-                        'new_york', 'chicago', 'denver', 'los_angeles', 'phoenix', 'anchorage',
-                        'honolulu', 'detroit', 'indiana', 'kentucky', 'boise', 'juneau', 'sitka',
-                        'menominee', 'north_dakota', 'toronto', 'vancouver', 'edmonton', 'winnipeg',
-                        'halifax', 'london', 'dublin', 'sydney', 'melbourne', 'auckland'
-                    ];
-                    if (usOrEnglishTzKeywords.some(k => tz.includes(k))) return 'en';
+                    if (tz && hispanicTzKeywords.some(k => tz.includes(k))) return 'es';
                 } catch (e) {}
-
-                const navLang = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
-                return navLang.startsWith('es') ? 'es' : 'en';
+                // If in USA or if uncertain, default to English
+                return 'en';
             }
+
+            try {
+                localStorage.removeItem('amadeus_lang_manual');
+                localStorage.removeItem('amadeus_lang');
+            } catch (e) {}
 
             const urlParams = new URLSearchParams(window.location.search);
             const urlLang = urlParams.get('lang');
-            const manualLang = localStorage.getItem('amadeus_lang_manual');
+            const sessionManualLang = sessionStorage.getItem('amadeus_session_manual');
             const cachedGeoLang = sessionStorage.getItem('amadeus_geo_lang');
 
-            let initialLang = 'es';
+            let initialLang = 'en';
             if (urlLang === 'en' || urlLang === 'es') {
                 initialLang = urlLang;
-                localStorage.setItem('amadeus_lang_manual', urlLang);
-            } else if (manualLang === 'en' || manualLang === 'es') {
-                initialLang = manualLang;
+                sessionStorage.setItem('amadeus_session_manual', urlLang);
+            } else if (sessionManualLang === 'en' || sessionManualLang === 'es') {
+                initialLang = sessionManualLang;
             } else if (cachedGeoLang === 'en' || cachedGeoLang === 'es') {
                 initialLang = cachedGeoLang;
             } else {
-                initialLang = detectLangByTimezoneAndLocale();
+                initialLang = detectLangByTimezone();
             }
 
             window.currentAmadeusLang = initialLang;
-            localStorage.setItem('amadeus_lang', initialLang);
             applyDOMTranslations(initialLang, false);
 
-            if (!urlLang && !manualLang && !cachedGeoLang) {
-                fetch('https://api.country.is/', { cache: 'no-store' })
-                    .then(r => r.ok ? r.json() : Promise.reject())
-                    .then(data => {
-                        if (data && data.country) {
-                            const code = String(data.country).toUpperCase();
-                            const geoLang = HISPANIC_COUNTRIES.has(code) ? 'es' : 'en';
-                            sessionStorage.setItem('amadeus_geo_lang', geoLang);
-                            if (!localStorage.getItem('amadeus_lang_manual') && geoLang !== window.currentAmadeusLang) {
-                                window.setAmadeusLang(geoLang, false);
-                            }
+            async function verifyCountryByGeoIP() {
+                if (urlLang || sessionManualLang || cachedGeoLang) return;
+                let countryCode = null;
+                try {
+                    const r1 = await fetch('https://api.country.is/', { cache: 'no-store' });
+                    if (r1.ok) {
+                        const d1 = await r1.json();
+                        if (d1 && d1.country) countryCode = String(d1.country).toUpperCase();
+                    }
+                } catch (e) {}
+
+                if (!countryCode) {
+                    try {
+                        const r2 = await fetch('https://get.geojs.io/v1/ip/country.json', { cache: 'no-store' });
+                        if (r2.ok) {
+                            const d2 = await r2.json();
+                            if (d2 && d2.country) countryCode = String(d2.country).toUpperCase();
                         }
-                    })
-                    .catch(() => {});
+                    } catch (e) {}
+                }
+
+                const resolvedLang = (countryCode && HISPANIC_COUNTRIES.has(countryCode)) ? 'es' : 'en';
+                sessionStorage.setItem('amadeus_geo_lang', resolvedLang);
+                if (!sessionStorage.getItem('amadeus_session_manual') && resolvedLang !== window.currentAmadeusLang) {
+                    window.setAmadeusLang(resolvedLang, false);
+                }
             }
+            verifyCountryByGeoIP();
 
             window.setAmadeusLang = function (lang, isManual) {
                 if (lang !== 'es' && lang !== 'en') return;
                 if (isManual) {
-                    localStorage.setItem('amadeus_lang_manual', lang);
+                    sessionStorage.setItem('amadeus_session_manual', lang);
                 }
                 window.currentAmadeusLang = lang;
-                localStorage.setItem('amadeus_lang', lang);
                 applyDOMTranslations(lang, true);
             };
 
