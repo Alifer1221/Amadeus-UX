@@ -602,12 +602,26 @@
 
             let pdfDoc = null;
             let totalPages = 0;
-            let currentPage = 1;
+            let pageOrder = [];
+            let currentPage = 1; // 1-based display index
             let zoomMultiplier = 1.0;
             const renderedPages = new Map();
             let pageCards = [];
             let renderObserver = null;
-            let activePageObserver = null;
+            let isProgrammaticScroll = false;
+            let scrollLockTimer = null;
+
+            function buildPageOrder(numPages) {
+                // Keep cover (1), move pages 9-13 to first project, original pages 2-8 to second, then 14..end
+                if (numPages >= 13) {
+                    const order = [1];
+                    for (let p = 9; p <= 13; p++) order.push(p);
+                    for (let p = 2; p <= 8; p++) order.push(p);
+                    for (let p = 14; p <= numPages; p++) order.push(p);
+                    return order;
+                }
+                return Array.from({ length: numPages }, (_, i) => i + 1);
+            }
 
             function getTargetWidth() {
                 const maxBase = Math.min(window.innerWidth - (window.innerWidth <= 768 ? 20 : 64), 1120);
@@ -620,23 +634,81 @@
                 btnNext.disabled = currentPage >= totalPages;
             }
 
-            function scrollToPage(pageNum) {
-                const clamped = Math.max(1, Math.min(totalPages, pageNum));
-                const card = pageCards[clamped - 1];
-                if (card) {
-                    const y = card.getBoundingClientRect().top + window.scrollY - 88;
-                    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
-                    currentPage = clamped;
+            function syncActivePageFromScroll() {
+                if (isProgrammaticScroll || !pageCards.length) return;
+                const viewportCenter = window.innerHeight / 2;
+                let closestIdx = currentPage;
+                let closestDist = Infinity;
+
+                for (let i = 0; i < pageCards.length; i++) {
+                    const rect = pageCards[i].getBoundingClientRect();
+                    const cardCenter = rect.top + rect.height / 2;
+                    const dist = Math.abs(cardCenter - viewportCenter);
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        closestIdx = i + 1;
+                    }
+                }
+
+                if (closestIdx !== currentPage) {
+                    currentPage = closestIdx;
                     updateControls();
                 }
             }
 
-            async function renderPage(pageNum, card) {
-                if (!pdfDoc || renderedPages.get(pageNum) === zoomMultiplier) return;
-                renderedPages.set(pageNum, zoomMultiplier);
+            let scrollRafPending = false;
+            window.addEventListener('scroll', () => {
+                if (isProgrammaticScroll || scrollRafPending) return;
+                scrollRafPending = true;
+                requestAnimationFrame(() => {
+                    scrollRafPending = false;
+                    syncActivePageFromScroll();
+                });
+            }, { passive: true });
+
+            function scrollToPage(displayIndex) {
+                if (!totalPages) return;
+                const clamped = Math.max(1, Math.min(totalPages, displayIndex));
+                const card = pageCards[clamped - 1];
+                if (!card) return;
+
+                currentPage = clamped;
+                updateControls();
+
+                // Ensure target & adjacent pages are rendered
+                const pdfPageNum = Number(card.dataset.pdfPage);
+                renderPage(pdfPageNum, card);
+                if (pageCards[clamped]) {
+                    renderPage(Number(pageCards[clamped].dataset.pdfPage), pageCards[clamped]);
+                }
+
+                isProgrammaticScroll = true;
+                clearTimeout(scrollLockTimer);
+                scrollLockTimer = setTimeout(() => {
+                    isProgrammaticScroll = false;
+                }, 700);
+
+                const rect = card.getBoundingClientRect();
+                const topBarOffset = window.innerWidth <= 768 ? 104 : 84;
+                const availableH = window.innerHeight - topBarOffset - 24;
+                let targetY;
+                if (rect.height < availableH) {
+                    // Center slide comfortably below the floating topbar
+                    const centerOffset = topBarOffset + (availableH - rect.height) / 2;
+                    targetY = rect.top + window.scrollY - centerOffset;
+                } else {
+                    targetY = rect.top + window.scrollY - topBarOffset;
+                }
+
+                window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+            }
+
+            async function renderPage(pdfPageNum, card) {
+                if (!pdfDoc || renderedPages.get(pdfPageNum) === zoomMultiplier) return;
+                renderedPages.set(pdfPageNum, zoomMultiplier);
 
                 try {
-                    const page = await pdfDoc.getPage(pageNum);
+                    const page = await pdfDoc.getPage(pdfPageNum);
                     const unscaled = page.getViewport({ scale: 1 });
                     const targetWidth = getTargetWidth();
                     const cssScale = targetWidth / unscaled.width;
@@ -660,7 +732,7 @@
                     card.appendChild(canvas);
                     if (badge) card.appendChild(badge);
                 } catch (err) {
-                    console.error('Error rendering page', pageNum, err);
+                    console.error('Error rendering page', pdfPageNum, err);
                 }
             }
 
@@ -670,9 +742,8 @@
                 pageCards = [];
 
                 if (renderObserver) renderObserver.disconnect();
-                if (activePageObserver) activePageObserver.disconnect();
 
-                const firstPage = await pdfDoc.getPage(1);
+                const firstPage = await pdfDoc.getPage(pageOrder[0] || 1);
                 const firstViewport = firstPage.getViewport({ scale: 1 });
                 const targetWidth = getTargetWidth();
                 const estimatedHeight = Math.round((firstViewport.height / firstViewport.width) * targetWidth);
@@ -680,41 +751,30 @@
                 renderObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            const pageNum = Number(entry.target.dataset.page);
-                            renderPage(pageNum, entry.target);
+                            const pdfPageNum = Number(entry.target.dataset.pdfPage);
+                            renderPage(pdfPageNum, entry.target);
                         }
                     });
                 }, { rootMargin: '800px 0px' });
 
-                activePageObserver = new IntersectionObserver((entries) => {
-                    let best = null;
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            if (!best || entry.intersectionRatio > best.intersectionRatio) {
-                                best = entry;
-                            }
-                        }
-                    });
-                    if (best) {
-                        currentPage = Number(best.target.dataset.page);
-                        updateControls();
-                    }
-                }, { threshold: [0.25, 0.5, 0.75] });
+                for (let idx = 0; idx < pageOrder.length; idx++) {
+                    const displayIndex = idx + 1;
+                    const pdfPageNum = pageOrder[idx];
 
-                for (let i = 1; i <= totalPages; i++) {
                     const card = document.createElement('div');
                     card.className = 'pdf-page-card';
-                    card.dataset.page = String(i);
+                    card.dataset.displayIndex = String(displayIndex);
+                    card.dataset.pdfPage = String(pdfPageNum);
                     card.style.width = `${targetWidth}px`;
 
                     const placeholder = document.createElement('div');
                     placeholder.className = 'page-placeholder';
                     placeholder.style.height = `${estimatedHeight}px`;
-                    placeholder.textContent = `Page ${i}`;
+                    placeholder.textContent = `Page ${displayIndex}`;
 
                     const badge = document.createElement('span');
                     badge.className = 'page-badge';
-                    badge.textContent = `${i} / ${totalPages}`;
+                    badge.textContent = `${displayIndex} / ${totalPages}`;
 
                     card.appendChild(placeholder);
                     card.appendChild(badge);
@@ -722,11 +782,10 @@
                     pageCards.push(card);
 
                     renderObserver.observe(card);
-                    activePageObserver.observe(card);
                 }
 
-                if (pageCards[0]) renderPage(1, pageCards[0]);
-                if (pageCards[1]) renderPage(2, pageCards[1]);
+                if (pageCards[0]) renderPage(Number(pageCards[0].dataset.pdfPage), pageCards[0]);
+                if (pageCards[1]) renderPage(Number(pageCards[1].dataset.pdfPage), pageCards[1]);
                 updateControls();
             }
 
@@ -778,6 +837,7 @@
             loadingTask.promise.then(async (doc) => {
                 pdfDoc = doc;
                 totalPages = doc.numPages;
+                pageOrder = buildPageOrder(totalPages);
                 progressFill.style.width = '100%';
                 loaderCard.classList.add('hidden');
                 await buildPages();
