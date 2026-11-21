@@ -1677,7 +1677,9 @@
     <!-- VIDEO SECTION (WARP SPEED) -->
     <div class="video-section-wrapper">
         <div class="video-box-final">
-            <video class="video-fade-in" src="https://github.com/Amadeusguitarte/herovideo/raw/main/Sequence%2012_4.mp4"
+            <video id="hero-warp-video" class="video-fade-in"
+                data-src-es="https://github.com/Amadeusguitarte/herovideo/raw/main/Sequence%2012_4.mp4"
+                data-src-en="assets/hero-video-en.mp4"
                 autoplay loop muted playsinline preload="auto" disablePictureInPicture></video>
         </div>
     </div>
@@ -3175,6 +3177,32 @@
                     document.querySelectorAll('.lang-switch-floating').forEach(sw => {
                         sw.setAttribute('data-active-lang', lang);
                     });
+
+                    const heroVideo = document.getElementById('hero-warp-video');
+                    if (heroVideo) {
+                        const targetSrc = lang === 'en'
+                            ? heroVideo.getAttribute('data-src-en')
+                            : heroVideo.getAttribute('data-src-es');
+                        if (targetSrc && heroVideo.dataset.activeSrc !== targetSrc) {
+                            heroVideo.dataset.activeSrc = targetSrc;
+                            heroVideo.classList.remove('video-loaded');
+                            heroVideo.src = targetSrc;
+                            heroVideo.load();
+                            const onVideoReady = () => {
+                                heroVideo.classList.add('video-loaded');
+                                const rect = heroVideo.getBoundingClientRect();
+                                if (rect.bottom > 0 && rect.top < window.innerHeight) {
+                                    heroVideo.play().catch(() => {});
+                                }
+                            };
+                            if (heroVideo.readyState >= 3) {
+                                onVideoReady();
+                            } else {
+                                heroVideo.addEventListener('loadeddata', onVideoReady, { once: true });
+                                heroVideo.addEventListener('canplay', onVideoReady, { once: true });
+                            }
+                        }
+                    }
 
                     if (typeof window.refreshOceanActiveSlideLang === 'function') {
                         window.refreshOceanActiveSlideLang();
