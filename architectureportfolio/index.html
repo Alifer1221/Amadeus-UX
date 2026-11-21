@@ -15,17 +15,20 @@
         href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@200..800&display=swap"
         rel="stylesheet">
 
+    <!-- Home 3D Spline Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.29/build/spline-viewer.js"></script>
+
     <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <style>
         :root {
-            --bg: #f1f1f1;
-            --text: #111111;
-            --muted: #555555;
+            --bg: #0a0a0c;
+            --text: #f5f5f7;
+            --muted: #a1a1aa;
             --accent: #8A2BE2;
-            --glass-bg: rgba(255, 255, 255, 0.72);
-            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-bg: rgba(15, 15, 20, 0.68);
+            --glass-border: rgba(255, 255, 255, 0.12);
             --manrope: 'Manrope', sans-serif;
             --sans: 'Inter', sans-serif;
         }
@@ -40,24 +43,63 @@
         body {
             width: 100%;
             min-height: 100vh;
-            background-color: var(--bg);
+            background-color: #000000;
             color: var(--text);
             font-family: var(--sans);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Fixed Full-Viewport 3D Particle Background */
-        #particle-canvas {
+        /* Fixed Home Background Layer (Spline 3D on desktop + Home wave canvas fallback/mobile) */
+        .home-bg-layer {
             position: fixed;
             inset: 0;
             width: 100vw;
             height: 100vh;
             z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            background: linear-gradient(180deg, #000000 0%, #151515 100%);
+        }
+
+        #home-wave-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .spline-bg-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 118vw;
+            height: 118vh;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.9s ease;
             pointer-events: none;
         }
 
-        /* Floating Minimal Top Header */
+        .spline-bg-wrapper.ready {
+            opacity: 1;
+        }
+
+        .spline-bg-wrapper spline-viewer {
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .spline-bg-wrapper {
+                display: none;
+            }
+        }
+
+        /* Floating Minimal Dark Glass Top Header */
         .portfolio-topbar {
             position: fixed;
             top: 18px;
@@ -75,7 +117,7 @@
             backdrop-filter: blur(22px);
             -webkit-backdrop-filter: blur(22px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
         }
 
         .brand-block {
@@ -90,7 +132,7 @@
             font-size: 0.95rem;
             font-weight: 600;
             letter-spacing: -0.02em;
-            color: var(--text);
+            color: #ffffff;
             white-space: nowrap;
         }
 
@@ -104,7 +146,7 @@
         }
 
         .brand-subtitle span {
-            color: var(--accent);
+            color: #b57bff;
             font-weight: 500;
         }
 
@@ -117,9 +159,9 @@
 
         .ctrl-btn {
             appearance: none;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.78);
-            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
             font-family: var(--manrope);
             font-size: 0.8rem;
             font-weight: 600;
@@ -133,18 +175,17 @@
             justify-content: center;
             gap: 6px;
             text-decoration: none;
-            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
         }
 
         .ctrl-btn:hover:not(:disabled) {
-            background: #ffffff;
-            border-color: rgba(138, 43, 226, 0.35);
-            color: var(--accent);
+            background: rgba(138, 43, 226, 0.28);
+            border-color: rgba(181, 123, 255, 0.55);
             transform: translateY(-1px);
         }
 
         .ctrl-btn:disabled {
-            opacity: 0.4;
+            opacity: 0.35;
             cursor: not-allowed;
         }
 
@@ -156,16 +197,15 @@
         }
 
         .ctrl-btn.primary:hover {
-            color: #ffffff;
-            background: linear-gradient(135deg, #581c87, #7c22ce);
-            box-shadow: 0 6px 18px rgba(138, 43, 226, 0.3);
+            background: linear-gradient(135deg, #7e22ce, #9b4dff);
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.45);
         }
 
         .page-indicator {
             font-family: var(--manrope);
             font-size: 0.8rem;
             font-weight: 600;
-            color: var(--muted);
+            color: #d4d4d8;
             padding: 0 8px;
             white-space: nowrap;
             user-select: none;
@@ -174,7 +214,7 @@
         .divider {
             width: 1px;
             height: 18px;
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.14);
             margin: 0 2px;
         }
 
@@ -196,13 +236,12 @@
             width: min(92vw, 440px);
             padding: 36px 30px;
             border-radius: 24px;
-            background: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.07);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            background: rgba(18, 18, 24, 0.78);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
             text-align: center;
-            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .loader-card.hidden {
@@ -214,6 +253,7 @@
             font-size: 1.15rem;
             font-weight: 600;
             letter-spacing: -0.02em;
+            color: #ffffff;
             margin-bottom: 6px;
         }
 
@@ -227,7 +267,7 @@
             width: 100%;
             height: 5px;
             border-radius: 999px;
-            background: rgba(138, 43, 226, 0.14);
+            background: rgba(255, 255, 255, 0.12);
             overflow: hidden;
         }
 
@@ -235,7 +275,7 @@
             width: 8%;
             height: 100%;
             border-radius: 999px;
-            background: linear-gradient(90deg, #663399, #8A2BE2, #9370DB);
+            background: linear-gradient(90deg, #663399, #8A2BE2, #c084fc);
             transition: width 0.25s ease;
         }
 
@@ -243,7 +283,7 @@
             display: none;
             margin-top: 18px;
             font-size: 0.85rem;
-            color: #b91c1c;
+            color: #fca5a5;
         }
 
         /* Pages Container */
@@ -260,9 +300,7 @@
             background: #ffffff;
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: opacity 0.35s ease, transform 0.35s ease;
+            box-shadow: 0 26px 70px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
             max-width: 100%;
         }
 
@@ -276,10 +314,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
+            color: #71717a;
             font-family: var(--manrope);
             font-size: 0.85rem;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(24, 24, 30, 0.85);
             min-height: 360px;
         }
 
@@ -290,12 +328,12 @@
             font-family: var(--manrope);
             font-size: 0.72rem;
             font-weight: 600;
-            color: rgba(17, 17, 17, 0.55);
-            background: rgba(255, 255, 255, 0.82);
+            color: rgba(255, 255, 255, 0.88);
+            background: rgba(15, 15, 20, 0.72);
             backdrop-filter: blur(8px);
             padding: 3px 9px;
             border-radius: 999px;
-            border: 1px solid rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             pointer-events: none;
         }
 
@@ -346,8 +384,14 @@
 </head>
 
 <body>
-    <!-- 3D Morphing Particle Cloud Background -->
-    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+    <!-- Fixed Home Particles Background (Exact Home Spline 3D without text + Home Wave Canvas) -->
+    <div class="home-bg-layer" aria-hidden="true">
+        <canvas id="home-wave-canvas"></canvas>
+        <div class="spline-bg-wrapper" id="spline-bg-wrapper">
+            <spline-viewer id="home-spline-bg"
+                url="https://prod.spline.design/FyzGSSutvpQE5E9W/scene.splinecode?v=3"></spline-viewer>
+        </div>
+    </div>
 
     <!-- Isolated Top Controls (No navigation links to main site) -->
     <header class="portfolio-topbar">
@@ -393,192 +437,142 @@
         <div id="pdf-pages" aria-label="Architecture Portfolio PDF pages"></div>
     </main>
 
-    <!-- 3D Particle Background Script (Same engine as Amadeus UX) -->
+    <!-- Home Background Script: Exact Spline 3D particles (with 3D text hidden) + Home Wave Canvas -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('particle-canvas');
-            if (!canvas) return;
-
+            // 1. Exact Home Wave Canvas (runs immediately and stays active on mobile)
+            const canvas = document.getElementById('home-wave-canvas');
             const ctx = canvas.getContext('2d');
             let width, height;
-            let dashes = [];
+            let lines = [];
+            let splineLoaded = false;
 
-            const numDashes = 350;
-            const sphereRadius = 650;
-            const perspective = 800;
-            const colors = ['#663399', '#8A2BE2', '#4B0082', '#9370DB', '#7B68EE'];
+            const config = {
+                lineCount: 25,
+                baseAmplitude: 40,
+                baseGap: 8,
+                baseFrequency: 0.003,
+                speed: 0.0008,
+                currentAmplitude: 0,
+                currentGap: 0
+            };
 
-            let rotationSpeed = { x: 0, y: 0 };
-            let targetSpeed = { x: 0.001, y: 0.002 };
-            let mouseX = -1000, mouseY = -1000;
-            const centerFixed = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-            let currentShape = 'sphere';
-            const morphInterval = 400;
+            function initLines() {
+                lines = [];
+                const totalHeight = config.lineCount * config.currentGap;
+                const startY = (height / 2) + (totalHeight * 0.15);
+                for (let i = 0; i < config.lineCount; i++) {
+                    lines.push({
+                        y: startY + (i * config.currentGap),
+                        phase: i * 0.2
+                    });
+                }
+            }
 
             function resize() {
                 width = canvas.width = window.innerWidth;
                 height = canvas.height = window.innerHeight;
-                centerFixed.x = width / 2;
-                centerFixed.y = height / 2;
+                let scaleFactor = width / 450;
+                scaleFactor = Math.min(Math.max(scaleFactor, 0.5), 1.4);
+                config.currentAmplitude = config.baseAmplitude * scaleFactor;
+                config.currentGap = config.baseGap * scaleFactor;
+                initLines();
             }
+
+            function drawWaves() {
+                if (splineLoaded && window.innerWidth > 768) {
+                    requestAnimationFrame(drawWaves);
+                    return;
+                }
+
+                const gradientBg = ctx.createLinearGradient(0, 0, 0, height);
+                gradientBg.addColorStop(0, '#000000');
+                gradientBg.addColorStop(1, '#151515');
+                ctx.fillStyle = gradientBg;
+                ctx.fillRect(0, 0, width, height);
+
+                const time = Date.now() * config.speed;
+
+                lines.forEach((line, index) => {
+                    ctx.beginPath();
+                    const alpha = 1 - (index / config.lineCount);
+                    const saturation = 50 + index;
+                    ctx.strokeStyle = `hsla(260, ${saturation}%, 70%, ${alpha})`;
+                    ctx.lineWidth = 1.5;
+
+                    for (let x = 0; x <= width; x += 2) {
+                        const dist = Math.abs(width / 2 - x);
+                        const scale = Math.max(0, 1 - Math.pow(dist / (width * 0.6), 2));
+                        const wave1 = Math.sin(x * config.baseFrequency + time + line.phase);
+                        const wave2 = Math.cos(x * (config.baseFrequency * 0.5) - time);
+                        const combinedWave = (wave1 + wave2 * 0.3) * config.currentAmplitude * scale;
+                        ctx.lineTo(x, line.y + combinedWave);
+                    }
+                    ctx.stroke();
+                });
+
+                requestAnimationFrame(drawWaves);
+            }
+
             window.addEventListener('resize', resize);
             resize();
+            drawWaves();
 
-            window.addEventListener('mousemove', (e) => {
-                const sensitivity = 0.005;
-                targetSpeed.y = (e.clientX / width - 0.5) * sensitivity * 2;
-                targetSpeed.x = (e.clientY / height - 0.5) * sensitivity * 2;
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            });
+            // 2. Exact Home 3D Spline Particles (with 3D text objects hidden cleanly)
+            const splineViewer = document.getElementById('home-spline-bg');
+            const splineWrapper = document.getElementById('spline-bg-wrapper');
 
-            window.addEventListener('mouseleave', () => {
-                targetSpeed = { x: 0.001, y: 0.002 };
-            });
+            function hideSpline3DText() {
+                if (!splineViewer || !splineViewer._spline || !splineViewer._spline._scene) return false;
+                const splineApp = splineViewer._spline;
+                const scene = splineApp._scene;
 
-            class Dash {
-                constructor() {
-                    this.setSpherePos();
-                    this.tx = this.x;
-                    this.ty = this.y;
-                    this.tz = this.z;
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.baseLength = 10 + Math.random() * 20;
-                    this.baseWidth = 2 + Math.random() * 2;
-                    this.floatOffset = Math.random() * 100;
-                    this.floatSpeed = 0.02 + Math.random() * 0.02;
-                    this.pulseSpeed = 0.03 + Math.random() * 0.05;
-                    this.pulseOffset = Math.random() * Math.PI * 2;
-                    this.theta = Math.random() * Math.PI * 2;
-                }
-
-                setSpherePos() {
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos((Math.random() * 2) - 1);
-                    const r = sphereRadius + (Math.random() * 50 - 25);
-                    this.x = r * Math.sin(phi) * Math.cos(theta);
-                    this.y = r * Math.sin(phi) * Math.sin(theta);
-                    this.z = r * Math.cos(phi);
-                }
-
-                setTargetSphere() {
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos((Math.random() * 2) - 1);
-                    const r = sphereRadius;
-                    this.tx = r * Math.sin(phi) * Math.cos(theta);
-                    this.ty = r * Math.sin(phi) * Math.sin(theta);
-                    this.tz = r * Math.cos(phi);
-                }
-
-                setTargetCube() {
-                    const size = 800;
-                    this.tx = (Math.random() - 0.5) * size * 2;
-                    this.ty = (Math.random() - 0.5) * size * 2;
-                    this.tz = (Math.random() - 0.5) * size * 2;
-                }
-
-                setTargetCloud() {
-                    this.tx = (Math.random() - 0.5) * width * 1.5;
-                    this.ty = (Math.random() - 0.5) * height * 1.5;
-                    this.tz = (Math.random() - 0.5) * 800;
-                }
-
-                updateMorph() {
-                    this.x += (this.tx - this.x) * 0.05;
-                    this.y += (this.ty - this.y) * 0.05;
-                    this.z += (this.tz - this.z) * 0.05;
-                }
-
-                rotate(rotX, rotY) {
-                    const cosY = Math.cos(rotY);
-                    const sinY = Math.sin(rotY);
-                    const x1 = this.x * cosY - this.z * sinY;
-                    const z1 = this.z * cosY + this.x * sinY;
-
-                    const cosX = Math.cos(rotX);
-                    const sinX = Math.sin(rotX);
-                    const y1 = this.y * cosX - z1 * sinX;
-                    const z2 = z1 * cosX + this.y * sinX;
-
-                    this.x = x1;
-                    this.y = y1;
-                    this.z = z2;
-                }
-
-                draw(time) {
-                    this.updateMorph();
-                    const breath = Math.sin(time * this.floatSpeed + this.floatOffset) * 20;
-                    const currentZ = this.z + breath;
-
-                    const sineVal = Math.sin(time * this.pulseSpeed + this.pulseOffset);
-                    const scaleMult = 0.5 + (sineVal + 1) / 2 * 0.8;
-                    const fade = 0.2 + (sineVal + 1) / 2 * 0.8;
-                    const scale = perspective / (perspective + currentZ + sphereRadius + 200);
-
-                    let x2d = (this.x * scale) + centerFixed.x;
-                    let y2d = (this.y * scale) + centerFixed.y;
-
-                    const dx = mouseX - x2d;
-                    const dy = mouseY - y2d;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    const radius = 150;
-
-                    if (dist < radius) {
-                        const force = (radius - dist) / radius;
-                        const angle = Math.atan2(dy, dx);
-                        const push = force * 60;
-                        x2d -= Math.cos(angle) * push;
-                        y2d -= Math.sin(angle) * push;
+                scene.traverse((obj) => {
+                    const isTextGeo = obj.geometry && obj.geometry.userData && obj.geometry.userData.type === 'TextGeometry';
+                    const isHeadingName = obj.name === 'Heading' || obj.name === 'Subheading' || obj.name === 'Text';
+                    if (isTextGeo || isHeadingName) {
+                        obj.visible = false;
                     }
-
-                    const alpha = Math.min(1, Math.max(0.1, scale));
-                    ctx.save();
-                    ctx.translate(x2d, y2d);
-                    ctx.rotate(this.theta + time * 0.01);
-                    ctx.globalAlpha = alpha * fade;
-                    ctx.fillStyle = this.color;
-
-                    const l = this.baseLength * scaleMult;
-                    const w = this.baseWidth * scaleMult;
-                    ctx.beginPath();
-                    ctx.rect(-l * scale / 2, -w * scale / 2, l * scale, w * scale);
-                    ctx.fill();
-                    ctx.restore();
-                }
-            }
-
-            for (let i = 0; i < numDashes; i++) {
-                dashes.push(new Dash());
-            }
-
-            let time = 0;
-            function animate() {
-                ctx.clearRect(0, 0, width, height);
-                time += 1;
-
-                if (time % morphInterval === 0) {
-                    const shapes = ['sphere', 'cube', 'cloud'];
-                    currentShape = shapes[(shapes.indexOf(currentShape) + 1) % shapes.length];
-                    dashes.forEach(d => {
-                        if (currentShape === 'sphere') d.setTargetSphere();
-                        if (currentShape === 'cube') d.setTargetCube();
-                        if (currentShape === 'cloud') d.setTargetCloud();
-                    });
-                }
-
-                rotationSpeed.x += (targetSpeed.x - rotationSpeed.x) * 0.05;
-                rotationSpeed.y += (targetSpeed.y - rotationSpeed.y) * 0.05;
-
-                dashes.sort((a, b) => b.z - a.z);
-                dashes.forEach(dash => {
-                    dash.rotate(rotationSpeed.x, rotationSpeed.y);
-                    dash.draw(time);
                 });
-                requestAnimationFrame(animate);
+
+                if (typeof scene.markNeedsUpdateRendererDirty === 'function') {
+                    scene.markNeedsUpdateRendererDirty();
+                }
+                if (typeof splineApp._requestRenderAutoMode === 'function') {
+                    splineApp._requestRenderAutoMode();
+                }
+                if (typeof splineApp.requestRender === 'function') {
+                    splineApp.requestRender();
+                }
+                return true;
             }
 
-            animate();
+            if (splineViewer && window.innerWidth > 768) {
+                const revealSpline = () => {
+                    hideSpline3DText();
+                    setTimeout(() => {
+                        hideSpline3DText();
+                        splineLoaded = true;
+                        if (splineWrapper) splineWrapper.classList.add('ready');
+                    }, 120);
+                };
+
+                splineViewer.addEventListener('load', revealSpline, { once: true });
+
+                // Fallback poll in case load fired early
+                let tries = 0;
+                const poll = setInterval(() => {
+                    tries++;
+                    if (splineLoaded || tries > 40) {
+                        clearInterval(poll);
+                        return;
+                    }
+                    if (splineViewer._spline && splineViewer._spline._scene) {
+                        clearInterval(poll);
+                        revealSpline();
+                    }
+                }, 250);
+            }
         });
     </script>
 
@@ -731,7 +725,6 @@
                     activePageObserver.observe(card);
                 }
 
-                // Immediately render first two pages
                 if (pageCards[0]) renderPage(1, pageCards[0]);
                 if (pageCards[1]) renderPage(2, pageCards[1]);
                 updateControls();
