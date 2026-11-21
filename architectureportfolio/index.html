@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Architecture Portfolio — Louis Amadeus Arteaga</title>
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #f1f1f1;
+            --text: #111111;
+            --muted: #555555;
+            --accent: #8A2BE2;
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --manrope: 'Manrope', sans-serif;
+            --sans: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Fixed Full-Viewport 3D Particle Background */
+        #particle-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Floating Minimal Top Header */
+        .portfolio-topbar {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: min(94vw, 1120px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .brand-title {
+            font-family: var(--manrope);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand-subtitle span {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .toolbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .ctrl-btn {
+            appearance: none;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.78);
+            color: var(--text);
+            font-family: var(--manrope);
+            font-size: 0.8rem;
+            font-weight: 600;
+            height: 34px;
+            min-width: 34px;
+            padding: 0 10px;
+            border-radius: 999px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
+        }
+
+        .ctrl-btn:hover:not(:disabled) {
+            background: #ffffff;
+            border-color: rgba(138, 43, 226, 0.35);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .ctrl-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .ctrl-btn.primary {
+            background: linear-gradient(135deg, #6b21a8, #8A2BE2);
+            color: #ffffff;
+            border-color: transparent;
+            padding: 0 14px;
+        }
+
+        .ctrl-btn.primary:hover {
+            color: #ffffff;
+            background: linear-gradient(135deg, #581c87, #7c22ce);
+            box-shadow: 0 6px 18px rgba(138, 43, 226, 0.3);
+        }
+
+        .page-indicator {
+            font-family: var(--manrope);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
+            padding: 0 8px;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .divider {
+            width: 1px;
+            height: 18px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 2px;
+        }
+
+        /* Main PDF Stage */
+        .viewer-shell {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            padding: 96px 20px 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Loading State */
+        .loader-card {
+            margin: auto;
+            width: min(92vw, 440px);
+            padding: 36px 30px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.07);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .loader-card.hidden {
+            display: none;
+        }
+
+        .loader-label {
+            font-family: var(--manrope);
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .loader-sub {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(138, 43, 226, 0.14);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 8%;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #663399, #8A2BE2, #9370DB);
+            transition: width 0.25s ease;
+        }
+
+        .error-box {
+            display: none;
+            margin-top: 18px;
+            font-size: 0.85rem;
+            color: #b91c1c;
+        }
+
+        /* Pages Container */
+        #pdf-pages {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .pdf-page-card {
+            position: relative;
+            background: #ffffff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            max-width: 100%;
+        }
+
+        .pdf-page-card canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .page-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-family: var(--manrope);
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.7);
+            min-height: 360px;
+        }
+
+        .page-badge {
+            position: absolute;
+            bottom: 12px;
+            right: 14px;
+            font-family: var(--manrope);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: rgba(17, 17, 17, 0.55);
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(8px);
+            padding: 3px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            pointer-events: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .portfolio-topbar {
+                top: 12px;
+                padding: 8px 12px;
+                border-radius: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .brand-block {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .viewer-shell {
+                padding: 112px 10px 44px;
+            }
+
+            #pdf-pages {
+                gap: 16px;
+            }
+
+            .pdf-page-card {
+                border-radius: 10px;
+            }
+
+            .ctrl-btn {
+                height: 32px;
+                min-width: 32px;
+                padding: 0 8px;
+                font-size: 0.76rem;
+            }
+
+            .divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 3D Morphing Particle Cloud Background -->
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <!-- Isolated Top Controls (No navigation links to main site) -->
+    <header class="portfolio-topbar">
+        <div class="brand-block">
+            <span class="brand-title">Louis Amadeus Arteaga</span>
+            <span class="brand-subtitle"><span>Architecture</span> · Selected Works</span>
+        </div>
+
+        <div class="toolbar-controls">
+            <button type="button" class="ctrl-btn" id="btn-prev" title="Previous page" disabled>&#8592;</button>
+            <span class="page-indicator" id="page-indicator">— / —</span>
+            <button type="button" class="ctrl-btn" id="btn-next" title="Next page" disabled>&#8594;</button>
+
+            <span class="divider"></span>
+
+            <button type="button" class="ctrl-btn" id="btn-zoom-out" title="Zoom out">−</button>
+            <button type="button" class="ctrl-btn" id="btn-zoom-in" title="Zoom in">+</button>
+
+            <span class="divider"></span>
+
+            <a class="ctrl-btn primary" id="btn-download"
+                href="https://raw.githubusercontent.com/Amadeusguitarte/Portfolio/main/Louis_Amadeus_Arteaga_Selected_Works_Portfolio_REVISED.pdf"
+                target="_blank" rel="noopener"
+                download="Louis_Amadeus_Arteaga_Selected_Works_Portfolio.pdf">
+                PDF &#8595;
+            </a>
+        </div>
+    </header>
+
+    <!-- PDF Stage -->
+    <main class="viewer-shell">
+        <div class="loader-card" id="loader-card">
+            <div class="loader-label">Architecture Portfolio</div>
+            <div class="loader-sub" id="loader-sub">Loading document...</div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="error-box" id="error-box">
+                Could not preview the PDF directly. Use the <strong>PDF &#8595;</strong> button above to open or download it.
+            </div>
+        </div>
+
+        <div id="pdf-pages" aria-label="Architecture Portfolio PDF pages"></div>
+    </main>
+
+    <!-- 3D Particle Background Script (Same engine as Amadeus UX) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('particle-canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let dashes = [];
+
+            const numDashes = 350;
+            const sphereRadius = 650;
+            const perspective = 800;
+            const colors = ['#663399', '#8A2BE2', '#4B0082', '#9370DB', '#7B68EE'];
+
+            let rotationSpeed = { x: 0, y: 0 };
+            let targetSpeed = { x: 0.001, y: 0.002 };
+            let mouseX = -1000, mouseY = -1000;
+            const centerFixed = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+            let currentShape = 'sphere';
+            const morphInterval = 400;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                centerFixed.x = width / 2;
+                centerFixed.y = height / 2;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            window.addEventListener('mousemove', (e) => {
+                const sensitivity = 0.005;
+                targetSpeed.y = (e.clientX / width - 0.5) * sensitivity * 2;
+                targetSpeed.x = (e.clientY / height - 0.5) * sensitivity * 2;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            window.addEventListener('mouseleave', () => {
+                targetSpeed = { x: 0.001, y: 0.002 };
+            });
+
+            class Dash {
+                constructor() {
+                    this.setSpherePos();
+                    this.tx = this.x;
+                    this.ty = this.y;
+                    this.tz = this.z;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.baseLength = 10 + Math.random() * 20;
+                    this.baseWidth = 2 + Math.random() * 2;
+                    this.floatOffset = Math.random() * 100;
+                    this.floatSpeed = 0.02 + Math.random() * 0.02;
+                    this.pulseSpeed = 0.03 + Math.random() * 0.05;
+                    this.pulseOffset = Math.random() * Math.PI * 2;
+                    this.theta = Math.random() * Math.PI * 2;
+                }
+
+                setSpherePos() {
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos((Math.random() * 2) - 1);
+                    const r = sphereRadius + (Math.random() * 50 - 25);
+                    this.x = r * Math.sin(phi) * Math.cos(theta);
+                    this.y = r * Math.sin(phi) * Math.sin(theta);
+                    this.z = r * Math.cos(phi);
+                }
+
+                setTargetSphere() {
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos((Math.random() * 2) - 1);
+                    const r = sphereRadius;
+                    this.tx = r * Math.sin(phi) * Math.cos(theta);
+                    this.ty = r * Math.sin(phi) * Math.sin(theta);
+                    this.tz = r * Math.cos(phi);
+                }
+
+                setTargetCube() {
+                    const size = 800;
+                    this.tx = (Math.random() - 0.5) * size * 2;
+                    this.ty = (Math.random() - 0.5) * size * 2;
+                    this.tz = (Math.random() - 0.5) * size * 2;
+                }
+
+                setTargetCloud() {
+                    this.tx = (Math.random() - 0.5) * width * 1.5;
+                    this.ty = (Math.random() - 0.5) * height * 1.5;
+                    this.tz = (Math.random() - 0.5) * 800;
+                }
+
+                updateMorph() {
+                    this.x += (this.tx - this.x) * 0.05;
+                    this.y += (this.ty - this.y) * 0.05;
+                    this.z += (this.tz - this.z) * 0.05;
+                }
+
+                rotate(rotX, rotY) {
+                    const cosY = Math.cos(rotY);
+                    const sinY = Math.sin(rotY);
+                    const x1 = this.x * cosY - this.z * sinY;
+                    const z1 = this.z * cosY + this.x * sinY;
+
+                    const cosX = Math.cos(rotX);
+                    const sinX = Math.sin(rotX);
+                    const y1 = this.y * cosX - z1 * sinX;
+                    const z2 = z1 * cosX + this.y * sinX;
+
+                    this.x = x1;
+                    this.y = y1;
+                    this.z = z2;
+                }
+
+                draw(time) {
+                    this.updateMorph();
+                    const breath = Math.sin(time * this.floatSpeed + this.floatOffset) * 20;
+                    const currentZ = this.z + breath;
+
+                    const sineVal = Math.sin(time * this.pulseSpeed + this.pulseOffset);
+                    const scaleMult = 0.5 + (sineVal + 1) / 2 * 0.8;
+                    const fade = 0.2 + (sineVal + 1) / 2 * 0.8;
+                    const scale = perspective / (perspective + currentZ + sphereRadius + 200);
+
+                    let x2d = (this.x * scale) + centerFixed.x;
+                    let y2d = (this.y * scale) + centerFixed.y;
+
+                    const dx = mouseX - x2d;
+                    const dy = mouseY - y2d;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const radius = 150;
+
+                    if (dist < radius) {
+                        const force = (radius - dist) / radius;
+                        const angle = Math.atan2(dy, dx);
+                        const push = force * 60;
+                        x2d -= Math.cos(angle) * push;
+                        y2d -= Math.sin(angle) * push;
+                    }
+
+                    const alpha = Math.min(1, Math.max(0.1, scale));
+                    ctx.save();
+                    ctx.translate(x2d, y2d);
+                    ctx.rotate(this.theta + time * 0.01);
+                    ctx.globalAlpha = alpha * fade;
+                    ctx.fillStyle = this.color;
+
+                    const l = this.baseLength * scaleMult;
+                    const w = this.baseWidth * scaleMult;
+                    ctx.beginPath();
+                    ctx.rect(-l * scale / 2, -w * scale / 2, l * scale, w * scale);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < numDashes; i++) {
+                dashes.push(new Dash());
+            }
+
+            let time = 0;
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                time += 1;
+
+                if (time % morphInterval === 0) {
+                    const shapes = ['sphere', 'cube', 'cloud'];
+                    currentShape = shapes[(shapes.indexOf(currentShape) + 1) % shapes.length];
+                    dashes.forEach(d => {
+                        if (currentShape === 'sphere') d.setTargetSphere();
+                        if (currentShape === 'cube') d.setTargetCube();
+                        if (currentShape === 'cloud') d.setTargetCloud();
+                    });
+                }
+
+                rotationSpeed.x += (targetSpeed.x - rotationSpeed.x) * 0.05;
+                rotationSpeed.y += (targetSpeed.y - rotationSpeed.y) * 0.05;
+
+                dashes.sort((a, b) => b.z - a.z);
+                dashes.forEach(dash => {
+                    dash.rotate(rotationSpeed.x, rotationSpeed.y);
+                    dash.draw(time);
+                });
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        });
+    </script>
+
+    <!-- PDF.js Progressive High-DPI Renderer -->
+    <script>
+        (function () {
+            const PDF_URL = 'https://raw.githubusercontent.com/Amadeusguitarte/Portfolio/main/Louis_Amadeus_Arteaga_Selected_Works_Portfolio_REVISED.pdf';
+
+            const pagesContainer = document.getElementById('pdf-pages');
+            const loaderCard = document.getElementById('loader-card');
+            const loaderSub = document.getElementById('loader-sub');
+            const progressFill = document.getElementById('progress-fill');
+            const errorBox = document.getElementById('error-box');
+            const pageIndicator = document.getElementById('page-indicator');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            const btnZoomIn = document.getElementById('btn-zoom-in');
+            const btnZoomOut = document.getElementById('btn-zoom-out');
+
+            if (typeof pdfjsLib === 'undefined') {
+                loaderSub.textContent = 'Viewer library unavailable.';
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+            let pdfDoc = null;
+            let totalPages = 0;
+            let currentPage = 1;
+            let zoomMultiplier = 1.0;
+            const renderedPages = new Map();
+            let pageCards = [];
+            let renderObserver = null;
+            let activePageObserver = null;
+
+            function getTargetWidth() {
+                const maxBase = Math.min(window.innerWidth - (window.innerWidth <= 768 ? 20 : 64), 1120);
+                return Math.max(280, Math.round(maxBase * zoomMultiplier));
+            }
+
+            function updateControls() {
+                pageIndicator.textContent = totalPages ? `${currentPage} / ${totalPages}` : '— / —';
+                btnPrev.disabled = currentPage <= 1;
+                btnNext.disabled = currentPage >= totalPages;
+            }
+
+            function scrollToPage(pageNum) {
+                const clamped = Math.max(1, Math.min(totalPages, pageNum));
+                const card = pageCards[clamped - 1];
+                if (card) {
+                    const y = card.getBoundingClientRect().top + window.scrollY - 88;
+                    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+                    currentPage = clamped;
+                    updateControls();
+                }
+            }
+
+            async function renderPage(pageNum, card) {
+                if (!pdfDoc || renderedPages.get(pageNum) === zoomMultiplier) return;
+                renderedPages.set(pageNum, zoomMultiplier);
+
+                try {
+                    const page = await pdfDoc.getPage(pageNum);
+                    const unscaled = page.getViewport({ scale: 1 });
+                    const targetWidth = getTargetWidth();
+                    const cssScale = targetWidth / unscaled.width;
+                    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+                    const viewport = page.getViewport({ scale: cssScale * dpr });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d', { alpha: false });
+
+                    canvas.width = Math.floor(viewport.width);
+                    canvas.height = Math.floor(viewport.height);
+                    canvas.style.width = `${Math.floor(unscaled.width * cssScale)}px`;
+                    canvas.style.height = `${Math.floor(unscaled.height * cssScale)}px`;
+
+                    card.style.width = `${Math.floor(unscaled.width * cssScale)}px`;
+
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+
+                    const badge = card.querySelector('.page-badge');
+                    card.innerHTML = '';
+                    card.appendChild(canvas);
+                    if (badge) card.appendChild(badge);
+                } catch (err) {
+                    console.error('Error rendering page', pageNum, err);
+                }
+            }
+
+            async function buildPages() {
+                pagesContainer.innerHTML = '';
+                renderedPages.clear();
+                pageCards = [];
+
+                if (renderObserver) renderObserver.disconnect();
+                if (activePageObserver) activePageObserver.disconnect();
+
+                const firstPage = await pdfDoc.getPage(1);
+                const firstViewport = firstPage.getViewport({ scale: 1 });
+                const targetWidth = getTargetWidth();
+                const estimatedHeight = Math.round((firstViewport.height / firstViewport.width) * targetWidth);
+
+                renderObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const pageNum = Number(entry.target.dataset.page);
+                            renderPage(pageNum, entry.target);
+                        }
+                    });
+                }, { rootMargin: '800px 0px' });
+
+                activePageObserver = new IntersectionObserver((entries) => {
+                    let best = null;
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            if (!best || entry.intersectionRatio > best.intersectionRatio) {
+                                best = entry;
+                            }
+                        }
+                    });
+                    if (best) {
+                        currentPage = Number(best.target.dataset.page);
+                        updateControls();
+                    }
+                }, { threshold: [0.25, 0.5, 0.75] });
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'pdf-page-card';
+                    card.dataset.page = String(i);
+                    card.style.width = `${targetWidth}px`;
+
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'page-placeholder';
+                    placeholder.style.height = `${estimatedHeight}px`;
+                    placeholder.textContent = `Page ${i}`;
+
+                    const badge = document.createElement('span');
+                    badge.className = 'page-badge';
+                    badge.textContent = `${i} / ${totalPages}`;
+
+                    card.appendChild(placeholder);
+                    card.appendChild(badge);
+                    pagesContainer.appendChild(card);
+                    pageCards.push(card);
+
+                    renderObserver.observe(card);
+                    activePageObserver.observe(card);
+                }
+
+                // Immediately render first two pages
+                if (pageCards[0]) renderPage(1, pageCards[0]);
+                if (pageCards[1]) renderPage(2, pageCards[1]);
+                updateControls();
+            }
+
+            btnPrev.addEventListener('click', () => scrollToPage(currentPage - 1));
+            btnNext.addEventListener('click', () => scrollToPage(currentPage + 1));
+
+            btnZoomIn.addEventListener('click', () => {
+                if (!pdfDoc) return;
+                zoomMultiplier = Math.min(1.6, +(zoomMultiplier + 0.15).toFixed(2));
+                buildPages();
+            });
+
+            btnZoomOut.addEventListener('click', () => {
+                if (!pdfDoc) return;
+                zoomMultiplier = Math.max(0.65, +(zoomMultiplier - 0.15).toFixed(2));
+                buildPages();
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (!pdfDoc) return;
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                    scrollToPage(currentPage + 1);
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    scrollToPage(currentPage - 1);
+                }
+            });
+
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                if (!pdfDoc) return;
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => buildPages(), 300);
+            });
+
+            const loadingTask = pdfjsLib.getDocument({
+                url: PDF_URL,
+                cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+                cMapPacked: true
+            });
+
+            loadingTask.onProgress = (progress) => {
+                if (progress.total > 0) {
+                    const pct = Math.min(99, Math.round((progress.loaded / progress.total) * 100));
+                    progressFill.style.width = `${pct}%`;
+                    loaderSub.textContent = `Loading document... ${pct}%`;
+                }
+            };
+
+            loadingTask.promise.then(async (doc) => {
+                pdfDoc = doc;
+                totalPages = doc.numPages;
+                progressFill.style.width = '100%';
+                loaderCard.classList.add('hidden');
+                await buildPages();
+            }).catch((err) => {
+                console.error('PDF load error:', err);
+                loaderSub.textContent = 'Unable to load preview.';
+                errorBox.style.display = 'block';
+            });
+        })();
+    </script>
+</body>
+
+</html>
