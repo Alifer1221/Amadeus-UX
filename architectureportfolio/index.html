@@ -633,7 +633,17 @@
                     items.push({ type: 'pdf', pdfPage: 2 });
                     items.push({ type: 'video', src: 'daylight_study_5.mp4' });
                     for (let p = 3; p <= 8; p++) items.push({ type: 'pdf', pdfPage: p });
-                    for (let p = 14; p <= numPages; p++) items.push({ type: 'pdf', pdfPage: p });
+                    // Move displayed slides 20 & 21 (PDF pages 17 & 18) before displayed slide 17 (PDF page 14)
+                    if (numPages >= 18) {
+                        items.push({ type: 'pdf', pdfPage: 17 });
+                        items.push({ type: 'pdf', pdfPage: 18 });
+                        items.push({ type: 'pdf', pdfPage: 14 });
+                        items.push({ type: 'pdf', pdfPage: 15 });
+                        items.push({ type: 'pdf', pdfPage: 16 });
+                        for (let p = 19; p <= numPages; p++) items.push({ type: 'pdf', pdfPage: p });
+                    } else {
+                        for (let p = 14; p <= numPages; p++) items.push({ type: 'pdf', pdfPage: p });
+                    }
                     return items;
                 }
                 for (let p = 1; p <= numPages; p++) {
