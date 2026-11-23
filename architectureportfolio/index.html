@@ -627,7 +627,7 @@
                     items.push({ type: 'pdf', pdfPage: 10 });
                     items.push({ type: 'video', src: 'daylight_study_2.mp4' });
                     items.push({ type: 'pdf', pdfPage: 11 });
-                    items.push({ type: 'video', src: 'daylight_study_3.mp4' });
+                    items.push({ type: 'video', src: 'daylight_study_3.mp4', startTime: 5 });
                     items.push({ type: 'pdf', pdfPage: 12 });
                     items.push({ type: 'pdf', pdfPage: 13 });
                     items.push({ type: 'pdf', pdfPage: 2 });
@@ -798,7 +798,11 @@
                     entries.forEach(entry => {
                         const vid = entry.target.querySelector('video');
                         if (!vid) return;
+                        const startTime = Number(vid.dataset.startTime || 0);
                         if (entry.isIntersecting) {
+                            if (startTime > 0 && vid.currentTime < startTime) {
+                                vid.currentTime = startTime;
+                            }
                             vid.play().catch(() => {});
                         } else {
                             vid.pause();
@@ -821,18 +825,39 @@
                     badge.textContent = `${displayIndex} / ${totalSlides}`;
 
                     if (item.type === 'video') {
+                        const startTime = item.startTime || 0;
                         const video = document.createElement('video');
-                        video.src = item.src;
+                        video.src = startTime > 0 ? `${item.src}#t=${startTime}` : item.src;
+                        video.dataset.startTime = String(startTime);
                         video.autoplay = true;
-                        video.loop = true;
                         video.muted = true;
                         video.playsInline = true;
                         video.preload = 'auto';
                         video.setAttribute('autoplay', '');
-                        video.setAttribute('loop', '');
                         video.setAttribute('muted', '');
                         video.setAttribute('playsinline', '');
                         video.setAttribute('disablePictureInPicture', '');
+
+                        if (startTime > 0) {
+                            video.addEventListener('loadedmetadata', () => {
+                                if (video.currentTime < startTime) {
+                                    video.currentTime = startTime;
+                                }
+                            });
+                            video.addEventListener('timeupdate', () => {
+                                if (video.currentTime < startTime - 0.15) {
+                                    video.currentTime = startTime;
+                                }
+                            });
+                            video.addEventListener('ended', () => {
+                                video.currentTime = startTime;
+                                video.play().catch(() => {});
+                            });
+                        } else {
+                            video.loop = true;
+                            video.setAttribute('loop', '');
+                        }
+
                         card.appendChild(video);
                         card.appendChild(badge);
                         videoObserver.observe(card);
