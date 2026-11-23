@@ -630,7 +630,9 @@
                     items.push({ type: 'video', src: 'daylight_study_3.mp4' });
                     items.push({ type: 'pdf', pdfPage: 12 });
                     items.push({ type: 'pdf', pdfPage: 13 });
-                    for (let p = 2; p <= 8; p++) items.push({ type: 'pdf', pdfPage: p });
+                    items.push({ type: 'pdf', pdfPage: 2 });
+                    items.push({ type: 'video', src: 'daylight_study_5.mp4' });
+                    for (let p = 3; p <= 8; p++) items.push({ type: 'pdf', pdfPage: p });
                     for (let p = 14; p <= numPages; p++) items.push({ type: 'pdf', pdfPage: p });
                     return items;
                 }
