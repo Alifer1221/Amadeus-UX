@@ -304,10 +304,15 @@
             max-width: 100%;
         }
 
-        .pdf-page-card canvas {
+        .pdf-page-card canvas,
+        .pdf-page-card video {
             display: block;
             width: 100%;
             height: auto;
+        }
+
+        .pdf-page-card.video-slide {
+            background: #000000;
         }
 
         .page-placeholder {
@@ -601,26 +606,36 @@
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
             let pdfDoc = null;
-            let totalPages = 0;
-            let pageOrder = [];
+            let totalSlides = 0;
+            let slideItems = [];
             let currentPage = 1; // 1-based display index
             let zoomMultiplier = 1.0;
             const renderedPages = new Map();
             let pageCards = [];
             let renderObserver = null;
+            let videoObserver = null;
             let isProgrammaticScroll = false;
             let scrollLockTimer = null;
 
-            function buildPageOrder(numPages) {
-                // Keep cover (1), move pages 9-13 to first project, original pages 2-8 to second, then 14..end
+            function buildSlideItems(numPages) {
+                // Keep cover (1), move pages 9-13 to first project with looping video between displayed page 3 & 4,
+                // then original pages 2-8 to second project, then 14..end
+                const items = [];
                 if (numPages >= 13) {
-                    const order = [1];
-                    for (let p = 9; p <= 13; p++) order.push(p);
-                    for (let p = 2; p <= 8; p++) order.push(p);
-                    for (let p = 14; p <= numPages; p++) order.push(p);
-                    return order;
+                    items.push({ type: 'pdf', pdfPage: 1 });
+                    items.push({ type: 'pdf', pdfPage: 9 });
+                    items.push({ type: 'pdf', pdfPage: 10 });
+                    items.push({ type: 'video', src: 'daylight_study_2.mp4' });
+                    for (let p = 11; p <= 13; p++) items.push({ type: 'pdf', pdfPage: p });
+                    for (let p = 2; p <= 8; p++) items.push({ type: 'pdf', pdfPage: p });
+                    for (let p = 14; p <= numPages; p++) items.push({ type: 'pdf', pdfPage: p });
+                    return items;
                 }
-                return Array.from({ length: numPages }, (_, i) => i + 1);
+                for (let p = 1; p <= numPages; p++) {
+                    items.push({ type: 'pdf', pdfPage: p });
+                    if (p === 3) items.push({ type: 'video', src: 'daylight_study_2.mp4' });
+                }
+                return items;
             }
 
             function getTargetWidth() {
@@ -629,9 +644,9 @@
             }
 
             function updateControls() {
-                pageIndicator.textContent = totalPages ? `${currentPage} / ${totalPages}` : '— / —';
+                pageIndicator.textContent = totalSlides ? `${currentPage} / ${totalSlides}` : '— / —';
                 btnPrev.disabled = currentPage <= 1;
-                btnNext.disabled = currentPage >= totalPages;
+                btnNext.disabled = currentPage >= totalSlides;
             }
 
             function syncActivePageFromScroll() {
@@ -667,18 +682,22 @@
             }, { passive: true });
 
             function scrollToPage(displayIndex) {
-                if (!totalPages) return;
-                const clamped = Math.max(1, Math.min(totalPages, displayIndex));
+                if (!totalSlides) return;
+                const clamped = Math.max(1, Math.min(totalSlides, displayIndex));
                 const card = pageCards[clamped - 1];
                 if (!card) return;
 
                 currentPage = clamped;
                 updateControls();
 
-                // Ensure target & adjacent pages are rendered
-                const pdfPageNum = Number(card.dataset.pdfPage);
-                renderPage(pdfPageNum, card);
-                if (pageCards[clamped]) {
+                // Ensure target & adjacent PDF pages are rendered (or play video if video slide)
+                if (card.dataset.slideType === 'pdf') {
+                    renderPage(Number(card.dataset.pdfPage), card);
+                } else if (card.dataset.slideType === 'video') {
+                    const vid = card.querySelector('video');
+                    if (vid) vid.play().catch(() => {});
+                }
+                if (pageCards[clamped] && pageCards[clamped].dataset.slideType === 'pdf') {
                     renderPage(Number(pageCards[clamped].dataset.pdfPage), pageCards[clamped]);
                 }
 
@@ -704,7 +723,7 @@
             }
 
             async function renderPage(pdfPageNum, card) {
-                if (!pdfDoc || renderedPages.get(pdfPageNum) === zoomMultiplier) return;
+                if (!pdfDoc || !pdfPageNum || renderedPages.get(pdfPageNum) === zoomMultiplier) return;
                 renderedPages.set(pdfPageNum, zoomMultiplier);
 
                 try {
@@ -742,50 +761,86 @@
                 pageCards = [];
 
                 if (renderObserver) renderObserver.disconnect();
+                if (videoObserver) videoObserver.disconnect();
 
-                const firstPage = await pdfDoc.getPage(pageOrder[0] || 1);
+                const firstPdfItem = slideItems.find(item => item.type === 'pdf');
+                const firstPage = await pdfDoc.getPage(firstPdfItem ? firstPdfItem.pdfPage : 1);
                 const firstViewport = firstPage.getViewport({ scale: 1 });
                 const targetWidth = getTargetWidth();
                 const estimatedHeight = Math.round((firstViewport.height / firstViewport.width) * targetWidth);
 
                 renderObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
-                        if (entry.isIntersecting) {
+                        if (entry.isIntersecting && entry.target.dataset.slideType === 'pdf') {
                             const pdfPageNum = Number(entry.target.dataset.pdfPage);
                             renderPage(pdfPageNum, entry.target);
                         }
                     });
                 }, { rootMargin: '800px 0px' });
 
-                for (let idx = 0; idx < pageOrder.length; idx++) {
+                videoObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const vid = entry.target.querySelector('video');
+                        if (!vid) return;
+                        if (entry.isIntersecting) {
+                            vid.play().catch(() => {});
+                        } else {
+                            vid.pause();
+                        }
+                    });
+                }, { threshold: 0.15 });
+
+                for (let idx = 0; idx < slideItems.length; idx++) {
                     const displayIndex = idx + 1;
-                    const pdfPageNum = pageOrder[idx];
+                    const item = slideItems[idx];
 
                     const card = document.createElement('div');
-                    card.className = 'pdf-page-card';
+                    card.className = item.type === 'video' ? 'pdf-page-card video-slide' : 'pdf-page-card';
                     card.dataset.displayIndex = String(displayIndex);
-                    card.dataset.pdfPage = String(pdfPageNum);
+                    card.dataset.slideType = item.type;
                     card.style.width = `${targetWidth}px`;
-
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'page-placeholder';
-                    placeholder.style.height = `${estimatedHeight}px`;
-                    placeholder.textContent = `Page ${displayIndex}`;
 
                     const badge = document.createElement('span');
                     badge.className = 'page-badge';
-                    badge.textContent = `${displayIndex} / ${totalPages}`;
+                    badge.textContent = `${displayIndex} / ${totalSlides}`;
 
-                    card.appendChild(placeholder);
-                    card.appendChild(badge);
+                    if (item.type === 'video') {
+                        const video = document.createElement('video');
+                        video.src = item.src;
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.playsInline = true;
+                        video.preload = 'auto';
+                        video.setAttribute('autoplay', '');
+                        video.setAttribute('loop', '');
+                        video.setAttribute('muted', '');
+                        video.setAttribute('playsinline', '');
+                        video.setAttribute('disablePictureInPicture', '');
+                        card.appendChild(video);
+                        card.appendChild(badge);
+                        videoObserver.observe(card);
+                    } else {
+                        card.dataset.pdfPage = String(item.pdfPage);
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'page-placeholder';
+                        placeholder.style.height = `${estimatedHeight}px`;
+                        placeholder.textContent = `Page ${displayIndex}`;
+                        card.appendChild(placeholder);
+                        card.appendChild(badge);
+                        renderObserver.observe(card);
+                    }
+
                     pagesContainer.appendChild(card);
                     pageCards.push(card);
-
-                    renderObserver.observe(card);
                 }
 
-                if (pageCards[0]) renderPage(Number(pageCards[0].dataset.pdfPage), pageCards[0]);
-                if (pageCards[1]) renderPage(Number(pageCards[1].dataset.pdfPage), pageCards[1]);
+                if (pageCards[0] && pageCards[0].dataset.slideType === 'pdf') {
+                    renderPage(Number(pageCards[0].dataset.pdfPage), pageCards[0]);
+                }
+                if (pageCards[1] && pageCards[1].dataset.slideType === 'pdf') {
+                    renderPage(Number(pageCards[1].dataset.pdfPage), pageCards[1]);
+                }
                 updateControls();
             }
 
@@ -836,8 +891,8 @@
 
             loadingTask.promise.then(async (doc) => {
                 pdfDoc = doc;
-                totalPages = doc.numPages;
-                pageOrder = buildPageOrder(totalPages);
+                slideItems = buildSlideItems(doc.numPages);
+                totalSlides = slideItems.length;
                 progressFill.style.width = '100%';
                 loaderCard.classList.add('hidden');
                 await buildPages();
