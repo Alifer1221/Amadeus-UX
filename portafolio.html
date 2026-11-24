@@ -1555,8 +1555,45 @@
         (function () {
             const CONFIG = {
                 imageUrl: 'assets/isotipooooo.png',
-                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.65, typingSpeed: 50
+                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.5, introSpeed: 1.25, typingSpeed: 50
             };
+
+            // Pre-bake the EXACT 2-phase original physics curve (gentle ease pull + 0.015/0.94 elastic spring bounce)
+            // into a 1D lookup table so every device plays the exact same cadence at 0 extra physics cost
+            const INTRO_FPS = 60;
+            const INTRO_RAW_SECONDS = 4.0;
+            const INTRO_CURVE = (function () {
+                const steps = Math.round(INTRO_RAW_SECONDS * INTRO_FPS);
+                const table = new Float32Array(steps + 1);
+                let u = 0, v = 0;
+                for (let s = 0; s <= steps; s++) {
+                    table[s] = u;
+                    const t = s / INTRO_FPS;
+                    if (t < CONFIG.duration) {
+                        const p = t / CONFIG.duration;
+                        const ease = 1 - Math.pow(1 - p, 3);
+                        u += (1 - u) * 0.02 * ease;
+                    } else {
+                        v += (1 - u) * 0.015;
+                        v *= 0.94;
+                        u += v;
+                    }
+                }
+                table[steps] = 1.0;
+                return table;
+            })();
+            const INTRO_TOTAL_DURATION = INTRO_RAW_SECONDS / CONFIG.introSpeed;
+
+            function sampleIntroCurve(elapsedSec) {
+                const rawSec = elapsedSec * CONFIG.introSpeed;
+                const fIdx = rawSec * INTRO_FPS;
+                const maxIdx = INTRO_CURVE.length - 1;
+                if (fIdx <= 0) return 0;
+                if (fIdx >= maxIdx) return 1;
+                const i0 = Math.floor(fIdx);
+                const frac = fIdx - i0;
+                return INTRO_CURVE[i0] + (INTRO_CURVE[i0 + 1] - INTRO_CURVE[i0]) * frac;
+            }
 
             const container = document.getElementById('amadeus-hero-section');
             const titleEl = document.getElementById('amadeusTitle');
@@ -1845,10 +1882,15 @@
                 if (!particles) return;
 
                 const posArray = geometry.attributes.position.array;
-                const totalDur = CONFIG.duration;
                 const inIntro = !introFinished;
-                if (inIntro && elapsedTime >= totalDur) {
-                    introFinished = true;
+                let curveU = 1;
+                if (inIntro) {
+                    if (elapsedTime >= INTRO_TOTAL_DURATION) {
+                        introFinished = true;
+                        curveU = 1;
+                    } else {
+                        curveU = sampleIntroCurve(elapsedTime);
+                    }
                 }
 
                 const mouseRadiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
@@ -1860,14 +1902,9 @@
 
                     let cx, cy;
                     if (inIntro) {
-                        const d = startDelays[i];
-                        let t = (elapsedTime - d) / (totalDur - d);
-                        if (t < 0) t = 0;
-                        else if (t > 1) t = 1;
-                        // Predefined damped-spring curve: fast arrival + organic elastic bounce & settle
-                        const ease = (t >= 1) ? 1 : (1 - Math.exp(-5.2 * t) * Math.cos(8.8 * t));
-                        cx = startPositions[i3] + (hx - startPositions[i3]) * ease;
-                        cy = startPositions[i3 + 1] + (hy - startPositions[i3 + 1]) * ease;
+                        // Exact pre-baked original 2-phase cadence (gentle magnetic pull + elastic spring bounce)
+                        cx = startPositions[i3] + (hx - startPositions[i3]) * curveU;
+                        cy = startPositions[i3 + 1] + (hy - startPositions[i3 + 1]) * curveU;
 
                         const dx = mouse.x - cx, dy = mouse.y - cy, dSq = dx * dx + dy * dy;
                         if (dSq < mouseRadiusSq) {
