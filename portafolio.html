@@ -1555,7 +1555,7 @@
         (function () {
             const CONFIG = {
                 imageUrl: 'assets/isotipooooo.png',
-                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.25, typingSpeed: 50
+                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.65, typingSpeed: 50
             };
 
             const container = document.getElementById('amadeus-hero-section');
@@ -1864,9 +1864,8 @@
                         let t = (elapsedTime - d) / (totalDur - d);
                         if (t < 0) t = 0;
                         else if (t > 1) t = 1;
-                        // Predefined cubic ease-out trajectory (start -> target)
-                        const inv = 1 - t;
-                        const ease = 1 - inv * inv * inv;
+                        // Predefined damped-spring curve: fast arrival + organic elastic bounce & settle
+                        const ease = (t >= 1) ? 1 : (1 - Math.exp(-5.2 * t) * Math.cos(8.8 * t));
                         cx = startPositions[i3] + (hx - startPositions[i3]) * ease;
                         cy = startPositions[i3 + 1] + (hy - startPositions[i3 + 1]) * ease;
 
