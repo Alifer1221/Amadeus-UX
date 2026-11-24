@@ -1549,12 +1549,13 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="assets/isotipo-particles.js"></script>
 
     <script>
         (function () {
             const CONFIG = {
-                imageUrl: 'https://raw.githubusercontent.com/Alifer1221/isotipo/main/isotipooooo.png',
-                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.5, typingSpeed: 50
+                imageUrl: 'assets/isotipooooo.png',
+                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.25, typingSpeed: 50
             };
 
             const container = document.getElementById('amadeus-hero-section');
@@ -1568,12 +1569,41 @@
             let introFinished = false;
             let typingInterval = null;
 
+            // Deterministic PRNG for predefined initial trajectory
+            function createSeededRandom(seed) {
+                let s = seed >>> 0;
+                return function () {
+                    s = (s + 0x6D2B79F5) >>> 0;
+                    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+                    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+                    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+                };
+            }
+
             // Verificación de seguridad
             if (typeof THREE === 'undefined') {
                 console.error("Three.js error.");
                 if (typeof window.hideAmadeusLoader === 'function') window.hideAmadeusLoader();
             } else {
                 init();
+            }
+
+            function startExperience() {
+                // Renderizado MANUAL del frame 0: Elimina el parpadeo gris
+                renderer.render(scene, camera);
+                // Hide loader first so the particle convergence + typewriter starts right as it reveals
+                if (typeof window.hideAmadeusLoader === 'function') {
+                    window.hideAmadeusLoader();
+                } else {
+                    const ldr = document.getElementById('amadeus-loader');
+                    if (ldr) ldr.classList.add('loader-hidden');
+                }
+                setTimeout(() => {
+                    clock.start();
+                    elapsedTime = 0;
+                    startTextImmediate();
+                    animate();
+                }, 120);
             }
 
             function init() {
@@ -1585,37 +1615,29 @@
 
                 renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
                 renderer.setSize(width, height);
-                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
                 container.appendChild(renderer.domElement);
 
-                const loader = new THREE.TextureLoader();
-                loader.crossOrigin = "Anonymous";
-                loader.load(
-                    CONFIG.imageUrl,
-                    function (texture) {
-                        createParticles(texture.image);
-                        // Renderizado MANUAL del frame 0: Elimina el parpadeo gris
-                        renderer.render(scene, camera);
-                        // Hide loader first so the particle convergence + typewriter starts right as it reveals
-                        if (typeof window.hideAmadeusLoader === 'function') {
-                            window.hideAmadeusLoader();
-                        } else {
-                            const ldr = document.getElementById('amadeus-loader');
-                            if (ldr) ldr.classList.add('loader-hidden');
-                        }
-                        setTimeout(() => {
-                            clock.start();
-                            elapsedTime = 0;
+                if (window.AMADEUS_ISOTIPO_PARTICLES) {
+                    // Instant build from precomputed isotipo particle map (no image download / pixel scan)
+                    createParticlesFromPrebaked(window.AMADEUS_ISOTIPO_PARTICLES);
+                    startExperience();
+                } else {
+                    const loader = new THREE.TextureLoader();
+                    loader.crossOrigin = "Anonymous";
+                    loader.load(
+                        CONFIG.imageUrl,
+                        function (texture) {
+                            createParticles(texture.image);
+                            startExperience();
+                        },
+                        undefined,
+                        function () {
+                            if (typeof window.hideAmadeusLoader === 'function') window.hideAmadeusLoader();
                             startTextImmediate();
-                            animate();
-                        }, 180);
-                    },
-                    undefined,
-                    function () {
-                        if (typeof window.hideAmadeusLoader === 'function') window.hideAmadeusLoader();
-                        startTextImmediate();
-                    }
-                );
+                        }
+                    );
+                }
 
                 window.addEventListener('resize', onWindowResize, false);
                 document.addEventListener('mousemove', onMouseMove, false);
@@ -1623,14 +1645,11 @@
                 document.addEventListener('touchstart', onTouchMove, { passive: true });
             }
 
-            let initialPositions, offsets, velocitiesX, velocitiesY, count, mouse = { x: -9999, y: -9999 };
+            let startPositions, initialPositions, startDelays, offsets, velocitiesX, velocitiesY, count, mouse = { x: -9999, y: -9999 };
+            let normCoords = null; // Stored for clean responsive recalculation on resize
+            let logoAspectRatio = 351 / 396;
 
-            function createParticles(image) {
-                const cvs = document.createElement('canvas');
-                const ctx = cvs.getContext('2d');
-                cvs.width = width; cvs.height = height;
-
-                const aspectRatio = image.width / image.height;
+            function computeLogoLayout(aspectRatio) {
                 let logoH = height * 0.75;
                 let logoW = logoH * aspectRatio;
 
@@ -1640,21 +1659,112 @@
                     if (logoW > width * 0.6) { logoW = width * 0.6; logoH = logoW / aspectRatio; }
                 }
 
-                let startX = (width >= 900) ? (width * 0.75 - logoW / 2) : (width - logoW) / 2;
-                let startY = (width >= 900) ? (height - logoH) / 2 : (height - logoH) / 2 + (height * 0.18);
+                const startX = (width >= 900) ? (width * 0.75 - logoW / 2) : (width - logoW) / 2;
+                const startY = (width >= 900) ? (height - logoH) / 2 : (height - logoH) / 2 + (height * 0.18);
+                return { logoW, logoH, startX, startY };
+            }
+
+            function createParticlesFromPrebaked(baked) {
+                logoAspectRatio = baked.w / baked.h;
+                const { logoW, logoH, startX, startY } = computeLogoLayout(logoAspectRatio);
+
+                const rawStr = atob(baked.data);
+                const total = baked.count;
+                const stride = (width < 768) ? 2 : 1; // Lighter particle density on mobile for locked 60fps
+                const effectiveCount = Math.ceil(total / stride);
+
+                const positions = new Float32Array(effectiveCount * 3);
+                startPositions = new Float32Array(effectiveCount * 3);
+                initialPositions = new Float32Array(effectiveCount * 3);
+                const colors = new Float32Array(effectiveCount * 3);
+                normCoords = new Float32Array(effectiveCount * 2);
+                startDelays = new Float32Array(effectiveCount);
+                offsets = new Float32Array(effectiveCount);
+                velocitiesX = new Float32Array(effectiveCount);
+                velocitiesY = new Float32Array(effectiveCount);
+
+                const rand = createSeededRandom(20260401);
+                let outIdx = 0;
+
+                for (let idx = 0; idx < total; idx += stride) {
+                    const b = idx * 5;
+                    const nx = (rawStr.charCodeAt(b) * baked.step) / baked.w;
+                    const ny = (rawStr.charCodeAt(b + 1) * baked.step) / baked.h;
+                    const r = rawStr.charCodeAt(b + 2) / 255;
+                    const g = rawStr.charCodeAt(b + 3) / 255;
+                    const bl = rawStr.charCodeAt(b + 4) / 255;
+
+                    const tx = (startX + nx * logoW) - width / 2;
+                    const ty = -((startY + ny * logoH) - height / 2);
+
+                    // Predefined scattered starting position across viewport
+                    const sx = (rand() - 0.5) * width * 2.6;
+                    const sy = (rand() - 0.5) * height * 2.6;
+
+                    const i3 = outIdx * 3;
+                    const i2 = outIdx * 2;
+
+                    positions[i3] = sx;
+                    positions[i3 + 1] = sy;
+                    positions[i3 + 2] = 0;
+
+                    startPositions[i3] = sx;
+                    startPositions[i3 + 1] = sy;
+                    startPositions[i3 + 2] = 0;
+
+                    initialPositions[i3] = tx;
+                    initialPositions[i3 + 1] = ty;
+                    initialPositions[i3 + 2] = 0;
+
+                    colors[i3] = r;
+                    colors[i3 + 1] = g;
+                    colors[i3 + 2] = bl;
+
+                    normCoords[i2] = nx;
+                    normCoords[i2 + 1] = ny;
+
+                    startDelays[outIdx] = rand() * 0.24;
+                    offsets[outIdx] = rand() * Math.PI * 2;
+                    outIdx++;
+                }
+
+                count = outIdx;
+                geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                particles = new THREE.Points(geometry, new THREE.PointsMaterial({
+                    size: (width < 768) ? 2.1 : CONFIG.particleSize,
+                    vertexColors: true,
+                    sizeAttenuation: false,
+                    transparent: true,
+                    opacity: 1
+                }));
+                scene.add(particles);
+            }
+
+            function createParticles(image) {
+                const cvs = document.createElement('canvas');
+                const ctx = cvs.getContext('2d');
+                cvs.width = width; cvs.height = height;
+
+                logoAspectRatio = image.width / image.height;
+                const { logoW, logoH, startX, startY } = computeLogoLayout(logoAspectRatio);
 
                 ctx.drawImage(image, startX, startY, logoW, logoH);
                 const data = ctx.getImageData(0, 0, width, height).data;
-                const positions = [], colors = [], inits = [], spds = [], offs = [], velsX = [], velsY = [];
+                const positions = [], colors = [], inits = [], delays = [], offs = [], velsX = [], velsY = [];
+                const rand = createSeededRandom(20260401);
 
                 for (let y = 0; y < height; y += CONFIG.gap) {
                     for (let x = 0; x < width; x += CONFIG.gap) {
                         const i = (y * width + x) * 4;
                         if (data[i + 3] > 100) {
-                            positions.push((Math.random() - 0.5) * width * 3, (Math.random() - 0.5) * height * 3, 0);
+                            positions.push((rand() - 0.5) * width * 2.6, (rand() - 0.5) * height * 2.6, 0);
                             inits.push(x - width / 2, -(y - height / 2), 0);
                             colors.push(data[i] / 255, data[i + 1] / 255, data[i + 2] / 255);
-                            offs.push(Math.random() * Math.PI * 2);
+                            delays.push(rand() * 0.24);
+                            offs.push(rand() * Math.PI * 2);
                             velsX.push(0); velsY.push(0);
                         }
                     }
@@ -1664,7 +1774,9 @@
                 geometry = new THREE.BufferGeometry();
                 geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
                 geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+                startPositions = new Float32Array(positions);
                 initialPositions = new Float32Array(inits);
+                startDelays = new Float32Array(delays);
                 offsets = new Float32Array(offs);
                 velocitiesX = new Float32Array(velsX);
                 velocitiesY = new Float32Array(velsY);
@@ -1693,6 +1805,16 @@
                 width = container.offsetWidth; height = container.offsetHeight;
                 camera.left = width / -2; camera.right = width / 2; camera.top = height / 2; camera.bottom = height / -2;
                 camera.updateProjectionMatrix(); renderer.setSize(width, height);
+
+                if (normCoords && initialPositions) {
+                    const { logoW, logoH, startX, startY } = computeLogoLayout(logoAspectRatio);
+                    for (let i = 0; i < count; i++) {
+                        const i2 = i * 2;
+                        const i3 = i * 3;
+                        initialPositions[i3] = (startX + normCoords[i2] * logoW) - width / 2;
+                        initialPositions[i3 + 1] = -((startY + normCoords[i2 + 1] * logoH) - height / 2);
+                    }
+                }
             }
 
             function startTextImmediate() {
@@ -1726,34 +1848,54 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                const delta = clock.getDelta();
+                const delta = Math.min(clock.getDelta(), 0.05);
                 elapsedTime += delta;
-                let progress = Math.min(elapsedTime / CONFIG.duration, 1.0);
-                if (progress >= 1) introFinished = true;
                 if (!particles) return;
 
                 const posArray = geometry.attributes.position.array;
-                const ease = 1 - Math.pow(1 - progress, 3);
+                const totalDur = CONFIG.duration;
+                const inIntro = !introFinished;
+                if (inIntro && elapsedTime >= totalDur) {
+                    introFinished = true;
+                }
+
+                const mouseRadiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
 
                 for (let i = 0; i < count; i++) {
                     const i3 = i * 3;
-                    let cx = posArray[i3], cy = posArray[i3 + 1];
                     const hx = initialPositions[i3] + Math.cos(elapsedTime + offsets[i]) * 2.5;
                     const hy = initialPositions[i3 + 1] + Math.sin(elapsedTime + offsets[i]) * 2.5;
 
-                    let mDx = 0, mDy = 0;
-                    const dx = mouse.x - cx, dy = mouse.y - cy, dSq = dx * dx + dy * dy;
-                    if (dSq < 1225) {
-                        const dist = Math.sqrt(dSq), f = (35 - dist) / 35, a = Math.atan2(dy, dx);
-                        mDx = Math.cos(a) * f * CONFIG.mouseForce;
-                        mDy = Math.sin(a) * f * CONFIG.mouseForce;
-                    }
+                    let cx, cy;
+                    if (inIntro) {
+                        const d = startDelays[i];
+                        let t = (elapsedTime - d) / (totalDur - d);
+                        if (t < 0) t = 0;
+                        else if (t > 1) t = 1;
+                        // Predefined cubic ease-out trajectory (start -> target)
+                        const inv = 1 - t;
+                        const ease = 1 - inv * inv * inv;
+                        cx = startPositions[i3] + (hx - startPositions[i3]) * ease;
+                        cy = startPositions[i3 + 1] + (hy - startPositions[i3 + 1]) * ease;
 
-                    if (!introFinished) {
-                        cx += (hx - cx) * 0.02 * ease;
-                        cy += (hy - cy) * 0.02 * ease;
-                        cx -= mDx * 2; cy -= mDy * 2;
+                        const dx = mouse.x - cx, dy = mouse.y - cy, dSq = dx * dx + dy * dy;
+                        if (dSq < mouseRadiusSq) {
+                            const dist = Math.sqrt(dSq), f = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius, a = Math.atan2(dy, dx);
+                            cx -= Math.cos(a) * f * CONFIG.mouseForce * 2;
+                            cy -= Math.sin(a) * f * CONFIG.mouseForce * 2;
+                        }
                     } else {
+                        cx = posArray[i3];
+                        cy = posArray[i3 + 1];
+
+                        let mDx = 0, mDy = 0;
+                        const dx = mouse.x - cx, dy = mouse.y - cy, dSq = dx * dx + dy * dy;
+                        if (dSq < mouseRadiusSq) {
+                            const dist = Math.sqrt(dSq), f = (CONFIG.mouseRadius - dist) / CONFIG.mouseRadius, a = Math.atan2(dy, dx);
+                            mDx = Math.cos(a) * f * CONFIG.mouseForce;
+                            mDy = Math.sin(a) * f * CONFIG.mouseForce;
+                        }
+
                         velocitiesX[i] += (hx - cx) * 0.015; velocitiesY[i] += (hy - cy) * 0.015;
                         velocitiesX[i] -= mDx; velocitiesY[i] -= mDy;
                         velocitiesX[i] *= 0.94; velocitiesY[i] *= 0.94;
