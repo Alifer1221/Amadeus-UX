@@ -1555,34 +1555,34 @@
         (function () {
             const CONFIG = {
                 imageUrl: 'assets/isotipooooo.png',
-                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.5, introSpeed: 1.25, typingSpeed: 50
+                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.5, introSpeed: 1.0, typingSpeed: 50
             };
 
-            // Pre-bake the EXACT 2-phase original physics curve (gentle ease pull + 0.015/0.94 elastic spring bounce)
-            // into a 1D lookup table so every device plays the exact same cadence at 0 extra physics cost
+            // Pre-bake a continuous, silky-soft damped spring curve (smoothstep stiffness ramp + gentle ~3.7% settle)
+            // Zero abrupt phase switch, graceful acceleration, and velvety organic landing
             const INTRO_FPS = 60;
-            const INTRO_RAW_SECONDS = 4.0;
+            const INTRO_RAW_SECONDS = 2.6;
             const INTRO_CURVE = (function () {
                 const steps = Math.round(INTRO_RAW_SECONDS * INTRO_FPS);
                 const table = new Float32Array(steps + 1);
                 let u = 0, v = 0;
+                const stiff = 0.013;
+                const damp = 0.87;
+                const rampSec = 0.85;
                 for (let s = 0; s <= steps; s++) {
                     table[s] = u;
                     const t = s / INTRO_FPS;
-                    if (t < CONFIG.duration) {
-                        const p = t / CONFIG.duration;
-                        const ease = 1 - Math.pow(1 - p, 3);
-                        u += (1 - u) * 0.02 * ease;
-                    } else {
-                        v += (1 - u) * 0.015;
-                        v *= 0.94;
-                        u += v;
-                    }
+                    const ramp = Math.min(t / rampSec, 1);
+                    const k = stiff * (ramp * ramp * (3 - 2 * ramp));
+                    v += (1 - u) * k;
+                    v *= damp;
+                    u += v;
                 }
                 table[steps] = 1.0;
                 return table;
             })();
-            const INTRO_TOTAL_DURATION = INTRO_RAW_SECONDS / CONFIG.introSpeed;
+            const INTRO_MAX_STAGGER = 0.18;
+            const INTRO_TOTAL_DURATION = (INTRO_RAW_SECONDS / CONFIG.introSpeed) + INTRO_MAX_STAGGER;
 
             function sampleIntroCurve(elapsedSec) {
                 const rawSec = elapsedSec * CONFIG.introSpeed;
@@ -1883,14 +1883,8 @@
 
                 const posArray = geometry.attributes.position.array;
                 const inIntro = !introFinished;
-                let curveU = 1;
-                if (inIntro) {
-                    if (elapsedTime >= INTRO_TOTAL_DURATION) {
-                        introFinished = true;
-                        curveU = 1;
-                    } else {
-                        curveU = sampleIntroCurve(elapsedTime);
-                    }
+                if (inIntro && elapsedTime >= INTRO_TOTAL_DURATION) {
+                    introFinished = true;
                 }
 
                 const mouseRadiusSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
@@ -1902,9 +1896,11 @@
 
                     let cx, cy;
                     if (inIntro) {
-                        // Exact pre-baked original 2-phase cadence (gentle magnetic pull + elastic spring bounce)
-                        cx = startPositions[i3] + (hx - startPositions[i3]) * curveU;
-                        cy = startPositions[i3 + 1] + (hy - startPositions[i3 + 1]) * curveU;
+                        // Continuous silky-soft spring with subtle organic stagger per particle
+                        const localT = elapsedTime - (startDelays[i] * 0.75);
+                        const u = sampleIntroCurve(localT);
+                        cx = startPositions[i3] + (hx - startPositions[i3]) * u;
+                        cy = startPositions[i3 + 1] + (hy - startPositions[i3 + 1]) * u;
 
                         const dx = mouse.x - cx, dy = mouse.y - cy, dSq = dx * dx + dy * dy;
                         if (dSq < mouseRadiusSq) {
