@@ -1489,7 +1489,7 @@
             <div class="amadeus-video-section" id="amd-video-sec">
                 <div class="amadeus-frame-container">
                     <div class="amadeus-overlay visible" id="amd-overlay"></div>
-                    <iframe id="amd-player"
+                    <iframe id="amd-player" loading="lazy"
                         src="https://player.vimeo.com/video/1158052015?title=0&byline=0&portrait=0&badge=0&autoplay=0"
                         allowfullscreen></iframe>
                 </div>
@@ -1555,20 +1555,20 @@
         (function () {
             const CONFIG = {
                 imageUrl: 'assets/isotipooooo.png',
-                particleSize: 1.8, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.5, introSpeed: 1.0, typingSpeed: 50
+                particleSize: 2.2, gap: 3, mouseRadius: 35, mouseForce: 2.0, duration: 1.5, introSpeed: 1.0, typingSpeed: 45
             };
 
-            // Pre-bake a continuous, silky-soft damped spring curve (smoothstep stiffness ramp + gentle ~3.7% settle)
-            // Zero abrupt phase switch, graceful acceleration, and velvety organic landing
+            // Pre-bake a fast, silky-soft damped spring curve (smoothstep stiffness ramp + gentle settle)
+            // Zero abrupt phase switch, fast graceful convergence, and velvety landing
             const INTRO_FPS = 60;
-            const INTRO_RAW_SECONDS = 2.6;
+            const INTRO_RAW_SECONDS = 2.0;
             const INTRO_CURVE = (function () {
                 const steps = Math.round(INTRO_RAW_SECONDS * INTRO_FPS);
                 const table = new Float32Array(steps + 1);
                 let u = 0, v = 0;
-                const stiff = 0.013;
-                const damp = 0.87;
-                const rampSec = 0.85;
+                const stiff = 0.018;
+                const damp = 0.86;
+                const rampSec = 0.55;
                 for (let s = 0; s <= steps; s++) {
                     table[s] = u;
                     const t = s / INTRO_FPS;
@@ -1581,7 +1581,7 @@
                 table[steps] = 1.0;
                 return table;
             })();
-            const INTRO_MAX_STAGGER = 0.18;
+            const INTRO_MAX_STAGGER = 0.14;
             const INTRO_TOTAL_DURATION = (INTRO_RAW_SECONDS / CONFIG.introSpeed) + INTRO_MAX_STAGGER;
 
             function sampleIntroCurve(elapsedSec) {
@@ -1699,7 +1699,7 @@
 
                 const rawStr = atob(baked.data);
                 const total = baked.count;
-                const stride = (width < 768) ? 2 : 1; // Lighter particle density on mobile for locked 60fps
+                const stride = (width < 768) ? 3 : 2; // ~5.3k particles desktop, ~3.5k mobile for locked 60/120fps
                 const effectiveCount = Math.ceil(total / stride);
 
                 const positions = new Float32Array(effectiveCount * 3);
@@ -1763,7 +1763,7 @@
                 geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
                 particles = new THREE.Points(geometry, new THREE.PointsMaterial({
-                    size: (width < 768) ? 2.1 : CONFIG.particleSize,
+                    size: (width < 768) ? 2.4 : CONFIG.particleSize,
                     vertexColors: true,
                     sizeAttenuation: false,
                     transparent: true,
@@ -1877,9 +1877,13 @@
 
             function animate() {
                 requestAnimationFrame(animate);
+                if (!particles) return;
+                // Skip rendering hero particles when scrolled completely off-screen
+                const heroRect = container.getBoundingClientRect();
+                if (heroRect.bottom < -120) return;
+
                 const delta = Math.min(clock.getDelta(), 0.05);
                 elapsedTime += delta;
-                if (!particles) return;
 
                 const posArray = geometry.attributes.position.array;
                 const inIntro = !introFinished;
@@ -1931,12 +1935,19 @@
                 renderer.render(scene, camera);
             }
 
-            // Arrancar después de inicializar todas las variables y funciones
-            if (typeof THREE === 'undefined') {
-                console.error("Three.js error.");
-                if (typeof window.hideAmadeusLoader === 'function') window.hideAmadeusLoader();
+            // Arrancar en DOMContentLoaded para no competir con el parseo inicial del HTML
+            function bootHeroParticles() {
+                if (typeof THREE === 'undefined') {
+                    console.error("Three.js error.");
+                    if (typeof window.hideAmadeusLoader === 'function') window.hideAmadeusLoader();
+                } else {
+                    init();
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bootHeroParticles, { once: true });
             } else {
-                init();
+                bootHeroParticles();
             }
         })();
     </script>
@@ -2091,50 +2102,66 @@
         });
 
         const loader = new GLTFLoader();
-        loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/scene.gltf', (gltf) => {
-            const model = gltf.scene;
-            model.traverse(child => {
-                if (child.isMesh) {
-                    child.material.metalness = 0.5; child.material.roughness = 0.3;
-                    if (child.name.toLowerCase().includes('frame') || child.name.toLowerCase().includes('border')) {
-                        child.material.emissive = new THREE.Color(0xffffff); child.material.emissiveIntensity = 0.3;
+        let imacModelLoaded = false;
+
+        function loadImacModel() {
+            if (imacModelLoaded) return;
+            imacModelLoaded = true;
+            loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/scene.gltf', (gltf) => {
+                const model = gltf.scene;
+                model.traverse(child => {
+                    if (child.isMesh) {
+                        child.material.metalness = 0.5; child.material.roughness = 0.3;
+                        if (child.name.toLowerCase().includes('frame') || child.name.toLowerCase().includes('border')) {
+                            child.material.emissive = new THREE.Color(0xffffff); child.material.emissiveIntensity = 0.3;
+                        }
                     }
-                }
+                });
+
+                // ESCALA GIGANTE DEFINITIVA (0.18 = +20% más grande en móvil)
+                const scale = isMobile ? 0.18 : 0.072;
+                model.scale.set(scale, scale, scale);
+
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+
+                // POSICIÓN ADAPTATIVA (Centrado absoluto en su cuadro en móviles)
+                const posY = isMobile ? (-box.min.y) : (-box.min.y - 0.4);
+                model.position.set(-center.x, posY, -center.z);
+
+                mouseRotationGroup.add(model);
+                mouseRotationGroup.rotation.y = -(Math.PI / 2) - 0.25;
+
+                loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/pantalla.gltf', pGltf => {
+                    pGltf.scene.traverse(c => { if (c.isMesh) c.material = videoMaterial; });
+                    model.add(pGltf.scene);
+                });
+
+                // ZOOM DE CÁMARA ADAPTATIVO (Intermedio: factor 1.1)
+                const zoomFactor = isMobile ? 1.1 : 0.8;
+                camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * zoomFactor);
+                camera.lookAt(0, box.getSize(new THREE.Vector3()).y / 2, 0);
+                applyLensShift();
+
+                videoEl.src = slides[0].video;
+                visitBtn.href = slides[0].link;
+                videoEl.play().catch(() => {});
+                typeEffect(0);
+
+                clearTimeout(hintTimeout);
+                hintTimeout = setTimeout(() => { rotationIcon.style.opacity = 0; }, 3000);
             });
+        }
 
-            // ESCALA GIGANTE DEFINITIVA (0.18 = +20% más grande en móvil)
-            const scale = isMobile ? 0.18 : 0.072;
-            model.scale.set(scale, scale, scale);
-
-            const box = new THREE.Box3().setFromObject(model);
-            const center = box.getCenter(new THREE.Vector3());
-
-            // POSICIÓN ADAPTATIVA (Centrado absoluto en su cuadro en móviles)
-            const posY = isMobile ? (-box.min.y) : (-box.min.y - 0.4);
-            model.position.set(-center.x, posY, -center.z);
-
-            mouseRotationGroup.add(model);
-            mouseRotationGroup.rotation.y = -(Math.PI / 2) - 0.25;
-
-            loader.load('https://raw.githubusercontent.com/Amadeusguitarte/Imac/main/pantalla.gltf', pGltf => {
-                pGltf.scene.traverse(c => { if (c.isMesh) c.material = videoMaterial; });
-                model.add(pGltf.scene);
-            });
-
-            // ZOOM DE CÁMARA ADAPTATIVO (Intermedio: factor 1.1)
-            const zoomFactor = isMobile ? 1.1 : 0.8;
-            camera.position.set(0, box.getSize(new THREE.Vector3()).y / 2, (Math.abs((box.getSize(new THREE.Vector3()).y / 2) / Math.tan((camera.fov * Math.PI / 180) / 2)) * 1.8) * zoomFactor);
-            camera.lookAt(0, box.getSize(new THREE.Vector3()).y / 2, 0);
-            applyLensShift();
-
-            videoEl.src = slides[0].video;
-            visitBtn.href = slides[0].link;
-            videoEl.play();
-            typeEffect(0);
-
-            clearTimeout(hintTimeout);
-            hintTimeout = setTimeout(() => { rotationIcon.style.opacity = 0; }, 3000);
-        });
+        // Defer heavy iMac 3D GLTF loading until Hero particle intro finishes (or user scrolls near it)
+        const imacLoadObserver = new IntersectionObserver((entries) => {
+            if (entries.some(e => e.isIntersecting)) {
+                imacLoadObserver.disconnect();
+                loadImacModel();
+            }
+        }, { rootMargin: '600px 0px' });
+        imacLoadObserver.observe(wrapper);
+        setTimeout(loadImacModel, 2400);
 
         window.addEventListener('resize', () => {
             isMobile = window.innerWidth <= 900;
@@ -2284,6 +2311,8 @@
         function animate() {
             requestAnimationFrame(animate);
             const rect = wrapper.getBoundingClientRect();
+            // Skip rendering 3D iMac while off-screen so Hero gets 100% GPU
+            if (rect.bottom < -120 || rect.top > window.innerHeight + 120) return;
             scrollGroup.rotation.x = ((rect.top + rect.height / 2 - window.innerHeight / 2) + 200) * 0.0008;
             renderer.render(scene, camera);
         }
